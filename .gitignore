@@ -1,2 +1,3 @@
 __*/
-conf_*
+conf_local.json
+conf_remote.json
