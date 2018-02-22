@@ -1,6 +1,6 @@
 {
   "html": "html-template",
-  "occ_base_path": "/srv/oc/data/corpus/",
+  "occ_base_path": "/srv/data/corpus/",
   "oc_base_url": "https://w3id.org/oc",
   "tmp_dir": "/tmp/",
   "json_context_path": "/srv/data/corpus/context.json",
