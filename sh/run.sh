@@ -14,7 +14,7 @@
 # SOFTWARE.
 
 
-myv=`curl -s http://oc.cs.unibo.it`
+myv=`curl -s http://130.136.130.1`
 
 if [[ -z "$myv" ]] || [[ $myv = "Traceback"*  ]]; then
     /etc/init.d/lighttpd stop
