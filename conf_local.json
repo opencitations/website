@@ -1,0 +1,45 @@
+{
+  "html": "html-template",
+  "occ_base_path": "../test/data/corpus/",
+  "oc_base_url": "http://localhost:8000",
+  "tmp_dir": "/Users/six/Desktop/",
+  "json_context_path": "../corpus/context.json",
+  "sparql_endpoint": "http://localhost:3000/blazegraph/sparql",
+  "corpus_local_url": "/corpus/",
+  "virtual_local_url": "/virtual/",
+  "ontology_base_url": "http://localhost:8000/",
+  "documentation_base_path": "ontology/",
+  "ontology_url": "../ontology/ontology.owl",
+  "onto_acronym": "ontology",
+  "dir_split_number": "6",
+  "file_split_number": "3",
+  "default_dir": "_",
+  "statistics": "../test/data/log/occ_statistics.csv",
+  "log_dir": "../test/web/log/",
+  "label_conf": {
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": "is a",
+    "http://xmlns.com/foaf/0.1/givenName": "given name",
+    "http://xmlns.com/foaf/0.1/familyName": "family name",
+    "http://prismstandard.org/namespaces/basic/2.0/startingPage": "first page",
+    "http://prismstandard.org/namespaces/basic/2.0/endingPage": "last page",
+    "http://purl.org/dc/terms/issued": "publication date",
+    "http://purl.org/dc/terms/modified": "modification date",
+    "http://purl.org/spar/biro/references": "references"
+  },
+  "ved_conf": {
+    "ci": [
+      {
+        "query": "PREFIX cito: <http://purl.org/spar/cito/> PREFIX fabio: <http://purl.org/spar/fabio/> SELECT ?citing ?cited ?citing_year ?cited_year WHERE { BIND(<https://w3id.org/oc/corpus/br/[[CITING]]> AS ?citing) BIND(<https://w3id.org/oc/corpus/br/[[CITED]]> AS ?cited) ?citing cito:cites ?cited . OPTIONAL { ?citing fabio:hasPublicationYear ?citing_year } OPTIONAL { ?cited fabio:hasPublicationYear ?cited_year } }",
+        "prefix": "",
+        "tp": "https://w3id.org/oc/sparql",
+        "use_it": "yes"
+      },
+      {
+        "query": "SELECT ?citing ?cited ?citing_year ?cited_year WHERE { BIND(wd:Q[[CITING]] AS ?citing) BIND(wd:Q[[CITED]] AS ?cited) ?citing wdt:P2860 ?cited . OPTIONAL { ?citing wdt:P577 ?citing_year } OPTIONAL { ?cited wdt:P577 ?cited_year } } LIMIT 1",
+        "prefix": "010",
+        "tp": "https://query.wikidata.org/sparql",
+        "use_it": "yes"
+      }
+    ]
+  }
+}

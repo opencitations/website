@@ -1,0 +1,138 @@
+$def with (pages, active)
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+        <link rel="icon" href="/static/favicon.ico" />
+        <title>OpenCitations - OCI</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
+
+        <!-- Font Awesome -->
+        <link href="/static/css/font-awesome.min.css" rel="stylesheet" />
+
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <link href="/static/css/ie10-viewport-bug-workaround.css" rel="stylesheet" />
+
+        <!-- Custom styles for this template -->
+        <link href="/static/css/cover.css" rel="stylesheet" />
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="/static/js/html5shiv.min.js"><![CDATA[ ]]></script>
+            <script src="/static/js/respond.min.js"><![CDATA[ ]]></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div class="cover-container">
+
+            <div class="masthead clearfix">
+
+                <nav class="navbar">
+                    <div class="navbar-header">
+                      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                         <span class="icon-bar"></span>
+                         <span class="icon-bar"></span>
+                         <span class="icon-bar"></span>
+                      </button>
+                      <h3 class="masthead-brand">
+                          <a href="/"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span></a>
+                      </h3>
+                    </div>
+
+                    <div class="navbar-collapse collapse">
+
+                      <div class="masthead-search">
+                        <form class="input-group" action="search" method="get">
+                          <input type="text" class="form-control oc-purple" placeholder="Search..." name="text">
+                          <div class="input-group-btn">
+                            <button class="btn btn-default oc-purple" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                          </div>
+                        </form>
+                      </div>
+
+                      <div class="masthead-pages">
+                        <ul class="nav masthead-nav navbar-nav">
+                            $for page in pages:
+                                $if page == active:
+                                    <li class="active">
+                                $else:
+                                    <li>
+                                <a href="$page">
+                                    $if page == "/":
+                                        Home
+                                    $else:
+                                        $page.title()
+                                </a>
+                                </li>
+                        </ul>
+                      </div>
+
+                    </div>
+                </nav>
+
+            </div>
+
+            <div class="cover">
+                <h3>Open Citation Identifier Resolution Service</h3>
+                <form class="form-inline" action="/oci" method="get">
+                    <div class="form-group">
+                        <label for="oci">oci</label>:
+                        <input style="min-width:350px" name="oci" type="text" class="form-control" id="oci" placeholder="E.g.: 1-18">
+                    </div>
+                    <input type="submit" class="btn btn-success" value="Look up citation"></input>
+                </form>
+                <div class="left" style="margin-top: 30px">
+                    <p>The Open Citation Identifier (OCI) is a globally unique persistent identifier for bibliographic citations, created and maintained by OpenCitations, and this page provides a resolution service that takes an OCI and returns information about that citation.</p>
+                    <p>Each OCI has a simple structure: the lower-case letters “oci” followed by a colon, followed by two numbers separated by a dash. For example, <a href="/oci/1-18">oci:1-18</a> and <a href="/oci/2544384-7295288">oci:2544384-7295288</a> are both valid OCIs.</p>
+                    <p>The first number is the identifier for the citing bibliographic resource, while the second number is the identifier for the cited bibliographic resource. Within the OCC, these bibliographic resource identifiers are unique, and every citation recorded in the OpenCitations Corpus (OCC) has an OCI.</p>
+                    <p>Some bibliographic resource identifiers have a supplier prefix - a short numerical string delimited by zeros that indicates the supplier of the metadata. For example <q>010</q> indicates that <a href="https://www.wikidata.org">Wikidata</a> is the supplier. Thus <a href="/oci/01027931310-01022252312">oci:01027931310-01022252312</a> represents a citation between two bibliographic resources (i.e. <a href="http://www.wikidata.org/entity/Q27931310">wd:Q27931310</a> and <a href="http://www.wikidata.org/entity/Q22252312">wd:Q22252312</a>) whose metadata was in both cases supplied by Wikidata. A list of existing bibliographic resource identifier prefixes and their meanings can be found in the following table.</p>
+                    <table class="table table-striped">
+                        <tr><th>Prefix</th><th>supplier</th></tr>
+                        <tr><td><em>no prefix</em></td><td><a href="https://w3id.org/oc/corpus">OpenCitations Corpus</a></td></tr>
+                        <tr><td><em>010</em></td><td><a href="https://www.wikidata.org">Wikidata</a></td></tr>
+                    </table>
+                    <p>While the coverage of OCIs among all bibliographic citations is at present limited, bear in mind that the coverage of DOIs (digital object identifiers) to identify published works was also limited following its launch in 2000.  As the coverage of the OCC expands, the number of OCIs will increase proportionately.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <footer id="footer">
+            <div class="container">
+                <div class="row">
+                    <div id="disi" class="col-xs-12 col-sm-6">
+                        <p><a href="http://www.cse.unibo.it"><img src="/static/img/disi-unibo.png" /></a></p>
+                    </div>
+                    <div id="ox" class="col-xs-12 col-sm-6">
+                        <p><a href="http://www.ox.ac.uk"><img src="/static/img/uniox.png" /></a></p>
+                    </div>
+                </div>
+            </div>
+            <p>
+                <a class="social oc-purple" href="mailto:contact@opencitations.net"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+                <a class="social oc-purple" href="http://www.twitter.com/opencitations"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                <a class="social oc-blue" href="http://github.com/essepuntato/opencitations"><i class="fa fa-github" aria-hidden="true"></i></a>
+                <a class="social oc-blue" href="https://opencitations.wordpress.com/"><i class="fa fa-wordpress" aria-hidden="true"></i></a>
+            </p>
+        </footer>
+
+
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="/static/js/jquery.min.js"><![CDATA[ ]]></script>
+        <script>window.jQuery || document.write('<script src="/static/js/jquery.min.js"><\/script>')</script>
+        <script src="/static/js/bootstrap.min.js"><![CDATA[ ]]></script>
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <script src="/static/js/ie10-viewport-bug-workaround.js"><![CDATA[ ]]></script>
+        <script>
+
+        </script>
+    </body>
+</html>

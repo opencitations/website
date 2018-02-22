@@ -1,0 +1,169 @@
+$def with (pages, active)
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+        <link rel="icon" href="/static/favicon.ico" />
+        <title>OpenCitations - Publications</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
+
+        <!-- Font Awesome -->
+        <link href="/static/css/font-awesome.min.css" rel="stylesheet" />
+
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <link href="/static/css/ie10-viewport-bug-workaround.css" rel="stylesheet" />
+
+        <!-- Custom styles for this template -->
+        <link href="/static/css/cover.css" rel="stylesheet" />
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="/static/js/html5shiv.min.js"><![CDATA[ ]]></script>
+            <script src="/static/js/respond.min.js"><![CDATA[ ]]></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div class="cover-container">
+          <div class="masthead clearfix">
+
+              <nav class="navbar">
+                  <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                       <span class="icon-bar"></span>
+                       <span class="icon-bar"></span>
+                       <span class="icon-bar"></span>
+                    </button>
+                    <h3 class="masthead-brand">
+                        <a href="/"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span></a>
+                    </h3>
+                  </div>
+
+                  <div class="navbar-collapse collapse">
+
+                    <div class="masthead-search">
+                      <form class="input-group" action="search" method="get">
+                        <input type="text" class="form-control oc-purple" placeholder="Search..." name="text">
+                        <div class="input-group-btn">
+                          <button class="btn btn-default oc-purple" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                      </form>
+                    </div>
+
+                    <div class="masthead-pages">
+                      <ul class="nav masthead-nav navbar-nav">
+                          $for page in pages:
+                              $if page == active:
+                                  <li class="active">
+                              $else:
+                                  <li>
+                              <a href="$page">
+                                  $if page == "/":
+                                      Home
+                                  $else:
+                                      $page.title()
+                              </a>
+                              </li>
+                      </ul>
+                    </div>
+
+                  </div>
+              </nav>
+
+          </div>
+
+            <div class="cover left">
+                 <h3>$active.title()</h3>
+                <p>(Please follow us on <a href="http://www.twitter.com/opencitations">Twitter</a> and read the <a href="https://opencitations.wordpress.com/">OpenCitations Blog</a> to be kept updated with news about <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>, and see the <a href="/about">About page</a> for information concerning the origin and history of <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>)</p>
+                 <dl>
+                     <dt class="mt-more">Nature comment</dt>
+                     <dd>
+                         <p><em>David Shotton (2013). Open citations. Nature, 502 (7471): 295-297. <a href="https://doi.org/10.1038/502295a">https://doi.org/10.1038/502295a</a></em></p>
+                         <p>The first scholarly article, published in Nature as a short comment, which introduces the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus.</p>
+                     </dd>
+
+                     <dt>Main publication</dt>
+                     <dd>
+                         <p><em>Silvio Peroni, Alexander Dutton, Tanya Gray, David Shotton (2015).
+Setting our bibliographic references free: towards open citation data. Journal of Documentation, 71 (2): 253-277. <a href="https://doi.org/10.1108/JD-12-2013-0166">https://doi.org/10.1108/JD-12-2013-0166</a>, OA at <a href="http://speroni.web.cs.unibo.it/publications/peroni-2015-setting-bibliographic-references.pdf">http://speroni.web.cs.unibo.it/publications/peroni-2015-setting-bibliographic-references.pdf</a></em></p>
+                         <p>The first full article describing <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>. It includes background information, presents the main ideas and work supporting the project, describes the OpenCitations Corpus, and outlines some possible future developments in terms of new kinds of data to be included, e.g. citation functions.</p>
+                     </dd>
+
+                     <dt>One year of OpenCitations</dt>
+                     <dd>
+                         <p><em>Silvio Peroni, David Shotton, Fabio Vitali (2017).
+One year of the OpenCitations Corpus: Releasing RDF-based scholarly citation data into the Public Domain. In Proceedings of the 16th International Semantic Web Conference (ISWC 2017). OA at <a href="https://w3id.org/people/essepuntato/papers/oc-iswc2017.html">https://w3id.org/people/essepuntato/papers/oc-iswc2017.html</a></em></p>
+                         <p>This paper introduces the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus and describes its outcomes and uses after the first year of life.</p>
+
+                     <dt class="mt-more">Metadata model</dt>
+                     <dd>
+                         <p><em>Silvio Peroni, David Shotton (2016). Metadata for the OpenCitations Corpus. figshare. <a href="https://dx.doi.org/10.6084/m9.figshare.3443876">https://dx.doi.org/10.6084/m9.figshare.3443876</a></em></p>
+                         <p>The document describing the metadata model used for storing data in the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus.</p>
+                     </dd>
+
+                     <dt class="mt-more">Ontologies for documenting citation data</dt>
+                     <dd>
+                         <p>Silvio Peroni, David Shotton (2012). FaBiO and CiTO: ontologies for describing bibliographic resources and citations. Web Semantics, 17: 33-34. <a href="https://doi.org/10.1016/j.websem.2012.08.001">https://doi.org/10.1016/j.websem.2012.08.001</a>, OA at <a href="http://speroni.web.cs.unibo.it/publications/peroni-2012-fabio-cito-ontologies.pdf">http://speroni.web.cs.unibo.it/publications/peroni-2012-fabio-cito-ontologies.pdf</a></p>
+                         <p>The principle paper describing the two most important ontologies from the <a href="http://www.sparontologies.net">SPAR (Semantic Publishing and Referencing) Ontologies</a> used to document bibliographic resources and citations within the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus.</p>
+                     </dd>
+
+                     <dt class="mt-more">Technical description of the 2016 instantiation of the OCC</dt>
+                     <dd>
+                         <p><em>Silvio Peroni, David Shotton, Fabio Vitali (2016). Freedom for bibliographic references: OpenCitations arise. In <a href="http://ceur-ws.org/Vol-1699/">Proceedings of 2016 International Workshop on Linked Data for Information Extraction (LD4IE 2016)</a>: 32-43. <a href="https://w3id.org/oc/paper/occ-lisc2016.html">https://w3id.org/oc/paper/occ-lisc2016.html</a></em></p>
+                         <p>A workshop paper, presented at LD4IE 2016, that introduces and describes the new 2016 instance of the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus, hosted by Department of Computer Science and Engineering (DISI) at the University of Bologna, and the software developed and used to populate it.</p>
+                     </dd>
+                     <dt class="mt-more">Tracking provenance and data changes</dt>
+                     <dd>
+                         <p><em>Silvio Peroni, David Shotton, Fabio Vitali (2016). A document-inspired way for tracking changes of RDF data - The case of the OpenCitations Corpus. In <a href="http://ceur-ws.org/Vol-1799/">Proceedings of 1st Workshop on Detection, Representation and Management of Concept Drift in Linked Open Data (Drift-a-LOD 2016)</a>: 26-33. <a href="https://w3id.org/oc/paper/occ-driftalod2016.html">https://w3id.org/oc/paper/occ-driftalod2016.html</a></em></p>
+                         <p>A workshop paper, presented at Drift-a-LOD 2016, that explains which provenance information is stored in the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus, and also describes the mechanism implemented for tracking changes in OCC entities.</p>
+                     </dt>
+
+                     <dt class="mt-more">OCC data flow</dt>
+                     <dd>
+                         <p><em>Silvio Peroni, David Shotton, Fabio Vitali (2016). Jailbreaking your reference lists: OpenCitations strike again. In <a href="http://ceur-ws.org/Vol-1690/">Proceedings of Poster and Demo track of the 15th International Semantic Web Conference (ISWC 2016)</a>. <a href="https://w3id.org/oc/paper/occ-poster-iswc2016.html">https://w3id.org/oc/paper/occ-poster-iswc2016.html</a></em></p>
+                         <p>A short paper, presented at the <a href="http://iswc2016.semanticweb.org/pages/program/accepted-posters-demos.html">poster session of ISWC 2016</a>, that briefly introduces the 2016 instantiation of the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus.</p>
+                     </dd>
+
+                     <dt class="mt-more">SPACIN in action</dt>
+                     <dd>
+                         <p><em>Silvio Peroni, David Shotton, Fabio Vitali (2016). Building citation networks with SPACIN. In Proceedings of the Poster and Demo track of the 20th International Conference on Knowledge Engineering and Knowledge Management (EKAW 2016). <a href="https://w3id.org/oc/paper/spacin-demo-ekaw2016.html">https://w3id.org/oc/paper/spacin-demo-ekaw2016.html</a></em></p>
+                         <p>A short demo paper, presented at the <a href="http://ekaw2016.cs.unibo.it/?q=posters-and-demos">poster session of EKAW 2016</a>, that shows how to use SPACIN (one of the main scripts used in <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>) to create all the RDF-based citation data included in the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus from information available in trusted sources, such as Europe PubMed Central, Crossref, and ORCID.</p>
+                     </dt>
+                 </dl>
+            </div>
+        </div>
+
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div id="disi" class="col-xs-12 col-sm-6">
+                        <p><a href="http://www.cse.unibo.it"><img src="/static/img/disi-unibo.png" /></a></p>
+                    </div>
+                    <div id="ox" class="col-xs-12 col-sm-6">
+                        <p><a href="http://www.ox.ac.uk"><img src="/static/img/uniox.png" /></a></p>
+                    </div>
+                </div>
+            </div>
+            <p>
+                <a class="social oc-purple" href="mailto:contact@opencitations.net"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+                <a class="social oc-purple" href="http://www.twitter.com/opencitations"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                <a class="social oc-blue" href="http://github.com/essepuntato/opencitations"><i class="fa fa-github" aria-hidden="true"></i></a>
+                <a class="social oc-blue" href="https://opencitations.wordpress.com/"><i class="fa fa-wordpress" aria-hidden="true"></i></a>
+            </p>
+        </footer>
+
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="/static/js/jquery.min.js"><![CDATA[ ]]></script>
+        <script>window.jQuery || document.write('<script src="/static/js/jquery.min.js"><\/script>')</script>
+        <script src="/static/js/bootstrap.min.js"><![CDATA[ ]]></script>
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <script src="/static/js/ie10-viewport-bug-workaround.js"><![CDATA[ ]]></script>
+    </body>
+</html>
