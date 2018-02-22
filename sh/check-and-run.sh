@@ -15,7 +15,7 @@
 
 CUR_DIR="${pwd}"
 
-cd /srv/web/website
+cd /srv/web/website/sh
 ./run.sh
 if [ "$?" = "0" ]; then
     date >> log.txt
