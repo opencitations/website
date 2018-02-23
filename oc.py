@@ -51,7 +51,6 @@ urls = (
     "/(publications)", "Publications",
     "/(licenses)", "Licenses",
     "/(contacts)", "Contacts",
-    "/ontology(.+)?", "Ontology",
     "(/paper/.+)", "RawGit"
 )
 
@@ -269,21 +268,6 @@ class Corpus:
             file_split_number=int(c["file_split_number"]),
             default_dir=c["default_dir"])
         cur_page = ldd.redirect(file_path)
-        if cur_page is None:
-            raise web.notfound()
-        else:
-            web_logger.mes()
-            return cur_page
-
-
-class Ontology:
-    def GET(self, ext):
-        cur_extension = "" if ext is None else ext
-        ontology_handler = OntologyHandler(
-            c["ontology_base_url"], c["documentation_base_path"],
-            {c["onto_acronym"]: c["ontology_url"]}, c["tmp_dir"])
-        cur_page = ontology_handler.redirect(
-            c["ontology_base_url"] + c["onto_acronym"] + cur_extension)
         if cur_page is None:
             raise web.notfound()
         else:
