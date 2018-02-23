@@ -9,7 +9,7 @@
   "virtual_local_url": "/virtual/",
   "ontology_base_url": "https://w3id.org/oc/",
   "documentation_base_path": "ontology/",
-  "ontology_url": "/src/material/ontology/ontology.owl",
+  "ontology_url": "/src/dev/ontology/ontology.owl",
   "onto_acronym": "ontology",
   "dir_split_number": "10000",
   "file_split_number": "1000",
