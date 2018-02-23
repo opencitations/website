@@ -60,6 +60,9 @@ rewrite = RewriteRuleHandler(
     [
         ("^/corpus/context.json$",
          "https://raw.githubusercontent.com/opencitations/corpus/master/context.json",
+         True),
+        ("^/ontology(/.+)?$",
+         "https://w3id.org/oc/ontology\\1",
          True)
     ],
     urls
