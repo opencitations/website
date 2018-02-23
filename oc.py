@@ -24,7 +24,6 @@ from src.ved import VirtualEntityDirector
 import requests
 import urllib.parse as urlparse
 import re
-from src.oh import OntologyHandler
 import csv
 from datetime import datetime
 from os import path
