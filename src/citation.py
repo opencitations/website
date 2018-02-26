@@ -62,7 +62,6 @@ class Citation(object):
 
             if self.contains_years(cited_pub_date):
                 cited_pub_datetime = parse(cited_pub_date[:10], default=default_date)
-                print(citing_pub_datetime, cited_pub_datetime)
                 delta = relativedelta(citing_pub_datetime, cited_pub_datetime)
                 self.duration = self.get_duration(
                     delta,
@@ -96,9 +95,9 @@ class Citation(object):
                 xsd_type = XSD.gYearMonth
             else:
                 xsd_type = XSD.gYear
-            print(self.creation_date)
+
             citation_graph.add((citation, self.__has_citation_creation_date,
-                                Literal(self.creation_date, datatype=xsd_type)))
+                                Literal(self.creation_date, datatype=xsd_type, normalize=False)))
             if self.duration is not None:
                 citation_graph.add((citation, self.__has_citation_time_span,
                                     Literal(self.duration, datatype=XSD.duration)))

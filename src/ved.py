@@ -119,6 +119,5 @@ class VirtualEntityDirector(object):
                                   self.virtual_entity_director,
                                   self.virtual_baseurl + identified_entity_corpus_id,
                                   datetime.now().strftime('%Y-%m-%dT%H:%M:%S'))
-
             return self.ldd.get_representation(url, True, identifier.get_oci_rdf(self.virtual_baseurl))
 
