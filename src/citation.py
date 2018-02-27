@@ -150,8 +150,8 @@ class Citation(object):
     def get_duration(delta, consider_months, consider_days):
         result = ""
         if delta.years < 0 or \
-                (delta.years == 0 and delta.months < 0) or \
-                (delta.years == 0 and delta.months == 0 and delta.days < 0):
+                (delta.years == 0 and delta.months < 0 and consider_months) or \
+                (delta.years == 0 and delta.months == 0 and delta.days < 0 and consider_days):
             result += "-"
         result += "P"
 
