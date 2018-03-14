@@ -314,7 +314,18 @@ class LinkedDataDirector(object):
                 web.header('Content-Type', self.__html[0])
                 return self.render.ldd(cur_data, sorted(cur_data.keys()), self.label_iri)
 
+    @staticmethod
+    def hack_dates():
+        if rdflib.XSD.gYear in rdflib.term._toPythonMapping:
+            rdflib.term._toPythonMapping.pop(rdflib.XSD.gYear)
+        if rdflib.XSD.gYearMonth in rdflib.term._toPythonMapping:
+            rdflib.term._toPythonMapping.pop(rdflib.XSD.gYearMonth)
+
     def load_graph(self, file_path, subj_iri, temp_dir_for_rdf_loading=None):
+        LinkedDataDirector.hack_dates()
+        # The line above has been added for handling gYear and gYearMonth correctly.
+        # More info at https://github.com/RDFLib/rdflib/issues/806.
+
         current_graph = None
 
         if re.match("https?://", file_path) or os.path.isfile(file_path):
@@ -351,6 +362,6 @@ class LinkedDataDirector(object):
 
             current_graph = rdflib.ConjunctiveGraph()
 
-            current_graph.parse(data=json.dumps(json_ld_file), format="json-ld")
+            current_graph.parse(data=json.dumps(json_ld_file, ensure_ascii=False), format="json-ld")
 
         return current_graph

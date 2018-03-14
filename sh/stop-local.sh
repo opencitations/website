@@ -13,5 +13,5 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-ps -ef | grep "[p]ython oc.py" | awk '{print $2}' | xargs kill
+ps -ef | grep "[P|p]ython oc.py" | awk '{print $2}' | xargs kill
 exit 0

@@ -72,11 +72,11 @@ $def with (data, keys, label_iri)
                       </ul>
                   </dd>
 
-              $if 'year' in data:
-                  <dt class="bg-info">publication year</dt>
+              $if 'date' in data:
+                  <dt class="bg-info">publication date</dt>
                   <dd>
                       <ul class="list-unstyled">
-                          <li property="$label_iri['year']">$data["year"][0]</li>
+                          <li property="$label_iri['date']">$data["date"][0]</li>
                       </ul>
                   </dd>
 
