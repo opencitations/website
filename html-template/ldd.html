@@ -176,5 +176,22 @@ $def with (data, keys, label_iri)
     <script src="/static/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="/static/js/ie10-viewport-bug-workaround.js"></script>
+
+    <script type="text/javascript" src="/static/js/browser-conf.js"></script>
+    <script type="text/javascript" src="/static/js/browser.js"></script>
+    <script>
+        //since i have specified a field 'short_iri' in the config file
+        //and i am not using SPARQL call to have it, i need to ad-hoc define it
+
+        var myRegexp = /https:\/\/w3id.org\/oc\/corpus(\/ra\/\d{1,}|\/br\/\d{1,})/g;
+        var short_iri_val = myRegexp.exec(window.location.href)[1];
+        var adhoc_data = {"short_iri":{"value": short_iri_val}};
+
+        var category= "document";
+        if (short_iri_val.match(/ra\/\d{1,}/g)) { category= "author";}
+
+        browser.build_extra_sec(adhoc_data, category);
+
+    </script>
   </body>
 </html>
