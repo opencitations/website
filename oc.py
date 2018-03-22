@@ -47,6 +47,7 @@ urls = (
     "/(download)", "Download",
     "/(sparql)", "Sparql",
     "/(search)", "Search",
+    "/browser/(.+)", "Browser",
     "/(publications)", "Publications",
     "/(licenses)", "Licenses",
     "/(contacts)", "Contacts",
@@ -170,6 +171,12 @@ class Search:
         web_logger.mes()
         query_string = web.ctx.env.get("QUERY_STRING")
         return render.search(pages, active, query_string)
+
+
+class Browser:
+    def GET(self, occ_path):
+        web_logger.mes()
+        return render.browser(occ_path)
 
 
 class Model:
