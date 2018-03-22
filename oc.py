@@ -159,7 +159,6 @@ class OCI:
             raise web.seeother(c["oc_base_url"] + c["virtual_local_url"] + "ci" + oci)
 
 
-
 class Download:
     def GET(self, active):
         web_logger.mes()
@@ -170,11 +169,7 @@ class Search:
     def GET(self, active):
         web_logger.mes()
         query_string = web.ctx.env.get("QUERY_STRING")
-        parsed_query = urlparse.parse_qs(query_string)
-        if "text" in parsed_query:
-            return render.search(pages, active, parsed_query['text'][0])
-        else:
-            return render.search(pages, active, "")
+        return render.search(pages, active, query_string)
 
 
 class Model:
