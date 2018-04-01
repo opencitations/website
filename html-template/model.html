@@ -80,7 +80,7 @@ $def with (pages, active)
             <div class="cover left">
                  <h3>$active.title()</h3>
                  <p>The metadata model used for the data stored in the OCC is briefly summarised in <a class="cgen" href="#refIllustration0">Figure 1</a> and is described in:
-                 <blockquote><p>Silvio Peroni, David Shotton (2016). Metadata for the OpenCitations Corpus. figshare. <a href="https://dx.doi.org/10.6084/m9.figshare.3443876">https://dx.doi.org/10.6084/m9.figshare.3443876</a></p></blockquote>
+                 <blockquote><p>Silvio Peroni, David Shotton (2016). Metadata for the OpenCitations Corpus. figshare. <a href="https://doi.org/10.6084/m9.figshare.3443876">https://doi.org/10.6084/m9.figshare.3443876</a></p></blockquote>
                  <p>The model is explicitly aligned with the <a href="http://www.sparontologies.net">SPAR Ontologies</a> and other well-known vocabularies, including:</p>
             <ul>
                <li>
@@ -93,7 +93,10 @@ $def with (pages, active)
                   <p>the <a href="http://purl.org/spar/biro">Bibliographic Reference Ontology (BiRO)</a> and the <a href="http://purl.org/spar/c4o">Citation Counting and Context Characterization Ontology (C4O)</a> are used for describing the textual content of each reference in the reference list of a citing bibliographic resource;</p>
                </li>
                <li>
-                  <p>and finally, the <a href="http://purl.org/spar/datacite">DataCite Ontology</a>, which is used to define all the identifiers (e.g. DOI, PubMed ID, PubMed Central ID, ORCID, ISSN, etc.) for the bibliographic resources and all the agents involved, while the <a href="http://xmlns.com/foaf/spec/">Friend Of A Friend (FOAF)</a> ontology is used to define additional data about agents (specifically their names).</p>
+                  <p>the <a href="http://purl.org/spar/datacite">DataCite Ontology</a>, which is used to define all the identifiers (e.g. DOI, PubMed ID, PubMed Central ID, ORCID, ISSN, etc.) for the bibliographic resources and all the agents involved, while the <a href="http://xmlns.com/foaf/spec/">Friend Of A Friend (FOAF)</a> ontology is used to define additional data about agents (specifically their names).</p>
+               </li>
+               <li>
+                   <p>and, finally, the <a href="http://purl.org/spar/cito">Citation Typing Ontology (CiTO)</a>, which is used to define citations (i.e. conceptual directional links from a citing entity to a cited entity, created by a human performative act of making a citation) as first-class data entities.</p>
                </li>
             </ul>
             <p>For convenience, all the terms from the aforementioned ontologies are collected within a new ontology called <a href="https://w3id.org/oc/ontology">OpenCitations Ontology (OCO)</a>. This is not yet another bibliographic ontology, but rather just a place where existing complementary ontological entities from several other ontologies are grouped together for the purpose of providing descriptive metadata for the OCC.</p>
