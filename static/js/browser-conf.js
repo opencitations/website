@@ -20,7 +20,7 @@ var browser_conf = {
     "document": {
           "rule": "br\/.*",
           "query": [
-            "SELECT ?my_iri ?short_iri ?id_lit ?type ?short_type ?label ?title ?subtitle ?year ?author_iri ?author (COUNT(distinct ?cites) AS ?out_cits) (COUNT(distinct ?cited_by) AS ?in_cits) WHERE {",
+            "SELECT ?my_iri ?short_iri ?id_lit ?type ?short_type ?label ?title ?subtitle ?year ?author_iri ?author_browser_iri ?author (COUNT(distinct ?cites) AS ?out_cits) (COUNT(distinct ?cited_by) AS ?in_cits) WHERE {",
                  "BIND(<VAR> as ?my_iri) .",
                  "?my_iri rdfs:label ?label .",
                  "?my_iri rdf:type ?type .",
@@ -42,15 +42,16 @@ var browser_conf = {
                               "pro:withRole pro:author ;",
                               "pro:isHeldBy ?author_iri",
                           "].",
+                          "BIND(REPLACE(STR(?author_iri), '/corpus/', '/browser/', 'i') as ?author_browser_iri) .",
                           "?author_iri foaf:familyName ?fname .",
                           "?author_iri foaf:givenName ?name .",
                           "BIND(CONCAT(STR(?name),' ', STR(?fname)) as ?author) .",
                    "}",
-            "} GROUP BY ?my_iri ?short_iri ?id_lit ?type ?short_type ?label ?title ?subtitle ?year ?author_iri ?author"
+            "} GROUP BY ?my_iri ?short_iri ?id_lit ?type ?short_type ?label ?title ?subtitle ?year ?author_iri ?author_browser_iri ?author"
           ],
           "links": {
-            "author": {"field":"author_iri","prefix":null},
-            "short_type": {"field":"type","prefix":null},
+            "author": {"field":"author_browser_iri","prefix":""},
+            "short_type": {"field":"type","prefix":""},
             "id_lit": {"field":"id_lit","prefix":"http://dx.doi.org/"}
           },
           "group_by": {"keys":["label"], "concats":["author","short_type"]},
@@ -82,9 +83,10 @@ var browser_conf = {
             ],
             "details": [
               {"classes":["20px"]},
-              {"fields": ["FREE-TEXT","id_lit"], "values":["DOI : ", null] },
-              {"fields": ["FREE-TEXT","year"], "values":["Publication year : ", null] },
-              {"fields": ["FREE-TEXT","short_type"], "values":["Document type : ",null], "concat_style":{"short_type": "last"} }
+              {"fields": ["FREE-TEXT","id_lit"], "values":["DOI: ", null] },
+              {"fields": ["FREE-TEXT","year"], "values":["Publication date: ", null] },
+              {"fields": ["FREE-TEXT","short_type"], "values":["Document type: ",null], "concat_style":{"short_type": "last"} }
+              /*{"fields": ["FREE-TEXT", "EXT_DATA"], "values": ["Publisher: ", "crossref4doi.message.publisher"]}*/
             ],
             "metrics": [
               {"classes":["30px"]},
@@ -92,13 +94,17 @@ var browser_conf = {
               {"classes":["15px"]},
               {"fields": ["FREE-TEXT","in_cits","FREE-TEXT"], "values": ["Cited by ",null," documents"], "classes": ["metric-entry","imp-value","metric-entry"]},
               {"classes":["10px"]},
-              {"fields": ["FREE-TEXT","out_cits","FREE-TEXT"], "values": ["Cites ",null," documents"], "classes": ["metric-entry","imp-value","metric-entry"]},
+              {"fields": ["FREE-TEXT","out_cits","FREE-TEXT"], "values": ["Cites ",null," documents"], "classes": ["metric-entry","imp-value","metric-entry"], "respects":[[],[more_than_zero],[]]}
             ],
             "oscar": [
-              {"query_text": "my_iri", "rule": "doc_cites_list", "label":"Out citations"},
-              {"query_text": "my_iri", "rule": "doc_cites_me_list", "label":"In citations"}
+              {"query_text": "my_iri", "rule": "doc_cites_list", "label":"References"},
+              {"query_text": "my_iri", "rule": "doc_cites_me_list", "label":"Citations"}
             ]
           }
+          /*,
+          "ext_data": {
+            "crossref4doi": {"name": call_crossref, "param": {"fields":["id_lit","FREE-TEXT"],"values":[null,1]}}
+          },*/
     },
 
     "author": {
@@ -154,9 +160,10 @@ var browser_conf = {
                 {"classes":["25px"]},
                 {"fields": ["FREE-TEXT","num_docs","FREE-TEXT"], "values": ["Author of ",null," documents"], "classes": ["metric-entry","imp-value"]},
                 {"classes":["10px"]},
-                {"fields": ["FREE-TEXT","in_cits_tot","FREE-TEXT"], "values": ["Cited ",null," number of times"], "classes": ["metric-entry","imp-value","metric-entry"]},
-                {"classes":["5px"]},
-                {"fields": ["FREE-TEXT","in_cits_docs","FREE-TEXT"], "values": ["\xa0\xa0\xa0 by ",null," different documents"], "classes": ["metric-entry","imp-value","metric-entry"]}
+                //{"fields": ["FREE-TEXT","in_cits_tot","FREE-TEXT"], "values": ["Cited ",null," number of times"], "classes": ["metric-entry","imp-value","metric-entry"]},
+                {"fields": ["FREE-TEXT","in_cits_docs","FREE-TEXT"], "values": ["Cited by ",null," different documents"], "classes": ["metric-entry","imp-value","metric-entry"]}
+                //{"classes":["5px"]}
+                //{"fields": ["FREE-TEXT","in_cits_docs","FREE-TEXT"], "values": ["\xa0\xa0\xa0 by ",null," different documents"], "classes": ["metric-entry","imp-value","metric-entry"]}
             ],
             "oscar": [
               {"query_text": "author_iri", "rule": "author_works", "label":"Author's documents"}
@@ -164,4 +171,34 @@ var browser_conf = {
           }
         }
       }
+}
+
+//"FUNC" {"name": call_crossref, "param":{"fields":[],"vlaues":[]}}
+function call_crossref(str_doi, field){
+  var call_crossref_api = "https://api.crossref.org/works/";
+  var call_url =  call_crossref_api+ encodeURIComponent(str_doi);
+
+  var result_data = "";
+  $.ajax({
+        dataType: "json",
+        url: call_url,
+        type: 'GET',
+        async: false,
+        success: function( res_obj ) {
+            if (field == 1) {
+              result_data = res_obj;
+            }else {
+              if (!b_util.is_undefined_key(res_obj,field)) {
+                result_data = b_util.get_obj_key_val(res_obj,field);
+              }
+            }
+        }
+   });
+   return result_data;
+}
+
+
+//Heuristics
+function more_than_zero(val){
+  return parseInt(val) > 0
 }
