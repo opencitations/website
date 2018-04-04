@@ -545,11 +545,16 @@ var search = (function () {
 			table_conf.view.data = JSON.parse(JSON.stringify(table_conf.data));
 
 			table_conf.view.page = 0;
-			table_conf.view.page_limit = 10;
+
 			if (search_conf_json.page_limit != undefined) {
 				if (search_conf_json.page_limit.length != 0) {
 					table_conf.view.page_limit = search_conf_json.page_limit[0];
 				}
+			}
+
+			table_conf.view.page_limit = 10;
+			if (search_conf_json.page_limit_def != undefined) {
+				table_conf.view.page_limit = search_conf_json.page_limit_def;
 			}
 
 			for (var i = 0; i < fields.length; i++) {
@@ -564,17 +569,12 @@ var search = (function () {
 			//-- init my default sort
 			for (var i = 0; i < fields.length; i++) {
 
-				if (! util.is_undefined_key(fields[i], "sort.default")) {
-						var sort_def = fields[i].sort.default;
+				if (! util.is_undefined_key(fields[i], "sort.default.order")) {
 						table_conf.view.sort.field = fields[i].value;
-						table_conf.view.sort.order = "desc";
-						if (sort_def.order != undefined) {
-							table_conf.view.sort.order = sort_def.order;
-						}
+						table_conf.view.sort.order = fields[i].sort.default.order;
 						table_conf.view.sort.type = fields[i].type;
 				}
 			}
-
 		}
 		/*map the fields with their corresponding links*/
 		function _init_uris(data){
@@ -779,7 +779,7 @@ var search = (function () {
 			if(search_conf_json.page_limit != undefined){
 				arr_options = search_conf_json.page_limit;
 			}
-			htmldom.page_limit(arr_options);
+			htmldom.page_limit(arr_options, table_conf.view.page_limit);
 
 			htmldom.build_export_btn();
 		}
@@ -1910,11 +1910,14 @@ var htmldom = (function () {
 	}
 
 	/*creates the page-limit dom*/
-	function page_limit(arr_options){
+	function page_limit(arr_options, page_limit){
 		if (rowsxpage_container != null) {
 			var options_html = "";
 			for (var i = 0; i < arr_options.length; i++) {
 				var str_option = "<option>"+String(arr_options[i])+"</option>";
+				if (arr_options[i] == page_limit) {
+					str_option = "<option selected='selected'>"+String(arr_options[i])+"</option>";
+				}
 				options_html= options_html + str_option;
 			}
 
@@ -1942,7 +1945,7 @@ var htmldom = (function () {
 				if ((arr_options[i].value == def_value)
 					&& (arr_options[i].order == def_order)
 					&& (arr_options[i].type == def_type)) {
-						str_selected = "selected";
+						str_selected = "selected='selected'";
 						default_field = true;
 				}
 				var str_option = "<option "+str_selected+" value="+arr_options[i].value+" type="+arr_options[i].type+" order="+arr_options[i].order+">"+arr_options[i].text+"</option>";
@@ -1950,7 +1953,8 @@ var htmldom = (function () {
 				options_html= options_html + str_option;
 			}
 
-			if (!default_field) {str_selected = "selected";}
+			str_selected = "";
+			if (!default_field) {str_selected = "selected='selected'";}
 			var str_option = "<option "+str_selected+" value='none' type='none' order='none'>"+"None"+"</option>";
 			options_html= options_html + str_option;
 

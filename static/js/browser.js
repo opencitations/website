@@ -157,7 +157,7 @@ var browser = (function () {
 				pending_oscar_calls = oscar_content.length;
 				for (var i = 0; i < oscar_content.length; i++) {
 					var oscar_entry = oscar_content[i];
-					call_oscar(one_result[oscar_entry.query_text].value, oscar_entry["rule"]);
+					call_oscar(one_result[oscar_entry.query_text].value, oscar_entry["rule"], oscar_entry["config_mod"]);
 				}
 			}
 		}
@@ -253,15 +253,14 @@ var browser = (function () {
 			return new_data;
 		}
 
-		function call_oscar(query,rule){
+		function call_oscar(query,rule, config_mod = [], li_id = null){
 				var oscar_key = 'search?text='+query+'&rule='+rule;
 
+				if (li_id != null) {
+					b_htmldom.update_oscar_li(oscar_content,li_id);
+				}
+
 				if (!(oscar_key in oscar_data)) {
-					var config_mod = [
-							//{"key":"progress_loader.title" ,"value":"Searching ..."},
-							{"key":"categories.[[name,document]].fields.[[title,Publisher]]" ,"value":"REMOVE_ENTRY"},
-							{"key":"progress_loader.visible" ,"value":false}
-					];
 					search.do_sparql_query(oscar_key, config_mod, true, browser.assign_oscar_results);
 				}else {
 					//don't call again sparql
@@ -491,7 +490,7 @@ var b_util = (function () {
 				var str_html = obj.value;
 				if (include_link) {
 					if (obj.hasOwnProperty("uri")) {
-						str_html = "<a href='"+String(obj.uri)+"'>"+obj.value+"</a>";
+						str_html = "<a href='"+String(obj.uri)+"' target='_blank'>"+obj.value+"</a>";
 					}
 				}
 				return str_html;
@@ -568,7 +567,7 @@ var b_htmldom = (function () {
 					var elem_dom = document.createElement("elem");
 
 					var key = content_entry.fields[i];
-					var inner_text = "NONE"
+					var inner_text = "unknown"
 					if (obj_vals.hasOwnProperty(key)) {
 						if (! b_util.is_undefined_key(content_entry,"concat_style."+String(key))) {
 								inner_text = b_util.build_str(key, obj_vals[key],content_entry.concat_style[key]);
@@ -752,10 +751,11 @@ var b_htmldom = (function () {
 				//enable_oscar_menu(false);
 
 				//click first elem of OSCAR menu
-				menu_obj.active_li.click();
+				//menu_obj.active_li.click();
+				menu_obj.active_li.dispatchEvent(new MouseEvent(`click`, {bubbles: true, cancelable: true, view: window}));
 			}
 		}
-		function _build_menu(oscar_content, data_obj, config_mod){
+		function _build_menu(oscar_content, data_obj, config_mod, def_menu_index = 0){
 			var str_lis = "";
 			var active_elem = null;
 			for (var i = 0; i < oscar_content.length; i++) {
@@ -765,10 +765,10 @@ var b_htmldom = (function () {
 				var query = data_obj[oscar_obj.query_text].value;
 				var rule = oscar_obj.rule;
 
-				a_elem.href = "javascript:browser.call_oscar('"+query+"','"+rule+"')";
+				a_elem.href = "javascript:browser.call_oscar('"+query+"','"+rule+"','"+[]+"','"+i+"')";
 				a_elem.innerHTML = oscar_obj["label"];
 				var is_active = "";
-				if (i == 0) {
+				if (i == def_menu_index) {
 					is_active = "active";
 					active_elem = a_elem;
 				}
@@ -779,11 +779,21 @@ var b_htmldom = (function () {
 		}
 	}
 
+	function update_oscar_li(oscar_content, li_id) {
+		for (var i = 0; i < oscar_content.length; i++) {
+			if (i == li_id) {
+				document.getElementById("oscar_menu_"+i).className = "active";
+			}else {
+				document.getElementById("oscar_menu_"+i).className = "";
+			}
+		}
+	}
+
 	function handle_menu(a_elem_id){
 		//console.log(a_elem_id);
 		var arr_li = document.getElementById("oscar_nav").getElementsByTagName("li");
 
-		//console.log(arr_li);
+		console.log(arr_li);
 
 		for (var i = 0; i < arr_li.length; i++) {
 			var my_li = arr_li[i];
@@ -810,6 +820,7 @@ var b_htmldom = (function () {
 		build_extra_comp: build_extra_comp,
 		build_extra: build_extra,
 		build_body: build_body,
-		build_oscar: build_oscar
+		build_oscar: build_oscar,
+		update_oscar_li: update_oscar_li
 	}
 })();
