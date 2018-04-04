@@ -163,6 +163,11 @@ var search_conf = {
               "?lit bds:relevance ?score .",
               "?lit bds:minRelevance '0.2' .",
               "?lit bds:maxRank '300' .",
+              /*"{",
+                "?entry c4o:hasContent ?lit .",
+                "?entry biro:references ?iri .",
+              "}",
+              "UNION",*/
                 "{?iri dcterms:title  ?lit }",
               "UNION",
                 "{?iri fabio:hasSubtitle ?lit}",
@@ -177,12 +182,13 @@ var search_conf = {
       "name": "document",
       "label": "Document",
       "macro_query": [
-        "SELECT DISTINCT ?iri ?short_iri ?doi ?title ?year ?author ?author_lbl ?author_iri (COUNT(distinct ?cited) AS ?out_cits) (COUNT(distinct ?cited_by) AS ?in_cits)",
+        "SELECT DISTINCT ?iri ?short_iri ?browser_iri ?doi ?title ?year ?author ?author_lbl ?author_iri ?author_browser_iri (COUNT(distinct ?cited) AS ?out_cits) (COUNT(distinct ?cited_by) AS ?in_cits)",
             "WHERE  {",
               "[[RULE]]",
               "OPTIONAL {",
                 "?iri rdf:type ?type .",
-                "BIND(REPLACE(STR(?iri), 'https://w3id.org/oc/corpus', '', 'i') as ?short_iri) .",
+                "BIND(REPLACE(STR(?iri), 'https://w3id.org/oc/corpus/', '', 'i') as ?short_iri) .",
+                "BIND(REPLACE(STR(?iri), '/corpus/', '/browser/', 'i') as ?browser_iri) .",
                 "OPTIONAL {?iri dcterms:title  ?title .}",
                 "OPTIONAL {?iri fabio:hasSubtitle  ?subtitle .}",
                 "OPTIONAL {?iri fabio:hasPublicationYear ?year .}",
@@ -202,32 +208,38 @@ var search_conf = {
                      "].",
                      "?author_iri foaf:familyName ?fname .",
                      "?author_iri foaf:givenName ?name .",
+                     "BIND(REPLACE(STR(?author_iri), '/corpus/', '/browser/', 'i') as ?author_browser_iri) .",
                      "BIND(CONCAT(STR(?name),' ', STR(?fname)) as ?author) .",
                      "BIND(CONCAT(STR(?fname),', ', STR(?name)) as ?author_lbl) .",
                "}",
               "}",
-            "}GROUP BY ?iri ?short_iri ?doi ?title ?year ?score ?author ?author_lbl ?author_iri ",
+            "}GROUP BY ?iri ?short_iri ?browser_iri ?doi ?title ?year ?score ?author ?author_lbl ?author_iri ?author_browser_iri ",
             //"ORDER BY DESC(?score) ",
             "LIMIT 2000"
       ],
       "fields": [
-        {"value":"short_iri", "title": "Corpus ID","column_width":"15%","type": "text", "sort":{"value": true}, "link":{"field":"iri","prefix":""}},
-        {"value":"year", "title": "Year", "column_width":"13%","type": "int", "filter":{"type_sort": "int", "min": 8, "sort": "value", "order": "desc"}, "sort":{"value": true} },
-        {"value":"title", "title": "Title","column_width":"30%","type": "text", "sort":{"value": true}, "link":{"field":"iri","prefix":""}},
-        {"value":"author", "label":{"field":"author_lbl"}, "title": "Authors", "column_width":"32%","type": "text", "sort":{"value": true}, "filter":{"type_sort": "text", "min": 8, "sort": "label", "order": "asc"}, "link":{"field":"author_iri","prefix":""}},
+        {"iskey": true, "value":"short_iri", "title": "Corpus ID","column_width":"15%","type": "text", "sort":{"value": true}, "link":{"field":"browser_iri","prefix":""}},
+        {"value":"year", "title": "Year", "column_width":"8%","type": "int", "filter":{"type_sort": "int", "min": 150, "sort": "value", "order": "desc"}, "sort":{"value": true} },
+        {"value":"title", "title": "Title","column_width":"30%","type": "text", "sort":{"value": true}, "link":{"field":"browser_iri","prefix":""}},
+        {"value":"author", "label":{"field":"author_lbl"}, "title": "Authors", "column_width":"32%","type": "text", "sort":{"value": true}, "filter":{"type_sort": "text", "min": 150, "sort": "label", "order": "asc"}, "link":{"field":"author_browser_iri","prefix":""}},
         {"value":"in_cits", "title": "Cited by", "column_width":"10%","type": "int", "sort":{"value": true}}
         //{"value":"score", "title": "Score", "column_width":"8%","type": "int"}
+        //,{"value": "ext_data.crossref4doi.message.publisher", "title": "Publisher", "column_width":"13%", "type": "text", "sort":{"value": true}, "filter":{"type_sort": "text", "min": 150, "sort": "label", "order": "asc"}, "link":{"field":"browser_iri","prefix":""}}
       ],
-      "group_by": {"keys":["iri"], "concats":["author"]}
+      "group_by": {"keys":["iri"], "concats":["author"]},
+      "ext_data": {
+        "crossref4doi": {"name": call_crossref, "param": {"fields":["doi"]}, "async": true}
+      },
     },
 
     {
       "name": "author",
       "label": "Author",
       "macro_query": [
-        "SELECT ?author_iri ?short_iri ?orcid ?author (COUNT(?doc) AS ?num_docs) WHERE {",
+        "SELECT ?author_iri ?author_browser_iri ?short_iri ?orcid ?author (COUNT(?doc) AS ?num_docs) WHERE {",
             "[[RULE]]",
-            "BIND(REPLACE(STR(?author_iri), 'https://w3id.org/oc/corpus', '', 'i') as ?short_iri) .",
+            "BIND(REPLACE(STR(?author_iri), 'https://w3id.org/oc/corpus/', '', 'i') as ?short_iri) .",
+            "BIND(REPLACE(STR(?author_iri), '/corpus/', '/browser/', 'i') as ?author_browser_iri) .",
             "OPTIONAL {?author_iri datacite:hasIdentifier[",
                       "datacite:usesIdentifierScheme datacite:orcid ;",
              			    "literal:hasLiteralValue ?orcid].}",
@@ -243,10 +255,10 @@ var search_conf = {
                   "?role pro:isHeldBy ?author_iri .",
                   "?doc pro:isDocumentContextFor ?role.",
              "}",
-        "}GROUP BY ?author_iri ?short_iri ?orcid ?author"
+        "}GROUP BY ?author_iri ?author_browser_iri ?short_iri ?orcid ?author"
       ],
       "fields": [
-        {"value":"short_iri", "title": "Corpus ID","column_width":"25%", "type": "text", "link":{"field":"author_iri","prefix":""}},
+        {"value":"short_iri", "title": "Corpus ID","column_width":"25%", "type": "text", "link":{"field":"author_browser_iri","prefix":""}},
         {"value":"author", "title": "Author","column_width":"35%", "type": "text","filter":{"type_sort": "text", "min": 8, "sort": "value", "order": "desc"}, "sort": {"value": true, "default": {"order": "desc"}}},
         {"value":"orcid", "title": "ORCID","column_width":"25%", "type": "text", "link":{"field":"orcid","prefix":"https://orcid.org/"}},
         {"value":"num_docs", "title": "Works","column_width":"15%", "type": "int"}
@@ -275,4 +287,25 @@ function lower_case(str){
 }
 function capitalize_1st_letter(str){
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+//"FUNC" {"name": call_crossref, "param":{"fields":[],"vlaues":[]}}
+function call_crossref(str_doi, index, async_bool, callbk_func, key_full_name, data_field ){
+  var call_crossref_api = "https://api.crossref.org/works/";
+
+  if (str_doi != undefined) {
+    var call_url =  call_crossref_api+ encodeURIComponent(str_doi);
+    //var result_data = "...";
+    $.ajax({
+          dataType: "json",
+          url: call_url,
+          type: 'GET',
+          async: async_bool,
+          success: function( res_obj ) {
+              var func_param = [];
+              func_param.push(index, key_full_name, res_obj, data_field, async_bool);
+              Reflect.apply(callbk_func,undefined,func_param);
+          }
+     });
+  }
 }
