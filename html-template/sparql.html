@@ -60,18 +60,19 @@ $def with (pages, active, sp_title, sparql_endpoint)
 
                     <div class="masthead-pages">
                       <ul class="nav masthead-nav navbar-nav">
-                          $for page in pages:
-                              $if page == active:
-                                  <li class="active">
-                              $else:
-                                  <li>
-                              <a href="/$page">
-                                  $if page == "/":
-                                      Home
-                                  $else:
-                                      $page.title()
-                              </a>
-                              </li>
+                        $for page in pages:
+                            $if page == active:
+                                <li class="active">
+                            $else:
+                                <li>
+                            $if page == "/":
+                                <a href="$page">
+                                Home
+                            $else:
+                                <a href="/$page">
+                                $page.title()
+                            </a>
+                            </li>
                       </ul>
                     </div>
 
