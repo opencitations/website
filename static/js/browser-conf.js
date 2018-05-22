@@ -1,5 +1,5 @@
 var browser_conf = {
-  "sparql_endpoint": "https://w3id.org/oc/sparql",
+  "sparql_endpoint": "http://localhost:8080/sparql",
 
   "prefixes": [
       {"prefix":"cito","iri":"http://purl.org/spar/cito/"},
@@ -21,7 +21,7 @@ var browser_conf = {
           "rule": "br\/.*",
           "query": [
             "SELECT ?my_iri ?short_iri ?id_lit ?type ?short_type ?label ?title ?subtitle ?year ?author_iri ?author_browser_iri ?author (COUNT(distinct ?cites) AS ?out_cits) (COUNT(distinct ?cited_by) AS ?in_cits) WHERE {",
-                 "BIND(<VAR> as ?my_iri) .",
+                 "BIND(<https://w3id.org/oc/corpus/[[VAR]]> as ?my_iri) .",
                  "?my_iri rdfs:label ?label .",
                  "?my_iri rdf:type ?type .",
                  "BIND(REPLACE(STR(?my_iri), 'https://w3id.org/oc/corpus', '', 'i') as ?short_iri) .",
@@ -103,7 +103,7 @@ var browser_conf = {
                 "rule": "doc_cites_list",
                 "label":"References",
                 "config_mod" : [
-      							{"key":"categories.[[name,document]].fields.[[title,Publisher]]" ,"value":"REMOVE_ENTRY"},
+      							//{"key":"categories.[[name,document]].fields.[[title,Publisher]]" ,"value":"REMOVE_ENTRY"},
       							{"key":"page_limit_def" ,"value":30},
       							{"key":"categories.[[name,document]].fields.[[title,Cited by]].sort.default" ,"value":{"order": "desc"}},
       							{"key":"progress_loader.visible" ,"value":false}
@@ -114,9 +114,10 @@ var browser_conf = {
                 "rule": "doc_cites_me_list",
                 "label":"Citations",
                 "config_mod" : [
-      							{"key":"categories.[[name,document]].fields.[[title,Publisher]]" ,"value":"REMOVE_ENTRY"},
+      							//{"key":"categories.[[name,document]].fields.[[title,Publisher]]" ,"value":"REMOVE_ENTRY"},
       							{"key":"page_limit_def" ,"value":30},
-      							{"key":"categories.[[name,document]].fields.[[title,Cited by]].sort.default" ,"value":{"order": "desc"}},
+                    //{"key":"categories.[[name,document]].fields.[[title,Cited by]].sort.default" ,"value":"REMOVE_ENTRY"},
+      							{"key":"categories.[[name,document]].fields.[[title,Year]].sort.default" ,"value":{"order": "asc"}},
       							{"key":"progress_loader.visible" ,"value":false}
       					]
               }
@@ -132,7 +133,7 @@ var browser_conf = {
           "rule": "ra\/.*",
           "query": [
             "SELECT ?label ?orcid ?author_iri ?short_iri ?author (COUNT(distinct ?doc) AS ?num_docs) (COUNT(distinct ?cites) AS ?out_cits) (COUNT(distinct ?cited_by) AS ?in_cits_docs) (COUNT(?cited_by) AS ?in_cits_tot) WHERE {",
-    	         "BIND(<VAR> as ?author_iri) .",
+    	         "BIND(<https://w3id.org/oc/corpus/[[VAR]]> as ?author_iri) .",
                "BIND(REPLACE(STR(?author_iri), 'https://w3id.org/oc/corpus', '', 'i') as ?short_iri) .",
                "?author_iri rdfs:label ?label .",
     	         "?author_iri foaf:familyName ?fname .",

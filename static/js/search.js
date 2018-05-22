@@ -5,6 +5,7 @@ var search = (function () {
 		var cat_conf = {};
 		var sparql_results;
 		var sparql_query_add;
+		var ext_data_calls_cache = {};
 		//var cache_data = {};
 		var async_call;
 		var table_conf ={
@@ -357,6 +358,8 @@ var search = (function () {
 			htmldom.reset_html_structure();
 
 			_init_data(res_data);
+			console.log(cat_conf.extra_elems);
+			htmldom.build_extra_elems(cat_conf.extra_elems);
 			_build_filter_sec();
 			_limit_results();
 			_gen_data_checkboxes();
@@ -364,21 +367,57 @@ var search = (function () {
 			_build_header_sec();
 			_sort_results();
 			htmldom.update_res_table(table_conf,search_conf_json);
+			return {
+				"table_conf": JSON.parse(JSON.stringify(table_conf)),
+				"cat_conf": JSON.parse(JSON.stringify(cat_conf)),
+				"search_conf_json": JSON.parse(JSON.stringify(search_conf_json))
+			};
+		}
+
+		function change_search_data(all_data){
+			table_conf = JSON.parse(JSON.stringify(all_data.table_conf));
+			cat_conf = JSON.parse(JSON.stringify(all_data.cat_conf));
+			search_conf_json = JSON.parse(JSON.stringify(all_data.search_conf_json));
+			//htmldom.update_res_table(table_conf,search_conf_json);
+			//__update_interface();
+			if (table_conf.data != null) {
+				_exec_operation();
+			}
+		}
+
+		function get_search_data(native = false, config_mod = null) {
+			var my_search_conf_json = JSON.parse(JSON.stringify(search_conf_json));
+
+			if (native) {
+				my_search_conf_json = search_conf;
+				if (config_mod != null) {
+					my_search_conf_json = util.update_obj(my_search_conf_json, config_mod);
+				}
+			}
+
+
+			return {
+				"table_conf": JSON.parse(JSON.stringify(table_conf)),
+				"cat_conf": JSON.parse(JSON.stringify(cat_conf)),
+				"search_conf_json": my_search_conf_json
+			};
 		}
 
 		/*THE MAIN FUNCTION CALL
 		call the sparql endpoint and do the query 'qtext'*/
-		function do_sparql_query(qtext, config_mod = null, async_bool= true, callbk_fun= null){
+		function do_sparql_query(qtext, alternative_conf = null , config_mod = null, async_bool= true, callbk_fun= null){
 
 			var query_comp =  _decode_uri_query_components(qtext);
 			console.log("This query is composed by:");
 			console.log("The values: "+query_comp.values);
 			console.log("The rules are: "+query_comp.rules);
 			console.log("The boolean connectors are: "+query_comp.bcs);
-
 			//initialize and get the search_config_json
 			search_conf_json = search_conf;
-			//console.log(search_conf_json);
+			if (alternative_conf != null) {
+				search_conf_json = alternative_conf;
+			}
+			//util.printobj(search_conf_json);
 
 			//sync or async
 			async_call = async_bool;
@@ -433,6 +472,10 @@ var search = (function () {
 
 			//Adapt the resulting data
 			// init uri values
+
+			//TODOO function for oscar
+			json_data.results.bindings = _init_val_map(json_data.results.bindings);
+
 			json_data.results.bindings = _init_uris(json_data.results.bindings);
 			json_data.results.bindings = _init_lbls(json_data.results.bindings);
 			// group by the rows
@@ -513,6 +556,7 @@ var search = (function () {
 
 						table_conf.data.results.bindings[i][key_full_name] = {"value":"", "label":""};
 						var ext_res = _exec_ext_data(
+									key_func_name,
 									func_obj,
 									table_conf.data.results.bindings[i][table_conf.data_key].value,
 									async_val,
@@ -570,9 +614,9 @@ var search = (function () {
 			for (var i = 0; i < fields.length; i++) {
 
 				if (! util.is_undefined_key(fields[i], "sort.default.order")) {
-						table_conf.view.sort.field = fields[i].value;
+						table_conf.view.sort.field = fields[i].sort.value;
 						table_conf.view.sort.order = fields[i].sort.default.order;
-						table_conf.view.sort.type = fields[i].type;
+						table_conf.view.sort.type = fields[i].sort.type;
 				}
 			}
 		}
@@ -613,6 +657,27 @@ var search = (function () {
 					}
 				}
 				return uri;
+		}
+
+		function _init_val_map(data) {
+			var new_data = data;
+
+			for (var i = 0; i < cat_conf.fields.length; i++) {
+				var field_conf_obj = cat_conf.fields[i];
+				if (!util.is_undefined_key(field_conf_obj,"value_map")) {
+					//for all the data apply the mapping
+					for (var j = 0; j < new_data.length; j++) {
+						var result = new_data[j][field_conf_obj.value].value;
+						for (var k = 0; k < field_conf_obj["value_map"].length; k++) {
+							var fname = field_conf_obj["value_map"][k];
+							result = Reflect.apply(fname,undefined,[result]);
+						}
+						new_data[j][field_conf_obj.value].value = result;
+					}
+				}
+			}
+
+ 			return new_data;
 		}
 
 		/*map the fields with their corresponding labels*/
@@ -657,17 +722,17 @@ var search = (function () {
  			}
  		}
 		/*retrieve the externa data*/
-		function _exec_ext_data(func_obj, index, async_bool, callbk_func, key_full_name, func_name, data, data_field){
+		function _exec_ext_data(key_func_name, func_obj, index, async_bool, callbk_func, key_full_name, func_name, data, data_field){
 
 					//my func params
-					var func_param = []
+					var func_param = [];
 					var func_param_fields = func_obj['param']['fields'];
 					var func_param_values = func_obj['param']['values'];
 
 					var conf_params = [];
-					for (var j = 0; j < func_param_fields.length; j++) {
+					/*for (var j = 0; j < func_param_fields.length; j++) {
 						conf_params.push(undefined);
-					}
+					}*/
 					for (var j = 0; j < func_param_fields.length; j++) {
 						var p_field = func_param_fields[j];
 						if ( p_field == "FREE-TEXT"){
@@ -679,31 +744,77 @@ var search = (function () {
 						}
 					}
 
-					func_param.push(conf_params);
-					func_param.push(index, async_bool, callbk_func, key_full_name, data_field);
-					var res = Reflect.apply(func_name,undefined,func_param);
+					var ext_key = _build_ext_key(key_func_name,conf_params);
+					if (ext_key in ext_data_calls_cache) {
+						//in case its already in cache
+						func_param.push(index, key_full_name, data_field, async_bool, key_func_name, conf_params);
+
+						if (ext_data_calls_cache[ext_key].value != null) {
+							var res_obj = ext_data_calls_cache[ext_key].value;
+							func_param.push(res_obj);
+							Reflect.apply(callbk_func,undefined,func_param);
+						}else {
+							ext_data_calls_cache[ext_key].waiting_elems.push(func_param);
+						}
+
+					}else {
+						ext_data_calls_cache[ext_key] = {"value":null,"waiting_elems":[]};
+						func_param.push(conf_params);
+						func_param.push(index, async_bool, callbk_func, key_full_name, data_field, key_func_name);
+						var res = Reflect.apply(func_name,undefined,func_param);
+					}
 		}
 
-		function callbk_update_data_entry_val(index_entry, key_full_name, res_obj, data_field, async_bool){
-			var new_val = util.get_obj_key_val(res_obj,data_field);
-			if (new_val == -1) {
-				new_val = "";
+		function _build_ext_key(func_name, conf_params) {
+			var ext_key = func_name+":";
+			for (var i = 0; i < conf_params.length; i++) {
+				if (i == conf_params.length - 1) {
+					ext_key = ext_key + conf_params[i];
+					break;
+				}
+				ext_key = ext_key + conf_params[i] + ",";
+			}
+			return ext_key;
+		}
+
+		function callbk_update_data_entry_val(index_entry, key_full_name, data_field, async_bool, func_name, conf_params, res_obj){
+
+			//update dictionary
+			var ext_key = _build_ext_key(func_name,conf_params);
+			ext_data_calls_cache[ext_key].value = res_obj;
+
+			_update_single_callbk(index_entry, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
+
+			//call same function for all the waiting elems
+			for (var i = 0; i < ext_data_calls_cache[ext_key].waiting_elems.length; i++) {
+				var new_params = ext_data_calls_cache[ext_key].waiting_elems[i];
+				_update_single_callbk(new_params[0], new_params[1], new_params[2], new_params[3], new_params[4], new_params[5], res_obj);
+				//util.sleep(1000);
+
 			}
 
-			if (async_bool) {
-				//init the data
-				var obj = _update_all_data_entry_field(index_entry, key_full_name, new_val);
-				//visualize it in current table page
-				htmldom.update_tab_entry_field(table_conf.data_key, index_entry, key_full_name, obj);
-
-				//check if it should be a filter field
-				if (util.index_in_arrjsons(table_conf.filters.fields, ["value"], [key_full_name]) != -1) {
-					_gen_data_checkboxes();
+			function _update_single_callbk(index_entry, key_full_name, data_field, async_bool, func_name, conf_params, res_obj){
+				var new_val = util.get_obj_key_val(res_obj,data_field);
+				if (new_val == -1) {
+					new_val = "";
 				}
 
-			}else {
-				_update_data_type(table_conf.data.results.bindings,index_entry, key_full_name, new_val);
+				if (async_bool) {
+					//init the data
+					var obj = _update_all_data_entry_field(index_entry, key_full_name, new_val);
+					//visualize it in current table page
+					htmldom.update_tab_entry_field(table_conf.data_key, index_entry, key_full_name, obj);
+
+					//check if it should be a filter field
+					if (util.index_in_arrjsons(table_conf.filters.fields, ["value"], [key_full_name]) != -1) {
+						_gen_data_checkboxes();
+					}
+
+				}else {
+					_update_data_type(table_conf.data.results.bindings,index_entry, key_full_name, new_val);
+				}
 			}
+
 			//console.log(table_conf.data.results.bindings);
 			function _update_all_data_entry_field(data_key_val, field, new_val) {
 				var init_obj = {"value": new_val, "label": new_val};
@@ -750,20 +861,25 @@ var search = (function () {
 				var index = util.index_in_arrjsons(myfields,["value"],[table_conf.data.head.vars[i]]);
 				if (index != -1) {
 					if(! util.is_undefined_key(myfields[index],"sort.value")){
-						if(myfields[index].sort.value == true){
+
+							var inner_field = myfields[index].sort.value;
+							var inner_field_type = myfields[index].sort.type;
+
 							var str_html = myfields[index].value;
 							if(myfields[index].title != undefined){str_html = myfields[index].title; }
-							arr_options.push({"value": myfields[index].value, "type": myfields[index].type, "order": "asc", "text":str_html+" &#8593;" });
-							arr_options.push({"value": myfields[index].value, "type": myfields[index].type, "order": "desc", "text":str_html+" &#8595;"});
 
+							arr_options.push({"value": inner_field, "type": inner_field_type, "order": "asc", "text":str_html+" &#8593;" });
+							arr_options.push({"value": inner_field, "type": inner_field_type, "order": "desc", "text":str_html+" &#8595;"});
+
+							/*
 							if(! util.is_undefined_key(myfields[index],"sort.default.order")){
 							//if (myfields[index].sort.default.order != undefined) {
-								table_conf.view.sort.field = myfields[index].value;
+								table_conf.view.sort.field = myfields[index].sort.value;
 								table_conf.view.sort.order = myfields[index].sort.default.order;
-								table_conf.view.sort.type = myfields[index].type;
+								table_conf.view.sort.type = myfields[index].sort.type;
 							}
+							*/
 						}
-					}
 				}
 			}
 
@@ -837,7 +953,8 @@ var search = (function () {
 							htmldom.filter_checkboxes(table_conf);
 							table_conf.view.page = 0;
 							_reset_filters_page();
-							break;
+							_build_header_sec();
+							//break;
 						case "filter":
 							var checked_filters_arr = null;
 							if (operation == "showonly_exclude") {
@@ -960,6 +1077,15 @@ var search = (function () {
 
 			function _sort_tabdata(arr_obj,field,order,val_type){
 				var field_val = ".value";
+
+				if (field != null) {
+					console.log(field);
+					var field_parts = field.split(".");
+					if (field_parts.length > 1) {
+						field_val = "";
+					}
+				}
+
 				var index_category = util.index_in_arrjsons(search_conf_json.categories,["name"],[table_conf.category]);
 
 				if (! util.is_undefined_key(search_conf_json.categories[index_category],"group_by.concats")) {
@@ -1155,6 +1281,7 @@ var search = (function () {
 			);
 		}
 		function check_sort_opt(option){
+			//console.log(option.getAttribute("value"),option.getAttribute("order"),option.getAttribute("type"));
 			_exec_operation(
 				"sort_results",
 				{
@@ -1249,6 +1376,8 @@ var search = (function () {
 				build_table: build_table,
 				do_sparql_query: do_sparql_query,
 				build_adv_sparql_query: build_adv_sparql_query,
+				change_search_data: change_search_data,
+				get_search_data: get_search_data,
 
 				//others
 				callbk_update_data_entry_val: callbk_update_data_entry_val
@@ -1257,6 +1386,16 @@ var search = (function () {
 
 
 var util = (function () {
+
+	function sleep(milliseconds) {
+	  var start = new Date().getTime();
+	  for (var i = 0; i < 1e7; i++) {
+	    if ((new Date().getTime() - start) > milliseconds){
+	      break;
+	    }
+	  }
+	}
+
 
 	/*updates the original obj with new pairs of (key,value) given in an array*/
 	function update_obj(original_obj, arr_new_vals) {
@@ -1632,6 +1771,7 @@ var util = (function () {
 	}
 
 	return {
+		sleep: sleep,
 		update_obj: update_obj,
 		get_obj_key_val: get_obj_key_val,
 		printobj: printobj,
@@ -1697,7 +1837,7 @@ var htmldom = (function () {
 
 					var tabCell = tr.insertCell(-1);
 					tabCell.setAttribute("field", f_obj["value"]);
-					var cell_inner = _cell_inner_str(results_obj, f_obj["value"]);
+					var cell_inner = _cell_inner_str(results_obj, f_obj["value"], f_obj["limit_length"]);
 
 					tabCell.setAttribute("value", cell_inner.str_value);
 					tabCell.innerHTML = cell_inner.str_html;
@@ -1706,7 +1846,7 @@ var htmldom = (function () {
 		return tr;
 	}
 
-	function _cell_inner_str(results_obj,cell_field) {
+	function _cell_inner_str(results_obj,cell_field, limit_length = undefined) {
 		if (results_obj.hasOwnProperty(cell_field)) {
 			var str_html = "";
 
@@ -1729,15 +1869,31 @@ var htmldom = (function () {
 			else {
 				str_value = results_obj[cell_field].value;
 				if(results_obj[cell_field].hasOwnProperty("uri")){
-					str_html = "<a class='res-val-link' href='"+String(results_obj[cell_field].uri)+"' target='_blank'>"+results_obj[cell_field].value+"</a>";
+					str_html = "<a class='res-val-link' href='"+String(results_obj[cell_field].uri)+"' target='_blank'>"+str_value+"</a>";
 				}else {
-					str_html = results_obj[cell_field].value;
+					str_html = str_value;
 				}
 			}
 		}else{
 			str_html = "";
 		}
 		return {"str_html": str_html, "str_value": str_value};
+
+		function short_version(str, max_chars = null) {
+		  var new_str = "";
+			if ((max_chars != null) && (max_chars != undefined)) {
+				for (var i = 0; i < max_chars; i++) {
+			    if (str[i] != undefined) {
+			      new_str = new_str + str[i];
+			    }else {
+			      break;
+			    }
+			  }
+			  return new_str+"...";
+			}else {
+				return str;
+			}
+		}
 	}
 
 
@@ -1850,19 +2006,42 @@ var htmldom = (function () {
 	/*creates an advanced rule-entry, without the boolean connector box*/
 	function _build_rule_entry(entryid, arr_rules, adv_cat_selected){
 		var str_options = _build_rules_options(arr_rules, adv_cat_selected);
+
+		var first_placeholder = "";
+		if (arr_rules.length > 0) {
+			first_placeholder = arr_rules[0].placeholder;
+			if (first_placeholder == undefined) {
+				first_placeholder = "";
+			}
+		}
+
+		var param0 = "adv_input_box_"+entryid;
+		var param1 = "rules_selector_"+entryid;
+		var onchange_rule = "javascript:htmldom.adv_placeholder('"+param0+"','"+param1+"')";
+
 		var str_html= ""+
 			"<div class='adv-search-entry'>"+
 				"<div class='adv-search-input search-box'>"+
-						"<input entryid="+entryid+" id='adv_input_box_"+entryid+"' class='form-control theme-color' placeholder='' type='text' name='text'>"+
+						"<input entryid="+entryid+" id='adv_input_box_"+entryid+"' class='form-control theme-color' placeholder='"+first_placeholder+"' type='text' name='text'>"+
 				"</div>"+
 				"<div class='adv-search-selector'>"+
-					"<select type='text' name='rule' entryid="+entryid+" class='form-control input custom' onchange='' id='rules_selector_"+entryid+"'>"+
+					"<select type='text' name='rule' entryid="+entryid+" class='form-control input custom' onchange="+onchange_rule+" id='rules_selector_"+entryid+"'>"+
 					str_options+
 					"</select>"+
 				"</div>"+
 			"</div>"+
 		"";
 		return str_html;
+	}
+	function adv_placeholder(inputbox_id, select_id) {
+		console.log(inputbox_id);
+		console.log(select_id);
+
+		var e = document.getElementById(select_id);
+		var selected_opt_placeholder = e.options[e.selectedIndex].getAttribute("my_placeholder");
+		console.log(selected_opt_placeholder);
+
+		document.getElementById(inputbox_id).setAttribute('placeholder',selected_opt_placeholder);
 	}
 	/*creates an options selector dom for the rule names*/
 	function _build_rules_options(arr_rules, adv_cat_selected){
@@ -1873,7 +2052,9 @@ var htmldom = (function () {
 				if (arr_rules[i].category == adv_cat_selected){
 					if (!util.is_undefined_key(arr_rules[i], "advanced")) {
 						if (arr_rules[i].advanced == true) {
-								str_option = "<option "+str_selected+" value="+arr_rules[i].name+">"+arr_rules[i].label+"</option>";
+								var my_placeholder = arr_rules[i].placeholder;
+								if (my_placeholder == undefined) { my_placeholder = "";}
+								str_option = "<option "+str_selected+" value="+arr_rules[i].name+" my_placeholder='"+my_placeholder+"'>"+arr_rules[i].label+"</option>";
 						}
 					}
 				}
@@ -1985,6 +2166,40 @@ var htmldom = (function () {
 		return str_html;
 	}
 
+	function build_extra_elems(extra_elems){
+		var str_html = "";
+		if (extra_elems == undefined) {
+			return -1;
+		}
+		for (var i = 0; i < extra_elems.length; i++) {
+
+			var elem_type = extra_elems[i].elem_type;
+			var elem_value = extra_elems[i].elem_value;
+			var elem_class = extra_elems[i].elem_class;
+			var elem_innerhtml = extra_elems[i].elem_innerhtml;
+
+			if (elem_type != undefined) {
+				var new_elem = document.createElement(elem_type);
+				if (elem_value != undefined) {
+					new_elem.setAttribute("value",elem_value);
+				}
+				if (elem_class != undefined) {
+					new_elem.setAttribute("class",elem_class);
+				}
+				if (elem_innerhtml != undefined) {
+					new_elem.innerHTML = elem_innerhtml;
+				}
+				if (extra_elems[i].others != undefined) {
+					for (var keyfield in extra_elems[i].others) {
+						new_elem.setAttribute(keyfield,extra_elems[i].others[keyfield]);
+					}
+				}
+				str_html = str_html + new_elem.outerHTML;
+			}
+		}
+		extra_container.innerHTML = str_html;
+	}
+
 	/*creates the advanced search interface*/
 	function build_advanced_search(arr_categories, arr_rules, adv_cat_selected, search_base_path){
 
@@ -2017,8 +2232,11 @@ var htmldom = (function () {
 		document.getElementById("add_rule_btn").onclick = function(){htmldom.add_adv_rule(arr_rules, adv_cat_selected)};
 		return str_html;
 
-		function __build_cat_menu(arr_categories, arr_rules, adv_cat_selected){
+		function __build_cat_menu(arr_categories, arr_rules, adv_cat_selected, build_for_one_cat = false){
 			var str_lis = "";
+			if ((!build_for_one_cat) && (arr_categories.length <= 1)) {
+				return str_lis;
+			}
 			for (var i = 0; i < arr_categories.length; i++) {
 				var is_active = "";
 				if (arr_categories[i].name == adv_cat_selected) {
@@ -2464,6 +2682,9 @@ var htmldom = (function () {
 	/*creates the export button*/
 	function build_export_btn(){
 		if (export_container != null) {
+			if (export_container.firstChild != null) {
+				return 1;
+			}
 			var link = document.createElement("a");
 			link.id = "export_a";
 			link.className = "search-a export-results";
@@ -2471,6 +2692,7 @@ var htmldom = (function () {
 			link.setAttribute("href", "javascript:search.export_results();");
 
 			export_container.appendChild(link);
+			return 1;
 			//header_container.appendChild(link);
 		}
 	}
@@ -2516,6 +2738,7 @@ var htmldom = (function () {
 		page_limit: page_limit,
 		sort_box: sort_box,
 		main_entry: main_entry,
+		build_extra_elems: build_extra_elems,
 		build_advanced_search: build_advanced_search,
 		filter_btns: filter_btns,
 		limit_filter: limit_filter,
@@ -2531,6 +2754,7 @@ var htmldom = (function () {
 		add_adv_rule: add_adv_rule,
 		remove_adv_rule: remove_adv_rule,
 		reset_html_structure:reset_html_structure,
-		download_results: download_results
+		download_results: download_results,
+		adv_placeholder: adv_placeholder
 	}
 })();
