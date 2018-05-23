@@ -52,6 +52,7 @@ var browser_conf = {
 
           "contents": {
             //define this
+            /*
             "extra": {
                 "browser_view_switch":{
                     "labels":["ldd","Browser"],
@@ -60,7 +61,7 @@ var browser_conf = {
                     "query":[["SELECT ?resource WHERE {BIND(<https://w3id.org/oc/index/coci/ci[[VAR]]> as ?resource)}"],["SELECT ?resource WHERE {BIND(<https://w3id.org/oc/index/coci/ci[[VAR]]> as ?resource)}"]],
                     "links":["http://localhost:8080/index/coci/ci/[[VAR]]","http://localhost:8080/index/coci/browser/ci/[[VAR]]"]
                 }
-            },
+            },*/
             "header": [
                 {"classes":["40px"]},
                 {"fields": ["citing_doi","FREE-TEXT","cited_doi"], "values":[null," cites ", null], "classes":["header-title text-success","metric-entry text-capitalize mark","header-title text-danger"]},
