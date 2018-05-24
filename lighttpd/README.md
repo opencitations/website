@@ -5,7 +5,6 @@ After installing the lighttpd http server on the server, follow the following st
 1. copy the conf-available/10-fastcgi.conf in /etc/lightpd/conf-available;
 1. enable the fastcgi by calling `lighttpd-enable-mod fastcgi`;
 1. make executable (permission 755) all the directories that are accessed by the web.py application used, and readable the files they contain that are used by the same application;
-1. in the web.py application directory, create the file `opencitations_log.txt` and be sure that the user 'www-data' can write it;
 1. create an empty file for the socket in `tmp` and assign it to www-data: `touch /tmp/fastcgi.socket-0; chown www-data:www-data /tmp/fastcgi.socket-0`
 1. run the server by calling `/etc/init.d/lighttpd start`.
 
