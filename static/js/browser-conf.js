@@ -1,5 +1,5 @@
 var browser_conf = {
-  "sparql_endpoint": "http://localhost:8080/sparql",
+  "sparql_endpoint": "https://w3id.org/oc/sparql",
 
   "prefixes": [
       {"prefix":"cito","iri":"http://purl.org/spar/cito/"},
