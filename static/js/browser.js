@@ -7,6 +7,7 @@ var browser = (function () {
 		var oscar_data = {};
 		var pending_oscar_calls = 0;
 		var oscar_content = null;
+		var current_oscar_tab = null;
 		var ext_data = {};
 
 		/*it's a document or an author*/
@@ -50,18 +51,19 @@ var browser = (function () {
 
 			if (resource_iri != "") {
 
-				resource = "https://w3id.org/oc"+"/corpus/"+resource_iri;
+				//resource = "https://w3id.org/oc"+"/corpus/"+resource_iri;
 
 				//initialize and get the browser_config_json
 				browser_conf_json = browser_conf;
 
-				var category = _get_category(resource);
+				var category = _get_category(resource_iri);
 
 				//build the sparql query in turtle format
 				var sparql_query = _build_turtle_prefixes() + _build_turtle_query(browser_conf_json.categories[category].query);
 				//since its a resource iri we put it between < >
-				var global_r = new RegExp("<VAR>", "g");
-				sparql_query = sparql_query.replace(global_r, "<"+resource+">");
+				//var global_r = new RegExp("[[VAR]]", "g");
+				//sparql_query = sparql_query.replace(global_r, resource_iri);
+				sparql_query = sparql_query.replace(/\[\[VAR\]\]/g, resource_iri);
 				//console.log(sparql_query);
 
 				//use this url to contact the sparql_endpoint triple store
@@ -155,6 +157,18 @@ var browser = (function () {
 			var oscar_content = contents['oscar'];
 			if (oscar_content != undefined) {
 				pending_oscar_calls = oscar_content.length;
+
+				for (var i = 0; i < oscar_content.length; i++) {
+					var oscar_entry = oscar_content[i];
+					var query = one_result[oscar_entry.query_text].value;
+					var rule = oscar_entry["rule"];
+					var oscar_key = 'search?text='+query+'&rule='+rule;
+
+					oscar_data[oscar_key] = {};
+					oscar_data[oscar_key]["data"] = search.get_search_data(true, oscar_entry["config_mod"]);
+					//console.log(JSON.parse(JSON.stringify(oscar_data)));
+				}
+
 				for (var i = 0; i < oscar_content.length; i++) {
 					var oscar_entry = oscar_content[i];
 					call_oscar(one_result[oscar_entry.query_text].value, oscar_entry["rule"], oscar_entry["config_mod"]);
@@ -260,12 +274,22 @@ var browser = (function () {
 					b_htmldom.update_oscar_li(oscar_content,li_id);
 				}
 
-				if (!(oscar_key in oscar_data)) {
-					search.do_sparql_query(oscar_key, config_mod, true, browser.assign_oscar_results);
+				if (!("results" in oscar_data[oscar_key])) {
+					search.do_sparql_query(oscar_key, null ,[], true, browser.assign_oscar_results);
 				}else {
-					//don't call again sparql
-					search.build_table(oscar_data[oscar_key]);
+					//in case the table data has not been yet initialized
+					console.log(oscar_data[oscar_key]);
+					if (oscar_data[oscar_key].data.table_conf.data == null) {
+						 //search.change_search_data(oscar_data[oscar_key].data);
+						 oscar_data[oscar_key]["data"] = search.build_table(oscar_data[oscar_key].results);
+					}else {
+						// save current state of oscar
+						oscar_data[current_oscar_tab].data = search.get_search_data();
+						// load new oscar data
+						search.change_search_data(oscar_data[oscar_key].data);
+					}
 				}
+				current_oscar_tab = oscar_key;
 		}
 
 		function assign_oscar_results(oscar_key, results){
@@ -282,14 +306,16 @@ var browser = (function () {
 
 				var index_oscar_obj = b_util.index_in_arrjsons(oscar_content,["rule"],[rule_key]);
 				if (index_oscar_obj != -1) {
+					//comment this to add oscar menu element in any case
 					oscar_content.splice(index_oscar_obj, 1);
 				}
 			}else {
-				oscar_data[oscar_key] = results;
+				oscar_data[oscar_key]["results"] = results;
 			}
+			//decomment this to add oscar menu element in any case
+			//oscar_data[oscar_key]["results"] = results;
 
 			if (pending_oscar_calls == 0) {
-				//console.log(oscar_data, oscar_content);
 				//build oscar menu
 				b_htmldom.build_oscar(resource_res, {"oscar": oscar_content});
 			}
@@ -332,7 +358,7 @@ var b_util = (function () {
 			for (var key_field in obj) {
 				if (conf_obj.hasOwnProperty(key_field)) {
 
-					var arr_vals = obj[key_field].value;
+					var arr_vals = [obj[key_field]];
 					if (obj[key_field].hasOwnProperty("concat-list")) {
 						arr_vals = obj[key_field]["concat-list"];
 					}
@@ -340,17 +366,36 @@ var b_util = (function () {
 					for (var j = 0; j < arr_vals.length; j++) {
 						for (var i = 0; i < conf_obj[key_field].length; i++) {
 							var rule_entry = conf_obj[key_field][i];
+
+							var new_val = arr_vals[j].value;
 							if (rule_entry.hasOwnProperty("regex")) {
-								var new_val = arr_vals[j].value.replace(rule_entry.regex,rule_entry.value);
-								arr_vals[j].value = new_val;
+								new_val = new_val.replace(rule_entry.regex,rule_entry.value);
 							}
+
+							if (rule_entry.hasOwnProperty("func")) {
+								new_val = _func_map(new_val, rule_entry.func);
+							}
+
+							arr_vals[j].value = new_val;
 						}
 					}
 				}
 			}
 		}
 		return obj;
+
+		function _func_map(val, func_arr) {
+			  var result = val;
+				for (var k = 0; k < func_arr.length; k++) {
+					var fname = func_arr[k];
+					result = Reflect.apply(fname,undefined,[result]);
+				}
+				return result;
+			}
+
+ 		return new_data;
 	}
+
 
 		/**
 	 * Returns true if key is not a key in object or object[key] has
@@ -406,6 +451,9 @@ var b_util = (function () {
 	/*group by the 'arr_objs' with distinct 'keys' and by concatinating
 	the fields in 'arr_fields_concat'*/
 	function group_by(arr_objs, params){
+		if ((params == null) || (params == undefined)) {
+			return arr_objs;
+		}
 		var keys = params.keys;
 		var arr_fields_concat = params.concats;
 

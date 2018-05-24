@@ -1,4 +1,4 @@
-$def with (pages, active, sp_title, sparql_endpoint)
+$def with (pages, active)
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
     <head>
@@ -8,7 +8,7 @@ $def with (pages, active, sp_title, sparql_endpoint)
 
 
         <link rel="icon" href="/static/favicon.ico" />
-        <title>OpenCitations - SPARQL endpoint GUI</title>
+        <title>OpenCitations - About</title>
 
         <!-- Bootstrap core CSS -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
@@ -18,9 +18,6 @@ $def with (pages, active, sp_title, sparql_endpoint)
 
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
         <link href="/static/css/ie10-viewport-bug-workaround.css" rel="stylesheet" />
-
-        <!-- YASGUI CSS -->
-        <link href='/static/css/yasgui.css' rel='stylesheet' type='text/css' />
 
         <!-- Custom styles for this template -->
         <link href="/static/css/cover.css" rel="stylesheet" />
@@ -60,19 +57,18 @@ $def with (pages, active, sp_title, sparql_endpoint)
 
                     <div class="masthead-pages">
                       <ul class="nav masthead-nav navbar-nav">
-                        $for page in pages:
-                            $if page == active:
-                                <li class="active">
-                            $else:
-                                <li>
-                            $if page == "/":
-                                <a href="$page">
-                                Home
-                            $else:
-                                <a href="/$page">
-                                $page.title()
-                            </a>
-                            </li>
+                          $for page in pages:
+                              $if page == active:
+                                  <li class="active">
+                              $else:
+                                  <li>
+                              <a href="$page">
+                                  $if page == "/":
+                                      Home
+                                  $else:
+                                      $page.title()
+                              </a>
+                              </li>
                       </ul>
                     </div>
 
@@ -81,13 +77,16 @@ $def with (pages, active, sp_title, sparql_endpoint)
 
           </div>
 
-            <div class="cover">
-                <h2 class="cover-heading">
-                    $sp_title SPARQL endpoint GUI
-                    <!--<span class="oc-purple">O</span><span class="oc-blue">C</span>C SPARQL endpoint GUI-->
-                </h2>
-                <div id="yasqe"></div>
-                <div id="yasr"></div>
+            <div class="cover left">
+                 <!--<h3>$active.title()</h3>-->
+                 <h3></h3>
+                 <p>We are continuously working on the expansion and the definition of new services that works on the scholarly citation data, and could help us enlarge the knowledge and potential of what we have already started with <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> project.</p>
+                 <p>Here we list all the other alternative projects and datasets we are working on, each project will link you to its dedicated page and services.</p>
+                 <ul>
+                    <li>
+                       <p><a href="index/coci">The Crossref Open Citation Identifier (COCI)</a></p>
+                    </li>
+                 </ul>
             </div>
         </div>
 
@@ -118,24 +117,5 @@ $def with (pages, active, sp_title, sparql_endpoint)
         <script src="/static/js/bootstrap.min.js"><![CDATA[ ]]></script>
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
         <script src="/static/js/ie10-viewport-bug-workaround.js"><![CDATA[ ]]></script>
-
-        <!-- SPARQL GUI -->
-        <script src='/static/js/yasr.bundled.min.js'></script>
-        <script src='/static/js/yasqe.bundled.min.js'></script>
-        <script src="/static/js/sparql.js"></script>
-        <script>
-          yasqe.options.sparql.endpoint = "$sparql_endpoint";
-          var sparql_value = "";
-          if ("$sp_title" == "COCI") {
-            sparql_value = "PREFIX cito:<http://purl.org/spar/cito/> \nPREFIX dcterms:<http://purl.org/dc/terms/> \nPREFIX datacite:<http://purl.org/spar/datacite/> \nPREFIX literal:<http://www.essepuntato.it/2010/06/literalreification/> \nPREFIX biro:<http://purl.org/spar/biro/> \nPREFIX frbr:<http://purl.org/vocab/frbr/core#> \nPREFIX c4o:<http://purl.org/spar/c4o/> \nPREFIX bds:<http://www.bigdata.com/rdf/search#> \nPREFIX fabio:<http://purl.org/spar/fabio/> \nPREFIX pro:<http://purl.org/spar/pro/> \nPREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> \nSELECT DISTINCT ?iri ?citing_doi ?citing_doi_iri ?cited_doi ?cited_doi_iri ?creationdate ?timespan WHERE \n{  \n{ { \nBIND(<https://w3id.org/oc/index/coci/ci/02001010806360107050663080702026306630509-02001010806360107050663080702026305630301> as ?iri) .\n}} \nOPTIONAL { \n\t?iri cito:hasCitingEntity ?citing_doi_iri . \n\tBIND(REPLACE(STR(?citing_doi_iri), 'http://dx.doi.org/', '', 'i') as ?citing_doi) . \n\t?iri cito:hasCitedEntity ?cited_doi_iri . \n\tBIND(REPLACE(STR(?cited_doi_iri), 'http://dx.doi.org/', '', 'i') as ?cited_doi) . \n\t?iri cito:hasCitationCreationDate ?creationdate . \n\t?iri cito:hasCitationTimeSpan ?timespan . \n\t} \n}";
-          }else {
-            sparql_value = "PREFIX cito: <http://purl.org/spar/cito/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX datacite: <http://purl.org/spar/datacite/>\nPREFIX literal: <http://www.essepuntato.it/2010/06/literalreification/>\nPREFIX biro: <http://purl.org/spar/biro/>\nPREFIX frbr: <http://purl.org/vocab/frbr/core#>\nPREFIX c4o: <http://purl.org/spar/c4o/>\nSELECT ?cited ?cited_ref ?title ?url WHERE {\n\t<https://w3id.org/oc/corpus/br/1> cito:cites ?cited .\n\tOPTIONAL { \n\t\t<https://w3id.org/oc/corpus/br/1> frbr:part ?ref .\n\t\t?ref biro:references ?cited ;\n\t\t\tc4o:hasContent ?cited_ref \n\t}\n\tOPTIONAL { ?cited dcterms:title ?title }\n\tOPTIONAL {\n\t\t?cited datacite:hasIdentifier [\n\t\t\tdatacite:usesIdentifierScheme datacite:url ;\n\t\t\tliteral:hasLiteralValue ?url\n\t\t]\n\t}\n}";
-          }
-
-          //link both together
-          console.log(sparql_value);
-          yasqe.setValue(sparql_value);
-          yasqe.options.sparql.callbacks.complete = yasr.setResponse;
-        </script>
     </body>
 </html>

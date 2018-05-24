@@ -1,4 +1,4 @@
-$def with (pages, active)
+$def with (pages, active, query_string)
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
     <head>
@@ -6,9 +6,8 @@ $def with (pages, active)
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-
         <link rel="icon" href="/static/favicon.ico" />
-        <title>OpenCitations - OCI</title>
+        <title>OpenCitations - Search</title>
 
         <!-- Bootstrap core CSS -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
@@ -21,6 +20,7 @@ $def with (pages, active)
 
         <!-- Custom styles for this template -->
         <link href="/static/css/cover.css" rel="stylesheet" />
+        <link href="/static/css/search.css" rel="stylesheet" />
 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -58,18 +58,19 @@ $def with (pages, active)
 
                       <div class="masthead-pages">
                         <ul class="nav masthead-nav navbar-nav">
-                            $for page in pages:
-                                $if page == active:
-                                    <li class="active">
-                                $else:
-                                    <li>
-                                <a href="$page">
-                                    $if page == "/":
-                                        Home
-                                    $else:
-                                        $page.title()
-                                </a>
-                                </li>
+                          $for page in pages:
+                              $if page == active:
+                                  <li class="active">
+                              $else:
+                                  <li>
+                              $if page == "/":
+                                  <a href="$page">
+                                  Home
+                              $else:
+                                  <a href="/$page">
+                                  $page.title()
+                              </a>
+                              </li>
                         </ul>
                       </div>
 
@@ -78,28 +79,43 @@ $def with (pages, active)
 
             </div>
 
-            <div class="cover">
-                <h3>Open Citation Identifier Resolution Service</h3>
-                <form class="form-inline" action="/oci" method="get">
-                    <div class="form-group">
-                        <label for="oci">oci</label>:
-                        <input style="min-width:350px" name="oci" type="text" class="form-control" id="oci" placeholder="E.g.: 1-18">
-                    </div>
-                    <input type="submit" class="btn btn-success" value="Look up citation"></input>
-                </form>
-                <div class="left" style="margin-top: 30px">
-                    <p>The Open Citation Identifier (OCI) is a globally unique persistent identifier for bibliographic citations, created and maintained by OpenCitations, and this page provides a resolution service that takes an OCI and returns information about that citation.</p>
-                    <p>Each OCI has a simple structure: the lower-case letters “oci” followed by a colon, followed by two numbers separated by a dash. For example, <a href="/oci/1-18">oci:1-18</a> and <a href="/oci/2544384-7295288">oci:2544384-7295288</a> are both valid OCIs.</p>
-                    <p>The first number is the identifier for the citing bibliographic resource, while the second number is the identifier for the cited bibliographic resource. Within the OCC, these bibliographic resource identifiers are unique, and every citation recorded in the OpenCitations Corpus (OCC) has an OCI.</p>
-                    <p>Some bibliographic resource identifiers have a supplier prefix - a short numerical string delimited by zeros that indicates the supplier of the metadata. For example <q>010</q> indicates that <a href="https://www.wikidata.org">Wikidata</a> is the supplier. Thus <a href="/oci/01027931310-01022252312">oci:01027931310-01022252312</a> represents a citation between two bibliographic resources (i.e. <a href="http://www.wikidata.org/entity/Q27931310">wd:Q27931310</a> and <a href="http://www.wikidata.org/entity/Q22252312">wd:Q22252312</a>) whose metadata was in both cases supplied by Wikidata. A list of existing bibliographic resource identifier prefixes and their meanings can be found in the following table.</p>
-                    <table class="table table-striped">
-                        <tr><th>Prefix</th><th>supplier</th></tr>
-                        <tr><td><em>no prefix</em></td><td><a href="https://w3id.org/oc/corpus">OpenCitations Corpus</a></td></tr>
-                        <tr><td><em>010</em></td><td><a href="https://www.wikidata.org">Wikidata</a></td></tr>
-                    </table>
-                    <p>While the coverage of OCIs among all bibliographic citations is at present limited, bear in mind that the coverage of DOIs (digital object identifiers) to identify published works was also limited following its launch in 2000.  As the coverage of the OCC expands, the number of OCIs will increase proportionately.</p>
-                </div>
+            <div class="cover left">
+
+              <h4><a href="/index/coci">index/coci</a></h4>
+              <h3>Search COCI</h3>
+              <p style="text-align:left;">This interface let you perform queries on the <b><a href="/index/coci">COCI</a></b> triplestore.
+              It represent an alternative configuration and usage of <b><a href="https://github.com/opencitations/oscar">OSCAR</a></b>: the Open Citations RDF search application.
+              Here we list some query examples:</p>
+              <ul>
+                <li>OCI Identifier: <a href="search?text=02001010806360107050663080702026306630509-02001010806360107050663080702026305630301&rule=oci">02001010806360107050663080702026306630509-020010...</a> </li>
+                <li>Citations of a specific DOI: <a href="search?text=10.1186%2F1756-8722-5-31&rule=citeddoi">10.1186/1756-8722-5-31</a> </li>
+                <li>References of a specific DOI: <a href="search?text=10.1186%2F1756-8722-6-59&rule=citingdoi">10.1186/1756-8722-6-59</a> </li>
+              </ul>
+              <p style="text-align:left;"> <u> NOTE: Searches might take several seconds, please be patient.</u></p>
+
             </div>
+
+                <!-- The search page skeleton -->
+                <!--==========================-->
+                <div id="search" class="search">
+                  <div id="search_extra" class="search-extra"></div>
+                  <div id="search_header" class="search-header">
+                    <div id="rows_per_page"></div>
+                    <div id="export_results"></div>
+                    <div id="sort_results"></div>
+                  </div>
+                  <div id="search_body" class="search-body">
+                    <div id="search_filters" class="search-filters">
+                      <div id="limit_results"></div>
+                      <div id="filter_btns"></div>
+                      <div id="filter_values_list"></div>
+                    </div>
+                    <div id="search_results" class="search-results"></div>
+                  </div>
+                </div>
+                <!--==========================-->
+
+
 
         </div>
 
@@ -131,8 +147,14 @@ $def with (pages, active)
         <script src="/static/js/bootstrap.min.js"><![CDATA[ ]]></script>
         <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
         <script src="/static/js/ie10-viewport-bug-workaround.js"><![CDATA[ ]]></script>
-        <script>
 
+        <!-- SEARCH GUI -->
+        <!-- <script type="text/javascript" src="/staticsearch-conf.jsjson"></script> -->
+        <script type="text/javascript" src="/static/js/search-conf-coci.js"></script>
+        <script type="text/javascript" src="/static/js/search.js"></script>
+        <script>
+          search.do_sparql_query("$query_string");
         </script>
+
     </body>
 </html>
