@@ -17,7 +17,7 @@
 myv=`curl -s http://localhost:8000`
 
 if [[ -z "$myv" ]] || [[ $myv = "Traceback"*  ]]; then
-    stop-local.sh
+    ./stop-local.sh
     cd ..
     python3 oc.py 8000 &
     cd sh

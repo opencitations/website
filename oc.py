@@ -29,10 +29,10 @@ from datetime import datetime
 from os import path
 
 # Load the configuration file
-with open("conf_local.json") as f:
+with open("conf.json") as f:
     c = json.load(f)
 
-pages = ["/", "about", "index", "corpus", "model", "download", "sparql", "search", "oci",
+pages = ["/", "about", "corpus", "model", "download", "sparql", "search", "oci",
          "publications", "licenses", "contacts"]
 
 urls = (

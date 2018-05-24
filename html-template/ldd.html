@@ -192,7 +192,7 @@ $def with (data, keys, label_iri)
         //since i have specified a field 'short_iri' in the config file
         //and i am not using SPARQL call to have it, i need to ad-hoc define it
 
-        var myRegexp = /http:\/\/opencitations.net\/corpus(\/ra\/\d{1,}|\/br\/\d{1,})/g;
+        var myRegexp = /\/corpus(\/ra\/\d{1,}|\/br\/\d{1,})/g;
         var short_iri_val = myRegexp.exec(window.location.href)[1];
         var adhoc_data = {"short_iri":{"value": short_iri_val}};
 
