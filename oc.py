@@ -21,12 +21,14 @@ from src.wl import WebLogger
 from src.rrh import RewriteRuleHandler
 from src.ldd import LinkedDataDirector
 from src.ved import VirtualEntityDirector
+from src.ramose import APIManager
 import requests
 import urllib.parse as urlparse
 import re
 import csv
 from datetime import datetime
 from os import path
+from io import StringIO
 
 # Load the configuration file
 with open("conf.json") as f:
@@ -40,6 +42,7 @@ urls = (
     "/(index/.+/sparql)", "Sparql",
     "/(index/.+/search)", "Search",
     "/(index/.+/browser/.+)", "Browser",
+    "/index/([^/]+)(/api/.+)", "Api",
     "/(index/coci)(/.+)?", "Coci",
     "/(about)", "About",
     "/(model)", "Model",
@@ -98,6 +101,7 @@ web_logger = WebLogger("opencitations.net", c["log_dir"], [
     {"REMOTE_ADDR": ["130.136.130.1", "130.136.2.47", "127.0.0.1"]}  # comment this line only for test purposes
 )
 
+coci_api_manager = APIManager(c["api_coci"])
 
 class RawGit:
     def GET(self, u):
@@ -137,6 +141,41 @@ class Home:
                 cur_cited = lastrow[6]
 
         return render.home(pages, active, cur_date, cur_tot, cur_cit, cur_cited)
+
+
+class Api:
+    def GET(self, dataset, call):
+        if dataset == "coci":
+            if re.match("^/api/v[1-9][0-9]*/?$", call):
+                web.header('Access-Control-Allow-Origin', '*')
+                web.header('Access-Control-Allow-Credentials', 'true')
+                web.header('Content-Type', "text/html")
+                web_logger.mes()
+                return coci_api_manager.get_htmldoc()[1]
+            else:
+                content_type = web.ctx.env.get('CONTENT_TYPE')
+                if content_type is not None and "text/csv" in content_type:
+                    content_type = "text/csv"
+                else:
+                    content_type = "application/json"
+
+                status_code, res = coci_api_manager.exec_op(call, content_type=content_type)
+                if status_code == 200:
+                    web.header('Access-Control-Allow-Origin', '*')
+                    web.header('Access-Control-Allow-Credentials', 'true')
+                    web.header('Content-Type', content_type)
+                    web_logger.mes()
+                    return res
+                else:
+                    with StringIO(res) as f:
+                        if content_type == "text/csv":
+                            mes = next(csv.reader(f))[0]
+                        else:
+                            mes = json.dumps(next(csv.DictReader(f)), ensure_ascii=False)
+                    raise web.HTTPError(
+                        str(status_code), {"Content-Type": content_type}, mes)
+        else:
+            raise web.notfound()
 
 
 class About:
