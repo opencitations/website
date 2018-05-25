@@ -34,7 +34,7 @@ var browser_conf = {
                 "}"
           ],
           "links": {
-            "short_iri": {"field":"iri","prefix":""}
+            //"short_iri": {"field":"iri","prefix":""}
           },
           //"none_values": {"subtitle": "", "author": "No authors", "title": "Document without title"},
 

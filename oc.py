@@ -39,9 +39,9 @@ pages = ["/", "about", "corpus", "model", "download", "sparql", "search", "oci",
 
 urls = (
     "(/)", "Home",
-    "/(index/.+/sparql)", "Sparql",
-    "/(index/.+/search)", "Search",
-    "/(index/.+/browser/.+)", "Browser",
+    "/(index/coci/sparql)", "SparqlCOCI",
+    "/index/coci/search", "SearchCOCI",
+    "/index/coci/browser/(.+)", "BrowserCOCI",
     "/index/([^/]+)(/api/.+)", "Api",
     "/(index/coci)(/.+)?", "Coci",
     "/(about)", "About",
@@ -52,9 +52,9 @@ urls = (
     "/(oci)(/.+)?", "OCI",
     "/corpus/", "Corpus",
     "/(download)", "Download",
-    "/(sparql)", "Sparql",
-    "/(search)", "Search",
-    "/(browser/.+)", "Browser",
+    "/(sparql)", "SparqlOC",
+    "/search", "SearchOC",
+    "/browser/(.+)", "BrowserOC",
     "/(publications)", "Publications",
     "/(licenses)", "Licenses",
     "/(contacts)", "Contacts",
@@ -203,10 +203,12 @@ class OCI:
             web_logger.mes()
             raise web.seeother(c["oc_base_url"] + c["virtual_local_url"] + "ci" + oci)
 
+
 class Index:
     def GET(self, active):
         web_logger.mes()
         return render.index(pages, active)
+
 
 class Coci:
     def GET(self, active, coci):
@@ -234,41 +236,43 @@ class Download:
 
 
 class Search:
-    def GET(self, active):
+    def __init__(self, active_page, render_page):
+        self.active_page = active_page
+        self.render_page = render_page
+
+    def GET(self):
         web_logger.mes()
         query_string = web.ctx.env.get("QUERY_STRING")
-        if active == "search":
-            return render.search(pages, active, query_string)
-        else:
-            #in this case is not oci
-            splitactive = active.split("/")
-            #active page is always 'index' in this case
-            active = splitactive[0]
-            delimiter = "/"
-            indexval = delimiter.join(splitactive[0:len(splitactive)-1])
-            #we add here all other new projects e.g: index/woci
-            if indexval == "index/coci":
-                return render.search_coci(pages, active, query_string)
+        return self.render_page(pages, self.active_page, query_string)
+
+
+class SearchCOCI(Search):
+    def __init__(self):
+        Search.__init__(self, "index", render.search_coci)
+
+
+class SearchOC(Search):
+    def __init__(self):
+        Search.__init__(self, "search", render.search)
 
 
 class Browser:
-    def GET(self, occ_path):
-        web_logger.mes()
-        splitocc_path = occ_path.split("/")
-        base = splitocc_path[0]
+    def __init__(self, render_page):
+        self.render_page = render_page
 
-        if len(splitocc_path) >= 3:
-            #since the last part include resource in format /br/1
-            delimiter = "/"
-            occ_path = delimiter.join(splitocc_path[len(splitocc_path)-2:len(splitocc_path)])
-            if base == "browser":
-                return render.browser(occ_path)
-            else:
-                #in this case is not oci
-                indexval = delimiter.join(splitocc_path[0:len(splitocc_path)-3])
-                #we add here all other new projects e.g: index/woci
-                if indexval == "index/coci":
-                    return render.browser_coci(occ_path)
+    def GET(self, res_id):
+        web_logger.mes()
+        return self.render_page(res_id)
+
+
+class BrowserCOCI(Browser):
+    def __init__(self):
+        Browser.__init__(self, render.browser_coci)
+
+
+class BrowserOC(Browser):
+    def __init__(self):
+        Browser.__init__(self, render.browser)
 
 
 class Model:
@@ -282,10 +286,12 @@ class Publications:
         web_logger.mes()
         return render.publications(pages, active)
 
+
 class Licenses:
     def GET(self, active):
         web_logger.mes()
         return render.licenses(pages, active)
+
 
 class Contacts:
     def GET(self, active):
@@ -294,23 +300,12 @@ class Contacts:
 
 
 class Sparql:
-    sparql_endpoint = c["sparql_endpoint"]
-    sparql_endpoint_title = "OCC"
-    yasqe_sparql_endpoint = c["oc_base_url"]+"/sparql"
+    def __init__(self, sparql_endpoint, sparql_endpoint_title, yasqe_sparql_endpoint):
+        self.sparql_endpoint = sparql_endpoint
+        self.sparql_endpoint_title = sparql_endpoint_title
+        self.yasqe_sparql_endpoint = yasqe_sparql_endpoint
 
     def GET(self, active):
-        if active != "sparql":
-            splitactive = active.split("/")
-            #active page is always 'index' in this case
-            active = splitactive[0]
-            delimiter = "/"
-            indexval = delimiter.join(splitactive[0:len(splitactive)-1])
-            #we add here all other new projects e.g: index/woci
-            if indexval == "index/coci":
-                self.sparql_endpoint_title = "COCI"
-                self.sparql_endpoint = c["sparql_endpoint_coci"]
-                self.yasqe_sparql_endpoint = c["oc_base_url"]+"/index/coci/sparql"
-
         content_type = web.ctx.env.get('CONTENT_TYPE')
         return self.__run_query_string(active, web.ctx.env.get("QUERY_STRING"), content_type)
 
@@ -362,6 +357,16 @@ class Sparql:
         else:
             raise web.HTTPError(
                 "403", {"Content-Type": "text/plain"}, "SPARQL Update queries are not permitted.")
+
+
+class SparqlOC(Sparql):
+    def __init__(self):
+        Sparql.__init__(self, c["sparql_endpoint"], "OCC", c["oc_base_url"]+"/sparql")
+
+
+class SparqlCOCI(Sparql):
+    def __init__(self):
+        Sparql.__init__(self, c["sparql_endpoint_coci"], "COCI", c["oc_base_url"]+"/index/coci/sparql")
 
 
 class Virtual:
