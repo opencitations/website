@@ -1,7 +1,7 @@
 {
   "html": "html-template",
   "occ_base_path": "../test/data/corpus/",
-  "oc_base_url": "http://localhost:8000",
+  "oc_base_url": "http://localhost:8080",
   "tmp_dir": "/Users/six/Desktop/",
   "json_context_path": "../corpus/context.json",
   "sparql_endpoint": "http://localhost:3000/blazegraph/sparql",

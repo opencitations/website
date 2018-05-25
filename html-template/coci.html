@@ -8,7 +8,7 @@ $def with (pages, active)
 
 
         <link rel="icon" href="/static/favicon.ico" />
-        <title>OpenCitations - About</title>
+        <title>OpenCitations - COCI</title>
 
         <!-- Bootstrap core CSS -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
@@ -81,18 +81,29 @@ $def with (pages, active)
             <div class="cover left">
                  <!--<h3>$active.title()</h3>-->
                  <h3>The Crossref Open Citation Identifier (COCI)</h3>
-                 <p>The Open Citation Identifier (OCI) is a globally unique persistent identifier for bibliographic citations, created and maintained by OpenCitations. The COCI project takes in consideration a large number of bibliographic resources retrieved from Crossref and annotates/elaborates their citing information.</p>
-                 <p>The COCI resource is therefore an entity which defines a citation between two different bibliographic resources. The COCI textual format is structured with: the lower-case letters “ci” followed by a colon, followed by two numbers separated by a dash. The first number identifies the citing resource, while the second one identifies the cited resource. The Crossref bibliographic resource identifiers have a supplier prefix equl to "020". For example, ci/02001010806360107050663080702026306630509-02001010806360107050663080702026305630301 is a valid COCI.</p>
+                 <p>The COCI project takes in consideration a large number of bibliographic resources made available and retrieved from <a href="https://www.crossref.org/">Crossref</a>, and annotates/elaborates their citing information.</p>
+
+                 <table class="table table-striped">
+                     <tr><th>The COCI dataset contains a total of:</th></tr>
+                     <tr><td>[N] citing bibliographic resources.</td></tr>
+                     <tr><td>[N] cited resources.</td></tr>
+                 </table>
+
+                 <p>A COCI resource is therefore an entity which defines a citation between two different bibliographic resources. The COCI textual format is structured with: the lower-case letters “ci” followed by a colon, followed by two numbers separated by a dash. The first number identifies the citing resource, while the second one identifies the cited resource. The Crossref bibliographic resource identifiers have a supplier prefix equl to "020". For example, <a href="/index/coci/browser/ci/02001010806360107050663080702026306630509-02001010806360107050663080702026305630301">ci/02001010806360107050663080702026306630509-02001010806360107050663080702026305630301</a> is a valid COCI.</p>
+                 <p>The COCI data dumps are available in CSV, NT, and JNL formats. These dumps are stored in Figshare and open for external usage.
                  <p>You can work and iteract with the COCI triplestore using the following services/applications:</p>
                  <ul>
                     <li>
-                       <p>A triplestore <a href="/index/coci/search">searching interface</a> (built using OSCAR)</p>
+                       <p>A triplestore <a href="/index/coci/search">searching interface</a> (built using <a href="https://github.com/opencitations/oscar">OSCAR</a>)</p>
                     </li>
                     <li>
-                      <p>A resource browser (built using LUCINDA). In order to use this service, a resource identifier must be specified in the URL address. <br> For instance: <a href="/index/coci/browser/ci/02001010806360107050663080702026306630509-02001010806360107050663080702026305630301"> /index/coci/browser/ci/02001010806360107050663080702026306630509-02001010... </a> </p>
+                      <p>A resource browser (built using <a href="https://github.com/opencitations/lucinda">LUCINDA</a>). In order to use this service, a resource identifier must be specified in the URL address. <br> For instance: <a href="/index/coci/browser/ci/02001010806360107050663080702026306630509-02001010806360107050663080702026305630301"> /index/coci/browser/ci/02001010806360107050663080702026306630509-02001010... </a> </p>
                     </li>
                     <li>
                       <p>A <a href="/index/coci/sparql">SPARQL editor</a> to query the COCI triplestore</p>
+                    </li>
+                    <li>
+                      <p>A REST API service</p>
                     </li>
                  </ul>
             </div>
