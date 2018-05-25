@@ -78,26 +78,36 @@ $def with (pages, active)
           </div>
 
             <div class="cover left">
-                 <!--<h3>$active.title()</h3>-->
-                 <h3></h3>
-                 <p>We are continuously working on the expansion and the definition of new services that works on the scholarly citation data, and could help us enlarge the knowledge and potential of what we have already started with <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>.</p>
-                 <p>A recent project we have worked on involves the definition and management of Citation entities. A Citation is identified by the Citing document and the Cited document. For each Citation, we have information about the time it was created and the Timespan between the Citing and Cited documents publication time.</p>
-                 <p>These characterizations are made through the usage of The Citation Typing Ontology (CiTO).</p>
-                 <p>
-                 <figure id="refIllustration0">
-                    <p>
-                       <img class="img-responsive center-block" src="/static/img/citation_diagram.png" alt="The Graffoo diagram of the Citation entities model.">
-                    </p>
-                    <figcaption class="center"><strong class="cgen">Figure 1. </strong>The <a href="http://www.essepuntato.it/graffoo">Graffoo</a> diagram of the Citation model.</figcaption>
-                 </figure>
-                </p>
-                <p>The data used and generated will be all stored in <a href="https://figshare.com/">Figshare </a>, these data dumps will be uploaded in different formats, E.g: CSV, NT, JNL.</p>
-                 <p>Here we list the projects and datasets we are working on, each project will link you to its dedicated page and services.</p>
-                 <ul>
+                <h3>Open Citation Indexes</h3>
+                <p>According to <a href="https://en.wikipedia.org/wiki/Citation_index">Wikipedia</a>, a <em>citation index</em> is a kind of bibliographic index, an index of citations between publications, allowing the user to easily establish which later documents cite which earlier documents. Several of these indexes have been published in the past. Some are freely accessible but not downloadable (e.g. Google Scholar), while others can be accessed only by paying significant access fees (e.g. Web of Science and Scopus).</p>
+                <p>Caring about setting bibliographic metadata and citation links on open, we are currently working on expand the set of services and datasets we can provide to the public. In particular, we are building several <strong>Open Citation Indexes</strong> by using the data recorded in particular bibliographic database, such as <a href="https://crossref.org">Crossref</a>. The idea behind these indexes is to provide several datasets containing <a href="https://opencitations.wordpress.com/2018/02/19/citations-as-first-class-data-entities-introduction/">citations as first-class data entities</a>, where each citation is identified by a particular <a href="https://identifiers.org/oci">Open Citation Identifier, or OCI</a> - which has a simple structure: the lower-case letters "oci" followed by a colon, followed by two numbers separated by a dash (e.g. <a href="https://w3id.org/oc/oci/1-18">oci:1-18</a>).</p>
+                <p>The indexes we have published are listed as follows:</p>
+                <ul>
                     <li>
-                       <p><a href="index/coci">The Crossref Open Citation Identifier (COCI)</a></p>
+                       <p>the <a href="index/coci">Crossref Open Citation Index (COCI)</a>: a new RDF dataset of more than 280 million DOI-to-DOI citations extracted from Crossref.</p>
                     </li>
-                 </ul>
+                </ul>
+                <p>All the RDF data in each of the aforementioned indexes are organising according to the data model highlighted in Figure 1. This model is entirely based on the <a href="http://purl.org/spar/cito">Citation Typing Ontology (CiTO)</a> for describing the data, and the <a href="https://www.w3.org/TR/prov-o/">Provenance Ontology (PROV-O)</a> for the provenance information. In particular, each citation (i.e. an individual of the class <code>cito:Citation</code>) is identified by the dash-separated numbers of the OCI defining it, and is further characterised by:</p>
+                <ul>
+                    <li><p>the DOI URL of the citing entity (<code>cito:hasCitingEntity</code>);</p></li>
+                    <li><p>the DOI URL of the cited entity (<code>cito:hasCitedEntity</code>);</p></li>
+                    <li><p>the creation date of the citation according to the ISO date format <code>YYYY-MM-DD</code>, which corresponds to the publication date of the citing entity (<code>cito:hasCitationCreationDate</code>);</p></li>
+                    <li><p>the interval between the publication date of the cited entity and the publication date of the citing entity, expressed using the XSD duration format <code>PnYnMnD</code> (<code>cito:hasCitationTimeSpan</code>.</p></li>
+                </ul>
+                <figure id="refIllustration0">
+                    <p>
+                        <img class="img-responsive center-block" src="/static/img/citation_diagram.png" alt="The Graffoo diagram of the data model adopted by all the Open Citation Indexes.">
+                    </p>
+                    <figcaption class="center"><strong class="cgen">Figure 1. </strong>The <a href="http://www.essepuntato.it/graffoo">Graffoo</a> diagram of the data model adopted by all the Open Citation Indexes.</figcaption>
+                </figure>
+                <p>All the data in each Open Citation Index:</p>
+                <ul>
+                    <li><p>are available as dumps on <a href="https://figshare.com">Figshare</a> in CSV and N-Triples formats;</p></li>
+                    <li><p>can be directly accessed by using the HTTP URI of the citations in different formats (HTML, RDF/XML, Turtle, and JSON-LD) via content negotiation;</p></li>
+                    <li><p>can be queried by means of a SPARQL endpoint;</p></li>
+                    <li><p>can be retrieved by using a REST API in JSON and CSV formats, implemented by means of <a href="https://github.com/opencitations/lucinda">RAMOSE</a>;</p></li>
+                    <li><p>can be searched and browsed by means of the graphical facilities provided by <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>, i.e. <a href="https://github.com/opencitations/oscar">OSCAR</a> and <a href="https://github.com/opencitations/lucinda">LUCINDA</a>.</p></li>
+                </ul>
             </div>
         </div>
 

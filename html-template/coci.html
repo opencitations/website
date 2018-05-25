@@ -79,33 +79,24 @@ $def with (pages, active)
           </div>
 
             <div class="cover left">
-                 <!--<h3>$active.title()</h3>-->
-                 <h3>The Crossref Open Citation Identifier (COCI)</h3>
-                 <p>The COCI project takes in consideration a large number of bibliographic resources made available and retrieved from <a href="https://www.crossref.org/">Crossref</a>, and annotates/elaborates their citing information.</p>
-
-                 <table class="table table-striped">
-                     <tr><th>The COCI dataset contains a total of:</th></tr>
-                     <tr><td>[N] citing bibliographic resources.</td></tr>
-                     <tr><td>[N] cited resources.</td></tr>
-                 </table>
-
-                 <p>A COCI resource is therefore an entity which defines a citation between two different bibliographic resources. The COCI textual format is structured with: the lower-case letters “ci” followed by a colon, followed by two numbers separated by a dash. The first number identifies the citing resource, while the second one identifies the cited resource. The Crossref bibliographic resource identifiers have a supplier prefix equl to "020". For example, <a href="/index/coci/browser/ci/02001010806360107050663080702026306630509-02001010806360107050663080702026305630301">ci/02001010806360107050663080702026306630509-02001010806360107050663080702026305630301</a> is a valid COCI.</p>
-                 <p>The COCI data dumps are available in CSV, NT, and JNL formats. These dumps are stored in Figshare and open for external usage.
-                 <p>You can work and iteract with the COCI triplestore using the following services/applications:</p>
-                 <ul>
-                    <li>
-                       <p>A triplestore <a href="/index/coci/search">searching interface</a> (built using <a href="https://github.com/opencitations/oscar">OSCAR</a>)</p>
-                    </li>
-                    <li>
-                      <p>A resource browser (built using <a href="https://github.com/opencitations/lucinda">LUCINDA</a>). In order to use this service, a resource identifier must be specified in the URL address. <br> For instance: <a href="/index/coci/browser/ci/02001010806360107050663080702026306630509-02001010806360107050663080702026305630301"> /index/coci/browser/ci/02001010806360107050663080702026306630509-02001010... </a> </p>
-                    </li>
-                    <li>
-                      <p>A <a href="/index/coci/sparql">SPARQL editor</a> to query the COCI triplestore</p>
-                    </li>
-                    <li>
-                      <p>A REST API service</p>
-                    </li>
-                 </ul>
+                 <h3>The Crossref Open Citation Index (COCI)</h3>
+                <p>The <strong>Crossref Open Citation Index (COCI)</strong> is an RDF dataset containing several millions of DOI-to-DOI citations extracted from <a href="https://www.crossref.org/">Crossref</a>, that are further elaborated for providing specific data. All the data contained in this index have been modelled according to the data model described in the <a href="/index">Open Citation Indexes</a> page.</p>
+                <p>Currently, the COCI datasets contains:</p>
+                <ul>
+                    <li><p>XX citations;</p></li>
+                    <li><p>XX citing entities;</p></li>
+                    <li><p>XX cited entities;</p></li>
+                    <li><p>XX data statements;</p></li>
+                    <li><p>XX provenance statements.</p></li>
+                </ul>
+                <p>Each citation (i.e. an individual of the class <code>cito:Citation</code>) is identified by an URL structured as follows: <code>https://w3id.org/oc/index/coci/ci/[[OCI]]</code>. <code>[[OCI]]</code> is the two numbers separated by a dash of the Open Citation Identifier identifying that citation (e.g. <a href="https://w3id.org/oc/index/ci/02001010806360107050663080702026306630509-02001010806360107050663080702026305630301">https://w3id.org/oc/index/ci/02001010806360107050663080702026306630509-02001010806360107050663080702026305630301</a>).</p>
+                <p>All the data in COCI:</p>
+                <ul>
+                    <li><p>are available as dumps on <a href="https://figshare.com">Figshare</a> in CSV (<a href="">data</a> and <a href="">provenance</a>) and N-Triples (<a href="">data</a> and <a href="">provenance</a>);</p></li>
+                    <li><p>can be queried by means of the <a href="coci/sparql">COCI SPARQL endpoint</a>;</p></li>
+                    <li><p>can be retrieved by using the <a href="coci/api/v1">COCI REST API</a>;</p></li>
+                    <li><p>can be searched by using the <a href="coci/search">COCI Search Interface</a>.</p></li>
+                </ul>
             </div>
         </div>
 
