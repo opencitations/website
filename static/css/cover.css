@@ -138,6 +138,9 @@ footer .row div {
   border-bottom-color: #2D22DE ;
 }
 
+.backlink {
+    margin-left: 30px;
+}
 
 /*when the resolution is bigger than min-width*/
 @media (min-width: 1251px) {
