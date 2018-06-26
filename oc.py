@@ -39,18 +39,19 @@ pages = ["/", "about", "corpus", "model", "download", "sparql", "search", "oci",
 
 urls = (
     "(/)", "Home",
+    "/index/([^/]+)(/api/.+)", "Api",
     "/(index/coci/sparql)", "SparqlCOCI",
     "/index/coci/search", "SearchCOCI",
     "/index/coci/browser/(.+)", "BrowserCOCI",
-    "/index/([^/]+)(/api/.+)", "Api",
-    "/(index/coci)(/.+)?", "Coci",
+    "/(index)/coci", "Coci",
+    "/index/coci/(.*)", "CociContentNegotiation",
     "/(about)", "About",
     "/(model)", "Model",
-    "/(corpus)", "CorpusIntro",
-    "/corpus/(.+)", "Corpus",
+    "/(corpus)", "Corpus",
+    "/corpus/(.+)", "CorpusContentNegotiation",
+    "/corpus/", "CorpusContentNegotiation",
     "/virtual/(.+)", "Virtual",
     "/(oci)(/.+)?", "OCI",
-    "/corpus/", "Corpus",
     "/(download)", "Download",
     "/(sparql)", "SparqlOC",
     "/search", "SearchOC",
@@ -184,7 +185,7 @@ class About:
         return render.about(pages, active)
 
 
-class CorpusIntro:
+class Corpus:
     def GET(self, active):
         web_logger.mes()
         return render.corpus(pages, active)
@@ -211,23 +212,10 @@ class Index:
 
 
 class Coci:
-    def GET(self, active, coci):
+    def GET(self, active):
         web_logger.mes()
-        splitactive = active.split("/")
-        active = splitactive[0]
-        if coci == None:
-            return render.coci(pages, active)
-        elif coci.startswith('/ci'):
-            clean_coci = coci.replace("/ci", "")
-            if clean_coci == "":
-                #go to the main page of coci
-                raise web.seeother(c["oc_base_url"] + "/index/coci")
-            else:
-                #in this case we should call the resource browser: ldd or lucinda
-                raise web.seeother(c["oc_base_url"] + "/index/coci/browser" + coci)
-        else:
-            #go to the main page of coci
-            raise web.seeother(c["oc_base_url"] + "/index/coci")
+        return render.coci(pages, active)
+
 
 class Download:
     def GET(self, active):
@@ -387,21 +375,39 @@ class Virtual:
             return cur_page
 
 
-class Corpus:
+class ContentNegotiation:
+    def __init__(self, base_url, local_url, from_triplestore=None, label_func=None):
+        self.base_url = base_url
+        self.local_url = local_url
+        self.from_triplestore = from_triplestore
+        self.label_func = label_func
+
     def GET(self, file_path=None):
         ldd = LinkedDataDirector(
-            c["occ_base_path"], c["html"], c["oc_base_url"],
-            c["json_context_path"], c["corpus_local_url"],
+            c["occ_base_path"], c["html"], self.base_url,
+            c["json_context_path"], self.local_url,
             label_conf=c["label_conf"], tmp_dir=c["tmp_dir"],
             dir_split_number=int(c["dir_split_number"]),
             file_split_number=int(c["file_split_number"]),
-            default_dir=c["default_dir"])
+            default_dir=c["default_dir"], from_triplestore=self.from_triplestore,
+            label_func=self.label_func)
         cur_page = ldd.redirect(file_path)
         if cur_page is None:
             raise web.notfound()
         else:
             web_logger.mes()
             return cur_page
+
+
+class CorpusContentNegotiation(ContentNegotiation):
+    def __init__(self):
+        ContentNegotiation.__init__(self, c["oc_base_url"], c["corpus_local_url"])
+
+
+class CociContentNegotiation(ContentNegotiation):
+    def __init__(self):
+        ContentNegotiation.__init__(self, c["coci_base_url"], c["coci_local_url"], c["sparql_endpoint_coci"],
+                                    lambda u: "citation %s [%s]" % tuple(sorted(re.findall("^.+/(ci/(.+))$", u)[0])))
 
 
 if __name__ == "__main__":
