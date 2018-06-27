@@ -48,13 +48,14 @@ class Citation(object):
     def __init__(self,
                  citing_entity_local_id, citing_url, citing_pub_date,
                  cited_entity_local_id, cited_url, cited_pub_date,
+                 creation, timespan,
                  prov_agent_url, source, prov_date):
         self.oci = citing_entity_local_id + "-" + cited_entity_local_id
         self.citing_url = citing_url
         self.cited_url = cited_url
+        self.duration = timespan
+        self.creation_date = creation
 
-        self.creation_date = None
-        self.duration = None
         if self.contains_years(citing_pub_date):
             default_date = datetime(1970, 1, 1, 0, 0)
             self.creation_date = citing_pub_date[:10]

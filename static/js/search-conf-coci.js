@@ -66,12 +66,12 @@ var search_conf = {
       "name": "citation",
       "label": "Citation",
       "macro_query": [
-        "SELECT DISTINCT ?iri ?short_iri ?shorter_coci ?citing_doi ?citing_doi_iri ?cited_doi ?cited_doi_iri ?creationdate ?timespan",
+        "SELECT DISTINCT ?iri ?browser_iri ?short_iri ?shorter_coci ?citing_doi ?citing_doi_iri ?cited_doi ?cited_doi_iri ?creationdate ?timespan",
             "WHERE  {",
               "[[RULE]]",
               "OPTIONAL {",
                 "BIND(REPLACE(STR(?iri), 'https://w3id.org/oc/index/coci/ci/', '', 'i') as ?short_iri) .",
-                //"BIND(CONCAT(SUBSTR(STR(?short_iri), 0, 20), '...') as ?shorter_coci) .",
+                "BIND(REPLACE(STR(?iri), '/coci/', '/coci/browser/', 'i') as ?browser_iri) .",
                 "?iri cito:hasCitingEntity ?citing_doi_iri .",
                 "BIND(REPLACE(STR(?citing_doi_iri), 'http://dx.doi.org/', '', 'i') as ?citing_doi) .",
                 "?iri cito:hasCitedEntity ?cited_doi_iri .",
@@ -84,7 +84,7 @@ var search_conf = {
             //"LIMIT 2000"
       ],
       "fields": [
-        {"iskey": true, "value":"short_iri", "value_map": [], "limit_length": 20, "title": "OCI","column_width":"10%", "type": "text", "sort":{"value": "short_iri", "type":"text"}, "link":{"field":"iri","prefix":""}},
+        {"iskey": true, "value":"short_iri", "value_map": [], "limit_length": 20, "title": "OCI","column_width":"10%", "type": "text", "sort":{"value": "short_iri", "type":"text"}, "link":{"field":"browser_iri","prefix":""}},
         {"value":"citing_doi", "value_map": [decodeURIStr],"title": "Citing DOI", "column_width":"12%", "type": "text", "sort":{"value": "citing_doi", "type":"text"}, "link":{"field":"citing_doi_iri","prefix":""}},
         {"value": "ext_data.citing_doi_citation.reference", "title": "Citing reference", "column_width":"19%", "type": "text"},
         {"value":"cited_doi", "value_map": [decodeURIStr], "title": "Cited DOI", "column_width":"12%", "type": "text", "sort":{"value": "cited_doi", "type":"text"}, "link":{"field":"cited_doi_iri","prefix":""}},
