@@ -407,7 +407,7 @@ class CorpusContentNegotiation(ContentNegotiation):
 class CociContentNegotiation(ContentNegotiation):
     def __init__(self):
         ContentNegotiation.__init__(self, c["coci_base_url"], c["coci_local_url"], c["sparql_endpoint_coci"],
-                                    lambda u: "citation %s [%s]" % tuple(sorted(re.findall("^.+/(ci/(.+))$", u)[0])))
+                                    lambda u: "oci:%s" % tuple(sorted(re.findall("^.+/ci/(.+)$", u)[0])))
 
 
 if __name__ == "__main__":
