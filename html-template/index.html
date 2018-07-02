@@ -81,12 +81,12 @@ $def with (pages, active)
                 <h3>Open Citation Indexes</h3>
                 <p>A citation index is a bibliographic index recording citations between publications, allowing the user to establish which later documents cite earlier documents. Several citation indexes are already available, some of which are freely accessible but not downloadable (e.g. Google Scholar), while others can be accessed only by paying significant access fees (e.g. Web of Science and Scopus).</p>
                 <p>OpenCitations, as a scholarly infrastructure organization dedicated to providing free, accessible and downloadable bibliographic metadata and citation links, is building several <strong>Open Citation Indexes</strong> using the data available in particular bibliographic databases.</p>
-                <p class="lead">The first of these is the Crossref Open Citations Index (COCI), a new RDF dataset of more than 280 million DOI-to-DOI citations extracted from Crossref, which is available at <a href="http://opencitations.net/index/coci">http://opencitations.net/index/coci</a>.</p>
+                <p class="lead">The first of these is the Crossref Open Citation Index (COCI), a new RDF dataset of more than 280 million DOI-to-DOI citations extracted from Crossref, which is available at <a href="index/coci">http://opencitations.net/index/coci</a>.</p>
                 <p>Other similar indexes will be published in the coming months.</p>
                 <p>These Open Citation Indexes have the following characteristics in common:</p>
                 <ol>
                     <li><p>Citations are treated as first-class data entities, with accompanying properties – for a full explanation, see our <a href="https://opencitations.wordpress.com/2018/02/19/citations-as-first-class-data-entities-introduction/">introductory blog post</a> and following posts;</p></li>
-                    <li><p>Each citation is identified by an <a href="https://identifiers.org/oci">Open Citation Identifier (OCI</a>), which has a simple structure: the lower-case letters "oci" followed by a colon, followed by two numbers separated by a dash (e.g. <a href="http://opencitations.net/oci/1-18">oci:1-18</a>). OCIs can be resolved using the <a href="http://opencitations.net/oci">OpenCitations OCI Resolution Service</a>.</p></li>
+                    <li><p>Each citation is identified by an <a href="https://identifiers.org/oci">Open Citation Identifier (OCI</a>), which has a simple structure: the lower-case letters "oci" followed by a colon, followed by two numbers separated by a dash (e.g. <a href="oci/1-18">oci:1-18</a>). OCIs can be resolved using the <a href="oci">OpenCitations OCI Resolution Service</a>.</p></li>
                     <li><p>The citation metadata within each Open Citation Index are recorded in RDF.</p></li>
                     <li>
                         <p>The RDF statements in each of the indexes are organising according to the data model shown in Figure 1.</p>
@@ -103,7 +103,7 @@ $def with (pages, active)
                         <ul>
                             <li><p>by querying a SPARQL endpoint;</p></li>
                             <li><p>by using a REST API, implemented by means of <a href="https://github.com/opencitations/ramose">RAMOSE</a> (the Restful API Manager Over SPARQL Endpoints), where they can be downloaded in JSON and CSV formats;</p></li>
-                            <li><p>as dumps of the full index on <a href="https://figshare.com">Figshare</a> in CSV and N-Triples formats;</p></li>
+                            <li><p>as <a href="download#index">dumps</a> of the full index on <a href="https://figshare.com">Figshare</a> in CSV and N-Triples formats;</p></li>
                             <li><p>using the HTTP URI of the individual citations, where they can be downloaded in different formats (HTML, RDF/XML, Turtle, and JSON-LD) via content negotiation.</p></li>
                         </ul>
                     </li>
@@ -114,19 +114,33 @@ $def with (pages, active)
 
         <footer>
             <div class="container">
+                <div class="container">
                 <div class="row">
-                    <div id="disi" class="col-xs-12 col-sm-6">
-                        <p><a href="http://www.unibo.it"><img src="/static/img/unibo.png" /></a></p>
+                    <div id="disi" class="col-xs-12 col-sm-3">
+                        <p>
+                            <a href="http://www.unibo.it"><img src="/static/img/unibo.png" /></a>
                     </div>
-                    <div id="ox" class="col-xs-12 col-sm-6">
-                        <p><a href="http://www.ox.ac.uk"><img src="/static/img/uniox.png" /></a></p>
+                    <div id="ficlit" class="col-xs-12 col-sm-3">
+                        <p>
+                            <a href="http://www.ficlit.unibo.it"><img src="/static/img/ficlit.png" /></a></p>
+                    </div>
+                    <div id="oerc" class="col-xs-12 col-sm-3">
+                        <p>
+                            <a href="http://www.ox.ac.uk"><img src="/static/img/oerc.png" /></a>
+                        </p>
+                    </div>
+                    <div id="ox" class="col-xs-12 col-sm-3">
+                        <p>
+                            <a href="http://www.ox.ac.uk"><img src="/static/img/uniox.png" /></a>
+                        </p>
                     </div>
                 </div>
+            </div>
             </div>
             <p>
                 <a class="social oc-purple" href="mailto:contact@opencitations.net"><i class="fa fa-envelope" aria-hidden="true"></i></a>
                 <a class="social oc-purple" href="http://www.twitter.com/opencitations"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                <a class="social oc-blue" href="http://github.com/essepuntato/opencitations"><i class="fa fa-github" aria-hidden="true"></i></a>
+                <a class="social oc-blue" href="http://github.com/opencitations"><i class="fa fa-github" aria-hidden="true"></i></a>
                 <a class="social oc-blue" href="https://opencitations.wordpress.com/"><i class="fa fa-wordpress" aria-hidden="true"></i></a>
             </p>
         </footer>
