@@ -354,7 +354,8 @@ class SparqlOC(Sparql):
 
 class SparqlCOCI(Sparql):
     def __init__(self):
-        Sparql.__init__(self, c["sparql_endpoint_coci"], "COCI", c["oc_base_url"]+"/index/coci/sparql")
+        pass
+        # Sparql.__init__(self, c["sparql_endpoint_coci"], "COCI", c["oc_base_url"]+"/index/coci/sparql")
 
 
 class Virtual:
