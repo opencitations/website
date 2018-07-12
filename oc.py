@@ -34,7 +34,7 @@ from io import StringIO
 with open("conf.json") as f:
     c = json.load(f)
 
-pages = ["/", "about", "corpus", "model", "download", "sparql", "search", "oci",
+pages = ["/", "about", "corpus", "model", "download", "sparql", "search", "oci", "index",
          "publications", "licenses", "contacts"]
 
 urls = (
