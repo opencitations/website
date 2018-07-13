@@ -26,6 +26,7 @@
     "http://purl.org/dc/terms/modified": "modification date",
     "http://purl.org/spar/biro/references": "references"
   },
+  "robots": [ "crawler", "spider", "bot", "yahoo! slurp", "bubing" ],,
   "ved_conf": {
     "lookup": "oci/lookup.csv",
     "ci": [
