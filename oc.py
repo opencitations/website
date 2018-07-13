@@ -60,7 +60,8 @@ urls = (
     "/(licenses)", "Licenses",
     "/(contacts)", "Contacts",
     "(/paper/.+)", "RawGit",
-    "/(index)", "Index"
+    "/(index)", "Index",
+    "/robots.txt", "Robots"
 )
 
 render = web.template.render(c["html"])
@@ -109,6 +110,13 @@ class RawGit:
         web_logger.mes()
         raise web.seeother("http://rawgit.com/essepuntato/opencitations/master" + u)
 
+class Robots:
+    def GET(self):
+        web.header('Access-Control-Allow-Origin', '*')
+        web.header('Access-Control-Allow-Credentials', 'true')
+        web.header('Content-Type', "text/plain")
+        return "user-agent: %s\n" \
+               "disallow: /corpus/\ndisallow: /virtual/\ndisallow: /index/coci/" % "\nuser-agent: ".join(c["robots"])
 
 class Redirect:
     def GET(self, u):
