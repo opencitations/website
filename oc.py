@@ -171,7 +171,8 @@ class Api:
                 web_logger.mes()
                 return man.get_htmldoc()[1]
             else:
-                content_type = web.ctx.env.get('ACCEPT')
+                content_type = web.ctx.env.get('HTTP_ACCEPT')
+                print(content_type)
                 if content_type is not None and "text/csv" in content_type:
                     content_type = "text/csv"
                 else:
