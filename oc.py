@@ -47,6 +47,7 @@ urls = (
     "/index/coci/(.*)", "CociContentNegotiation",
     "/(about)", "About",
     "/(model)", "Model",
+    "()(/api/.+)", "Api",
     "/(corpus)", "Corpus",
     "/corpus/(.+)", "CorpusContentNegotiation",
     "/corpus/", "CorpusContentNegotiation",
@@ -104,6 +105,7 @@ web_logger = WebLogger("opencitations.net", c["log_dir"], [
 )
 
 coci_api_manager = APIManager(c["api_coci"])
+occ_api_manager = APIManager(c["api_occ"])
 
 class RawGit:
     def GET(self, u):
@@ -154,13 +156,20 @@ class Home:
 
 class Api:
     def GET(self, dataset, call):
-        if dataset == "coci":
+        man = None
+
+        if dataset == "":
+            man = occ_api_manager
+        elif dataset == "coci":
+            man = coci_api_manager
+
+        if man is not None:
             if re.match("^/api/v[1-9][0-9]*/?$", call):
                 web.header('Access-Control-Allow-Origin', '*')
                 web.header('Access-Control-Allow-Credentials', 'true')
                 web.header('Content-Type', "text/html")
                 web_logger.mes()
-                return coci_api_manager.get_htmldoc()[1]
+                return man.get_htmldoc()[1]
             else:
                 content_type = web.ctx.env.get('CONTENT_TYPE')
                 if content_type is not None and "text/csv" in content_type:
@@ -168,7 +177,7 @@ class Api:
                 else:
                     content_type = "application/json"
 
-                status_code, res = coci_api_manager.exec_op(call, content_type=content_type)
+                status_code, res = man.exec_op(call, content_type=content_type)
                 if status_code == 200:
                     web.header('Access-Control-Allow-Origin', '*')
                     web.header('Access-Control-Allow-Credentials', 'true')
