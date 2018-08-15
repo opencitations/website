@@ -29,6 +29,7 @@ import csv
 from datetime import datetime
 from os import path
 from io import StringIO
+from urllib.parse import unquote
 
 # Load the configuration file
 with open("conf.json") as f:
@@ -177,8 +178,7 @@ class Api:
                     content_type = "text/csv"
                 else:
                     content_type = "application/json"
-
-                status_code, res = man.exec_op(call, content_type=content_type)
+                status_code, res = man.exec_op(call + unquote(web.ctx.query), content_type=content_type)
                 if status_code == 200:
                     web.header('Access-Control-Allow-Origin', '*')
                     web.header('Access-Control-Allow-Credentials', 'true')
