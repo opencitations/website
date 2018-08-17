@@ -139,7 +139,7 @@ Parameters can be used to filter and control the results returned by the API. Th
 
 3. `sort=<order>(<field_name>)`: sort in ascending (`<order>` set to "asc") or descending (`<order>` set to "desc") order the rows in the result set according to the values in `<field_name>`. For instance, `sort=desc(date)` sorts all the rows according to the value specified in the field `date` in descending order.
 
-4. `json=<operation_type>("<separator>",<field>,<new_field_1>,<new_field_2>,...)`: in case a JSON format is requested in return, tranform each row of the final JSON table according to the rule specified. If `<operation_type>` is set to "array", the string value associated to the field name '<field>' is converted into an array by splitting the various textual parts by means of `<separator>`. For instance, considering the JSON table `[ { "names": "Doe, John; Doe, Jane" }, ... ]`, the execution of `array("; ",names)` returns `[ { "names": [ "Doe, John", "Doe, Jane" ], ... ]`. Instead, if `<operation_type>` is set to "dict", the string value associated to the field name '<field>' is converted into a dictionary by splitting the various textual parts by means of `<separator>` and by associating the new fields '<new_field_1>', '<new_field_2>', etc., to these new parts. For instance, considering the JSON table `[ { "name": "Doe, John" }, ... ]`, the execution of `dict(", ",name,fname,gname)` returns `[ { "name": { "fname": "Doe", "gname": "John" }, ... ]`. 
+4. `json=<operation_type>("<separator>",<field>,<new_field_1>,<new_field_2>,...): in case a JSON format is requested in return, tranform each row of the final JSON table according to the rule specified. If `<operation_type>` is set to "array", the string value associated to the field name '<field>' is converted into an array by splitting the various textual parts by means of `<separator>`. For instance, considering the JSON table `[ { "names": "Doe, John; Doe, Jane" }, ... ], the execution of `array("; ",names)` returns `[ { "names": [ "Doe, John", "Doe, Jane" ], ... ]`. Instead, if `<operation_type>` is set to "dict", the string value associated to the field name '<field>' is converted into a dictionary by splitting the various textual parts by means of `<separator>` and by associating the new fields '<new_field_1>', '<new_field_2>', etc., to these new parts. For instance, considering the JSON table `[ { "name": "Doe, John" }, ... ], the execution of `dict(", ",name,fname,gname)` returns `[ { "name": { "fname": "Doe", "gname": "John" }, ... ]`. 
 
 It is possible to specify one or more filtering operation of the same kind (e.g. `exclude=given_name&exclude=family_name`). In addition, these filtering operations are applied in the order presented above - first all the `exclude` operation, then all the `filter` operations followed by all the `sort` operation, and finally the `format` and the `json` operation (if applicable). It is worth mentioning that each of the aforementioned rules is applied in order, and it works on the structure returned after the execution of the previous rule.
 
@@ -674,14 +674,17 @@ The operations that this API implements are:
                         for idx, v in enumerate(v_list):
                             if op_type == "array":
                                 if type(v) is str:
-                                    APIManager.add_item_in_dict(row, keys, v.split(separator), idx)
+                                    APIManager.add_item_in_dict(row, keys,
+                                                                v.split(separator) if v != "" else [], idx)
                             elif op_type == "dict":
                                 print(op_type, separator, keys, entries, v)
                                 new_fields = entries[1:]
                                 new_fields_max_split = len(new_fields) - 1
                                 if type(v) is str:
                                     new_values = v.split(separator, new_fields_max_split)
-                                    APIManager.add_item_in_dict(row, keys, dict(zip(new_fields, new_values)), idx)
+                                    APIManager.add_item_in_dict(row, keys,
+                                                                dict(zip(new_fields, new_values)) if v != "" else {},
+                                                                idx)
                                 elif type(v) is list:
                                     new_list = []
                                     for i in v:
