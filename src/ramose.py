@@ -776,6 +776,7 @@ The operations that this API implements are:
                 func = getattr(self.addon, func_name)
                 func_params = (result,) + tuple(params_values)
                 result = func(*func_params)
+                result = self.type_fields(result, op_item)
 
         return result
 
@@ -951,7 +952,6 @@ The operations that this API implements are:
                     if sc == 200:
                         res = self.type_fields(list(reader(r.text.splitlines())), i)
                         res = self.postprocess(res, i)
-                        res = self.type_fields(res, i)
                         q_string = parse_qs(quote(url_parsed.query, safe="&="))
                         res = self.handling_params(q_string, res)
                         res = self.remove_types(res)
