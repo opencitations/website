@@ -317,10 +317,9 @@ class Sparql:
 
     def POST(self, active):
         content_type = web.ctx.env.get('CONTENT_TYPE')
-        web.debug("The content_type value: ")
-        web.debug(content_type)
 
-        cur_data = web.data()
+        cur_data = web.data().decode("utf-8")
+
         if "application/x-www-form-urlencoded" in content_type:
             return self.__run_query_string(active, cur_data, True, content_type)
         elif "application/sparql-query" in content_type:
@@ -344,6 +343,8 @@ class Sparql:
             web.header('Access-Control-Allow-Credentials', 'true')
             web.header('Content-Type', req.headers["content-type"])
             web_logger.mes()
+            req.encoding = "utf-8"
+
             return req.text
         else:
             raise web.HTTPError(
