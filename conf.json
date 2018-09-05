@@ -12,6 +12,7 @@
   "coci_local_url": "/index/coci/",
   "api_coci": [ "../api/coci/v1.hf" ],
   "api_occ": [ "../api/occ/v1.hf" ],
+  "api_wikidata": [ "../api/wikidata/v1.hf" ],
   "dir_split_number": "10000",
   "file_split_number": "1000",
   "default_dir": "_",

@@ -40,6 +40,7 @@ pages = ["/", "about", "corpus", "model", "download", "sparql", "search", "oci",
 
 urls = (
     "(/)", "Home",
+    "/(wikidata)(/api/.+)", "Api",
     "/index/([^/]+)(/api/.+)", "Api",
     "/(index/coci/sparql)", "SparqlCOCI",
     "/index/coci/search", "SearchCOCI",
@@ -107,6 +108,7 @@ web_logger = WebLogger("opencitations.net", c["log_dir"], [
 
 coci_api_manager = APIManager(c["api_coci"])
 occ_api_manager = APIManager(c["api_occ"])
+wikidata_api_manager = APIManager(c["api_wikidata"])
 
 class RawGit:
     def GET(self, u):
@@ -163,6 +165,8 @@ class Api:
             man = occ_api_manager
         elif dataset == "coci":
             man = coci_api_manager
+        elif dataset == "wikidata":
+            man = wikidata_api_manager
 
         if man is not None:
             if re.match("^/api/v[1-9][0-9]*/?$", call):
