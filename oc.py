@@ -123,7 +123,7 @@ class Robots:
         return "user-agent: %s\n" \
                "disallow: /corpus/\ndisallow: /virtual/\ndisallow: /index/coci/\n\n" \
                "user-agent: %s\n" \
-               "disallow: /" % ("\nuser-agent: ".join(c["robots-all"]))
+               "disallow: /" % ("\nuser-agent: ".join(c["robots"]), "\nuser-agent: ".join(c["robots-all"]))
 
 class Redirect:
     def GET(self, u):
