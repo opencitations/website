@@ -13,8 +13,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-
-myv=`curl -s http://localhost:8000`
+myv=`timeout 10s curl -s http://localhost:8000`
 
 if [[ -z "$myv" ]] || [[ $myv = "Traceback"*  ]]; then
     ./stop-local.sh

@@ -121,7 +121,9 @@ class Robots:
         web.header('Access-Control-Allow-Credentials', 'true')
         web.header('Content-Type', "text/plain")
         return "user-agent: %s\n" \
-               "disallow: /corpus/\ndisallow: /virtual/\ndisallow: /index/coci/" % "\nuser-agent: ".join(c["robots"])
+               "disallow: /corpus/\ndisallow: /virtual/\ndisallow: /index/coci/\n\n" \
+               "user-agent: %s\n" \
+               "disallow: /" % ("\nuser-agent: ".join(c["robots-all"]))
 
 class Redirect:
     def GET(self, u):

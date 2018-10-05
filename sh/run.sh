@@ -13,8 +13,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-
-myv=`curl -s http://130.136.130.1`
+myv=`timeout 10s curl -s http://130.136.130.1`
 
 if [[ -z "$myv" ]] || [[ $myv = "Traceback"*  ]]; then
     /etc/init.d/lighttpd stop
