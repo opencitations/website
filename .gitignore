@@ -1,3 +1,4 @@
 __*/
 conf_local.json
 conf_remote.json
+.DS_*

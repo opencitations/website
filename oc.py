@@ -35,10 +35,19 @@ from urllib.parse import unquote
 with open("conf.json") as f:
     c = json.load(f)
 
-pages = ["/", "about", "corpus", "model", "download", "sparql", "search", "oci", "index",
-         "publications", "licenses", "contacts"]
+pages = [
+    # Generic pages
+    "/", "about", "corpus", "model", "download",
+
+    # OCC SPARQL-related pages
+    # "sparql", "search",
+
+    # Other generic pages
+    "oci", "index", "publications", "licenses", "contacts"
+]
 
 urls = (
+    # Generic URLs
     "(/)", "Home",
     "/(wikidata)(/api/.+)", "Api",
     "/index/([^/]+)(/api/.+)", "Api",
@@ -49,16 +58,20 @@ urls = (
     "/index/coci/(.*)", "CociContentNegotiation",
     "/(about)", "About",
     "/(model)", "Model",
-    "()(/api/.+)", "Api",
     "/(corpus)", "Corpus",
     "/corpus/(.+)", "CorpusContentNegotiation",
     "/corpus/", "CorpusContentNegotiation",
     "/virtual/(.+)", "Virtual",
     "/(oci)(/.+)?", "OCI",
     "/(download)", "Download",
-    "/(sparql)", "SparqlOC",
-    "/search", "SearchOC",
-    "/browser/(.+)", "BrowserOC",
+
+    # OCC SPARQL-related urls
+    # "/(sparql)", "SparqlOC",
+    # "/search", "SearchOC",
+    # "/browser/(.+)", "BrowserOC",
+    # "()(/api/.+)", "Api",
+
+    # Other generic URLs
     "/(publications)", "Publications",
     "/(licenses)", "Licenses",
     "/(contacts)", "Contacts",
