@@ -40,7 +40,7 @@ pages = [
     "/", "about", "corpus", "model", "download",
 
     # OCC SPARQL-related pages
-    # "sparql", "search",
+    "sparql", "search",
 
     # Other generic pages
     "oci", "index", "publications", "licenses", "contacts"
@@ -66,10 +66,10 @@ urls = (
     "/(download)", "Download",
 
     # OCC SPARQL-related urls
-    # "/(sparql)", "SparqlOC",
-    # "/search", "SearchOC",
-    # "/browser/(.+)", "BrowserOC",
-    # "()(/api/.+)", "Api",
+    "/(sparql)", "SparqlOC",
+    "/search", "SearchOC",
+    "/browser/(.+)", "BrowserOC",
+    "()(/api/.+)", "Api",
 
     # Other generic URLs
     "/(publications)", "Publications",
