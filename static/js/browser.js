@@ -153,6 +153,10 @@ var browser = (function () {
 
 		}
 
+		function _update_page(){
+			b_htmldom.build_body(resource_res, oscar_content);
+		}
+
 		function _execute_oscar(one_result,contents) {
 			var oscar_content = contents['oscar'];
 			if (oscar_content != undefined) {
@@ -322,6 +326,7 @@ var browser = (function () {
 		}
 
 		return {
+				_update_page: _update_page,
 				assign_oscar_results: assign_oscar_results,
 				call_oscar : call_oscar,
 				build_extra_sec: build_extra_sec,
@@ -588,6 +593,7 @@ var b_htmldom = (function () {
 
 	var oscar_container = document.getElementById("search");
 	var browser_container = document.getElementById("browser");
+	var info_container = document.getElementById("browser_info");
 	var extra_container = document.getElementById("browser_extra");
 	var header_container = document.getElementById("browser_header");
 	var details_container = document.getElementById("browser_details");
@@ -704,6 +710,9 @@ var b_htmldom = (function () {
 									).outerHTML;
 					}
 				}
+				if (table.rows.length == 0) {
+					return -1;
+				}
 				return table;
 		}
 	}
@@ -733,10 +742,10 @@ var b_htmldom = (function () {
 						is_active = "active";
 					}
 
-
-					var loc_href = extra_comp.links[i].replace(/\[\[VAR\]\]/g, data_obj[extra_comp.values[i]].value);
-
-					str_lis = str_lis + "<li class='"+is_active+"'><a regex_rule="+extra_comp.regex[i]+" href="+loc_href+">"+extra_comp.labels[i]+"</a></li>"
+					if (is_active != "active") {
+						var loc_href = extra_comp.links[i].replace(/\[\[VAR\]\]/g, data_obj[extra_comp.values[i]].value);
+						str_lis = str_lis + "<li class='"+is_active+"'><a regex_rule="+extra_comp.regex[i]+" href="+loc_href+">"+extra_comp.labels[i]+"</a></li>";
+					}
 				}
 				return str_lis;
 			}
@@ -753,10 +762,21 @@ var b_htmldom = (function () {
 				_build_section(data_obj, contents, null, "extra");
 			}
 			if (details_container != null) {
-				details_container.innerHTML = _build_section(data_obj, contents, "browser-details-tab", "details").outerHTML;
+				var sec_tab_con = _build_section(data_obj, contents, "browser-details-tab", "details");
+				if (sec_tab_con != -1) {
+					details_container.innerHTML = sec_tab_con.outerHTML;
+				}else {
+					details_container.parentNode.removeChild(details_container);
+				}
 			}
 			if (metrics_container != null) {
-				metrics_container.innerHTML = _build_section(data_obj, contents, "browser-metrics-tab", "metrics").outerHTML;
+				var sec_tab_con = _build_section(data_obj, contents, "browser-metrics-tab", "metrics");
+				if (sec_tab_con != -1) {
+					metrics_container.innerHTML = sec_tab_con.outerHTML;
+				}else {
+					metrics_container.parentNode.removeChild(metrics_container);
+					info_container.setAttribute('style', "width :"+ 100 + "%");
+				}
 			}
 			return {"header": header_container, "details": details_container, "metrics": metrics_container};
 		}
@@ -800,7 +820,7 @@ var b_htmldom = (function () {
 
 				//click first elem of OSCAR menu
 				//menu_obj.active_li.click();
-				menu_obj.active_li.dispatchEvent(new MouseEvent(`click`, {bubbles: true, cancelable: true, view: window}));
+				menu_obj.active_li.dispatchEvent(new MouseEvent('click', {bubbles: true, cancelable: true, view: window}));
 			}
 		}
 		function _build_menu(oscar_content, data_obj, config_mod, def_menu_index = 0){

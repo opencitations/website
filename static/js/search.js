@@ -147,7 +147,12 @@ var search = (function () {
 				/*match values inside qtext_arr with the corresponding rule regex*/
 				for (var i = 0; i < rules.length; i++) {
 					var re = new RegExp(rules[i].regex,'i');
-					qtext_arr[i] = qtext_arr[i].match(re)[0];
+					var qtext_match = qtext_arr[i].match(re);
+					if (qtext_match != null) {
+						qtext_arr[i] = qtext_arr[i].match(re)[0];
+					}else {
+						continue;
+					}
 				}
 
 				//define category from the first rule
@@ -320,6 +325,12 @@ var search = (function () {
 						url: query_contact_tp,
 						type: 'GET',
 						async: async_call,
+						timeout: util.get_obj_key_val(search_conf_json,"timeout.value"),
+						error: function(jqXHR, textStatus, errorThrown) {
+        				if(textStatus==="timeout") {
+									window.location.replace(util.get_obj_key_val(search_conf_json,"timeout.link"));
+        				}
+    				},
 						success: function( res_data ) {
 								if (util.get_obj_key_val(search_conf_json,"progress_loader.visible") == true) {
 									htmldom.loader(false);
@@ -344,6 +355,9 @@ var search = (function () {
 										if(sparql_query != -1){
 												var r_cat = search_conf_json.categories[util.index_in_arrjsons(search_conf_json.categories,["name"],[rules[rule_index+1].category])];
 												_call_ts(r_cat, rules, rule_index + 1, sparql_query, query_text, query_text, callbk_fun);
+										}else {
+											//in this case we have no more rules
+											window.location.replace(search_conf_json.timeout.link);
 										}
 								}
 						}
@@ -358,7 +372,6 @@ var search = (function () {
 			htmldom.reset_html_structure();
 
 			_init_data(res_data);
-			console.log(cat_conf.extra_elems);
 			htmldom.build_extra_elems(cat_conf.extra_elems);
 			_build_filter_sec();
 			_limit_results();
@@ -412,6 +425,7 @@ var search = (function () {
 			console.log("The values: "+query_comp.values);
 			console.log("The rules are: "+query_comp.rules);
 			console.log("The boolean connectors are: "+query_comp.bcs);
+
 			//initialize and get the search_config_json
 			search_conf_json = search_conf;
 			if (alternative_conf != null) {
@@ -799,11 +813,20 @@ var search = (function () {
 					new_val = "";
 				}
 
+				//util.index_in_arrjsons(search_conf_json.categories,"name",)
+
+				var conf_fields = util.get_val_adv(search_conf_json,"categories.[[name,citation]].fields");
+				var my_field_conf = conf_fields[util.index_in_arrjsons(
+						conf_fields,
+						["value"],
+						[key_full_name]
+					)];
+
 				if (async_bool) {
 					//init the data
 					var obj = _update_all_data_entry_field(index_entry, key_full_name, new_val);
 					//visualize it in current table page
-					htmldom.update_tab_entry_field(table_conf.data_key, index_entry, key_full_name, obj);
+					htmldom.update_tab_entry_field(table_conf.data_key, index_entry, key_full_name, my_field_conf, obj);
 
 					//check if it should be a filter field
 					if (util.index_in_arrjsons(table_conf.filters.fields, ["value"], [key_full_name]) != -1) {
@@ -1079,7 +1102,6 @@ var search = (function () {
 				var field_val = ".value";
 
 				if (field != null) {
-					console.log(field);
 					var field_parts = field.split(".");
 					if (field_parts.length > 1) {
 						field_val = "";
@@ -1346,7 +1368,7 @@ var search = (function () {
 			htmldom.filter_checkboxes(table_conf);
 		}
 		function switch_adv_category(adv_category){
-			htmldom.build_advanced_search(search_conf_json.categories, search_conf_json.rules, adv_category, search_conf_json.search_base_path);
+			htmldom.build_advanced_search(search_conf_json.categories, search_conf_json.rules, adv_category, search_conf_json.search_base_path, search_conf_json.adv_btn_title);
 		}
 
 		return {
@@ -1387,6 +1409,15 @@ var search = (function () {
 
 var util = (function () {
 
+	/*returns only the first 'numchar' chars of text with the suffix '...' */
+	function cut_text(text,numchar) {
+		var new_text = text;
+		if(text.length > numchar){
+			new_text = text.substring(0, numchar-3)+"...";
+		}
+		return new_text;
+	}
+
 	function sleep(milliseconds) {
 	  var start = new Date().getTime();
 	  for (var i = 0; i < 1e7; i++) {
@@ -1396,6 +1427,40 @@ var util = (function () {
 	  }
 	}
 
+	function get_val_adv(origin, path) {
+		if (path == "") {return -1;}
+		var arrpath = path.split(".");
+		return deeper_arr(arrpath, 0, origin);
+		function deeper_arr(arrpath, i, curobj) {
+
+					if (i >= arrpath.length) {
+						return curobj;
+					}
+
+					var key = arrpath[i];
+					var reg = /\[\[(.+?)\]\]/g;
+					if (match = reg.exec(key)) {
+						//search for it
+						 var inner_regex = match[1];
+						 var innerreg = /(.+?),(.+)/g;
+						 if (innermatch = innerreg.exec(inner_regex)) {
+							 var innerfield = innermatch[1];
+							 var innervalue = innermatch[2];
+							 var innerindex = util.index_in_arrjsons(curobj,[innerfield],[innervalue]);
+							 //util.printobj(obj);
+							 if (innerindex != -1) {
+								 key = innerindex;
+							 }
+						 }
+					 }
+
+						if (curobj[key] != undefined) {
+							return deeper_arr(arrpath, i+1, curobj[key]);
+						}else {
+							return -1;
+						}
+			}
+	}
 
 	/*updates the original obj with new pairs of (key,value) given in an array*/
 	function update_obj(original_obj, arr_new_vals) {
@@ -1771,6 +1836,8 @@ var util = (function () {
 	}
 
 	return {
+		get_val_adv: get_val_adv,
+		cut_text: cut_text,
 		sleep: sleep,
 		update_obj: update_obj,
 		get_obj_key_val: get_obj_key_val,
@@ -1837,7 +1904,7 @@ var htmldom = (function () {
 
 					var tabCell = tr.insertCell(-1);
 					tabCell.setAttribute("field", f_obj["value"]);
-					var cell_inner = _cell_inner_str(results_obj, f_obj["value"], f_obj["limit_length"]);
+					var cell_inner = _cell_inner_str(results_obj, f_obj["value"], f_obj["value_text_len"]);
 
 					tabCell.setAttribute("value", cell_inner.str_value);
 					tabCell.innerHTML = cell_inner.str_html;
@@ -1858,20 +1925,32 @@ var htmldom = (function () {
 				for (var k = 0; k < arr.length; k++) {
 					if (k == arr.length -1) {str_sep = " ";}
 					str_value = str_value + arr[k].value + str_sep;
+
+					var inner_value = arr[k].value;
+					if (limit_length != undefined) {
+						inner_value = util.cut_text(inner_value,limit_length);
+					}
+
 					if(arr[k].hasOwnProperty("uri")){
-						str_html = str_html + "<a class='res-val-link' href='"+String(arr[k].uri)+"' target='_blank'>"+arr[k].value+"</a>";
+						str_html = str_html + "<a class='res-val-link' href='"+String(arr[k].uri)+"' target='_blank'>"+inner_value+"</a>";
 					}else {
-						str_html = str_html + String(arr[k].value);
+						str_html = str_html + String(inner_value);
 					}
 					str_html = String(str_html) + String(str_sep);
 				}
 			}
 			else {
 				str_value = results_obj[cell_field].value;
+
+				var inner_value = str_value;
+				if (limit_length != undefined) {
+					inner_value = util.cut_text(str_value,limit_length);
+				}
+
 				if(results_obj[cell_field].hasOwnProperty("uri")){
-					str_html = "<a class='res-val-link' href='"+String(results_obj[cell_field].uri)+"' target='_blank'>"+str_value+"</a>";
+					str_html = "<a class='res-val-link' href='"+String(results_obj[cell_field].uri)+"' target='_blank'>"+inner_value+"</a>";
 				}else {
-					str_html = str_value;
+					str_html = inner_value;
 				}
 			}
 		}else{
@@ -1972,7 +2051,7 @@ var htmldom = (function () {
 
 		var title_val = myfield.value;
 		if (myfield.title != undefined) {
-			title_val = _cut_text(myfield.title,12);
+			title_val = util.cut_text(myfield.title,12);
 		}
 
 		var href_string = "javascript:search.select_filter_field('"+String(myfield.value)+"');";
@@ -2080,14 +2159,6 @@ var htmldom = (function () {
 		}
 		str_html = str_start + str_html + str_end;
 		return str_html;
-	}
-	/*returns only the first 'numchar' chars of text with the suffix '...' */
-	function _cut_text(text,numchar) {
-		var new_text = text;
-		if(text.length > numchar){
-			new_text = text.substring(0, numchar-3)+"...";
-		}
-		return new_text;
 	}
 
 	/*creates the page-limit dom*/
@@ -2201,7 +2272,7 @@ var htmldom = (function () {
 	}
 
 	/*creates the advanced search interface*/
-	function build_advanced_search(arr_categories, arr_rules, adv_cat_selected, search_base_path){
+	function build_advanced_search(arr_categories, arr_rules, adv_cat_selected, search_base_path, adv_btn_title){
 
 		var str_lis = __build_cat_menu(arr_categories, arr_rules, adv_cat_selected);
 		var str_options = _build_rules_options(arr_rules, adv_cat_selected);
@@ -2221,7 +2292,7 @@ var htmldom = (function () {
 									"</div>"+
 									"<div class='adv-search-footer'>"+
 										"<div class='input-group-btn'>"+
-											"<button class='btn btn-default theme-color' id='advsearch_btn'> <span class='search-btn-text'> Search inside OC </span><i class='glyphicon glyphicon-search large-icon'></i></button>"+
+											"<button class='btn btn-default theme-color' id='advsearch_btn'> <span class='search-btn-text'>"+adv_btn_title+"</span><i class='glyphicon glyphicon-search large-icon'></i></button>"+
 											"<button type='button' class='btn btn-default theme-color' id='add_rule_btn'> <span class='add-btn-text'> Add Rule </span><i class='glyphicon glyphicon-plus normal-icon'></i></button>"+
 										"</div>"+
 									"</div>"+
@@ -2504,7 +2575,13 @@ var htmldom = (function () {
 					str_html_subtitle = "<p><div class='searchloader subtitle'>"+subtitle_obj+"</div></p>";
 				}
 
-				var str_html = str_html_title + str_html_subtitle + str_html_abort;
+				var spinner_obj = progress_loader.spinner;
+				var str_html_spinner = "";
+				if ((spinner_obj != undefined) && (spinner_obj == true)){
+					str_html_spinner = "<p><div class='searchloader loader-spinner'></div></p>";
+				}
+
+				var str_html = str_html_title + str_html_subtitle + str_html_spinner + str_html_abort;
 				parser = new DOMParser()
 	  		//var dom = parser.parseFromString(str_html, "text/xml").firstChild;
 				//header_container.appendChild(dom);
@@ -2626,8 +2703,10 @@ var htmldom = (function () {
 			}
 	}
 
-	function update_tab_entry_field(table_field_key, entry_data_key, entry_data_field, obj_val){
+	function update_tab_entry_field(table_field_key, entry_data_key, entry_data_field, my_field_conf, obj_val){
 
+		console.log(entry_data_field);
+		console.log(obj_val);
 		var tab_res = document.getElementById("tab_res");
 		var tr_index = _get_index_of_tr(tab_res, table_field_key, entry_data_key);
 
@@ -2635,7 +2714,7 @@ var htmldom = (function () {
 			for (var j = 0; j < tab_res.rows[tr_index].cells.length; j++) {
 				var mycell = tab_res.rows[tr_index].cells[j];
 				if (mycell.getAttribute("field") == entry_data_field) {
-					var cell_inner = _cell_inner_str(obj_val, entry_data_field);
+					var cell_inner = _cell_inner_str(obj_val, entry_data_field, my_field_conf.value_text_len);
 					mycell.setAttribute("value", cell_inner.str_value);
 					mycell.innerHTML = cell_inner.str_html;
 				}

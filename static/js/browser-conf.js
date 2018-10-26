@@ -1,4 +1,5 @@
 var browser_conf = {
+  //"sparql_endpoint": "http://localhost:8080/sparql",
   "sparql_endpoint": "https://w3id.org/oc/sparql",
 
   "prefixes": [
@@ -12,7 +13,9 @@ var browser_conf = {
       {"prefix":"bds","iri":"http://www.bigdata.com/rdf/search#"},
       {"prefix":"fabio","iri":"http://purl.org/spar/fabio/"},
       {"prefix":"pro","iri":"http://purl.org/spar/pro/"},
-      {"prefix":"rdf","iri":"http://www.w3.org/1999/02/22-rdf-syntax-ns#"}
+      {"prefix":"oco","iri":"https://w3id.org/oc/ontology/"},
+      {"prefix":"rdf","iri":"http://www.w3.org/1999/02/22-rdf-syntax-ns#"},
+      {"prefix":"prism","iri":"http://prismstandard.org/namespaces/basic/2.0/"}
     ],
 
   "categories":{
@@ -20,34 +23,39 @@ var browser_conf = {
     "document": {
           "rule": "br\/.*",
           "query": [
-            "SELECT ?my_iri ?short_iri ?id_lit ?type ?short_type ?label ?title ?subtitle ?year ?author_iri ?author_browser_iri ?author (COUNT(distinct ?cites) AS ?out_cits) (COUNT(distinct ?cited_by) AS ?in_cits) WHERE {",
-                 "BIND(<https://w3id.org/oc/corpus/[[VAR]]> as ?my_iri) .",
-                 "?my_iri rdfs:label ?label .",
-                 "?my_iri rdf:type ?type .",
-                 "BIND(REPLACE(STR(?my_iri), 'https://w3id.org/oc/corpus', '', 'i') as ?short_iri) .",
-                 "BIND(REPLACE(STR(?type), 'http://purl.org/spar/fabio/', '', 'i') as ?short_type) .",
-                 "OPTIONAL {?my_iri dcterms:title ?title .}",
-                 "OPTIONAL {?my_iri fabio:hasSubtitle ?subtitle .}",
-                 "OPTIONAL {?my_iri fabio:hasPublicationYear ?year .}",
-                 "OPTIONAL {?my_iri cito:cites ?cites .}",
-                 "OPTIONAL {?cited_by cito:cites ?my_iri .}",
-                   "OPTIONAL {",
+            "SELECT DISTINCT ?my_iri ?id_lit ?short_iri ?title ?subtitle ?year ?type ?short_type ?label ?author ?author_browser_iri (COUNT(?cites) AS ?out_cits) (COUNT(distinct ?cited_by) AS ?in_cits) Where{",
+            "  	BIND(<https://w3id.org/oc/corpus/[[VAR]]> as ?my_iri) .",
+            "	  ?my_iri rdf:type ?type .",
+            "  	OPTIONAL {?my_iri dcterms:title ?title .}",
+            "  	BIND('[[VAR]]' as ?short_iri) .",
+            "	  BIND(REPLACE(STR(?type), 'http://purl.org/spar/fabio/', '', 'i') as ?short_type) .",
+            "	  OPTIONAL {?my_iri fabio:hasSubtitle ?subtitle .}",
+            "	  OPTIONAL {?my_iri prism:publicationDate ?year .}",
+            "	  OPTIONAL {?my_iri cito:cites ?cites .}",
+            "  	OPTIONAL {?cited_by cito:cites ?my_iri .}",
+            "   OPTIONAL {",
                       "?my_iri datacite:hasIdentifier [",
                       "datacite:usesIdentifierScheme datacite:doi ;",
-                   "literal:hasLiteralValue ?id_lit",
-                        "]",
-                   "}",
-                   "OPTIONAL {",
-                          "?my_iri pro:isDocumentContextFor [",
-                              "pro:withRole pro:author ;",
-                              "pro:isHeldBy ?author_iri",
-                          "].",
-                          "BIND(REPLACE(STR(?author_iri), '/corpus/', '/browser/', 'i') as ?author_browser_iri) .",
-                          "?author_iri foaf:familyName ?fname .",
-                          "?author_iri foaf:givenName ?name .",
-                          "BIND(CONCAT(STR(?name),' ', STR(?fname)) as ?author) .",
-                   "}",
-            "} GROUP BY ?my_iri ?short_iri ?id_lit ?type ?short_type ?label ?title ?subtitle ?year ?author_iri ?author_browser_iri ?author"
+                      "literal:hasLiteralValue ?id_lit",
+                      "]",
+            "   }",
+            "  	{",
+            "      SELECT ?my_iri ?label ?author ?author_browser_iri (count(?next) as ?tot){",
+            "      				         ?my_iri rdfs:label ?label .",
+            "                      OPTIONAL {",
+            "                          ?my_iri pro:isDocumentContextFor ?role .",
+            "                          ?role pro:withRole pro:author ; pro:isHeldBy [",
+            "                              foaf:familyName ?f_name ;",
+            "                               foaf:givenName ?g_name",
+            "                          ] .",
+            "                          ?role pro:isHeldBy ?author_iri .",
+            "                          BIND(REPLACE(STR(?author_iri), '/corpus/', '/browser/', 'i') as ?author_browser_iri) .",
+            "                          OPTIONAL { ?role oco:hasNext* ?next }",
+            "                          BIND(CONCAT(?g_name,' ',?f_name) as ?author)",
+            "                      }",
+            "      } GROUP BY ?my_iri ?label ?author ?author_browser_iri ORDER BY DESC(?tot)",
+            "  	}",
+            "} GROUP BY ?my_iri ?id_lit ?short_iri ?title ?subtitle ?year ?type ?short_type ?label ?author ?author_browser_iri"
           ],
           "links": {
             "author": {"field":"author_browser_iri","prefix":""},
@@ -67,11 +75,11 @@ var browser_conf = {
           "contents": {
             "extra": {
                 "browser_view_switch":{
-                    "labels":["ldd","Browser"],
+                    "labels":["Switch to metadata view","Switch to browser view"],
                     "values":["short_iri","short_iri"],
-                    "regex":["w3id.org\/oc\/corpus\/br\/.*","w3id.org\/oc\/browser\/br\/.*"],
-                    "query":[["SELECT ?resource WHERE {BIND(<https://w3id.org/oc/corpus[[VAR]]> as ?resource)}"],["SELECT ?resource WHERE {BIND(<https://w3id.org/oc/corpus[[VAR]]> as ?resource)}"]],
-                    "links":["https://w3id.org/oc/corpus[[VAR]]","https://w3id.org/oc/browser[[VAR]]"]
+                    "regex":["corpus\/br\/.*","browser\/br\/.*"],
+                    "query":[["SELECT ?resource WHERE {BIND(<https://w3id.org/oc/corpus/[[VAR]]> as ?resource)}"],["SELECT ?resource WHERE {BIND(<https://w3id.org/oc/corpus/[[VAR]]> as ?resource)}"]],
+                    "links":["https://w3id.org/oc/corpus/[[VAR]]","https://w3id.org/oc/browser/[[VAR]]"]
                 }
             },
             "header": [
@@ -85,8 +93,9 @@ var browser_conf = {
               {"classes":["20px"]},
               {"fields": ["FREE-TEXT","id_lit"], "values":["DOI: ", null] },
               {"fields": ["FREE-TEXT","year"], "values":["Publication date: ", null] },
+              {"fields": ["FREE-TEXT","short_iri"], "values":["OpenCitations Corpus ID: ", null] },
+              //{"fields": ["FREE-TEXT", "EXT_DATA"], "values": ["Publisher: ", "crossref4doi.message.publisher"]},
               {"fields": ["FREE-TEXT","short_type"], "values":["Document type: ",null], "concat_style":{"short_type": "last"} }
-              /*{"fields": ["FREE-TEXT", "EXT_DATA"], "values": ["Publisher: ", "crossref4doi.message.publisher"]}*/
             ],
             "metrics": [
               {"classes":["30px"]},
@@ -100,19 +109,8 @@ var browser_conf = {
             "oscar": [
               {
                 "query_text": "my_iri",
-                "rule": "doc_cites_list",
-                "label":"References",
-                "config_mod" : [
-      							//{"key":"categories.[[name,document]].fields.[[title,Publisher]]" ,"value":"REMOVE_ENTRY"},
-      							{"key":"page_limit_def" ,"value":30},
-      							{"key":"categories.[[name,document]].fields.[[title,Cited by]].sort.default" ,"value":{"order": "desc"}},
-      							{"key":"progress_loader.visible" ,"value":false}
-      					]
-              },
-              {
-                "query_text": "my_iri",
                 "rule": "doc_cites_me_list",
-                "label":"Citations",
+                "label":"Citations of this work by others",
                 "config_mod" : [
       							//{"key":"categories.[[name,document]].fields.[[title,Publisher]]" ,"value":"REMOVE_ENTRY"},
       							{"key":"page_limit_def" ,"value":30},
@@ -120,13 +118,23 @@ var browser_conf = {
       							{"key":"categories.[[name,document]].fields.[[title,Year]].sort.default" ,"value":{"order": "asc"}},
       							{"key":"progress_loader.visible" ,"value":false}
       					]
+              },
+              {
+                "query_text": "my_iri",
+                "rule": "doc_cites_list",
+                "label":"Outgoing references",
+                "config_mod" : [
+      							//{"key":"categories.[[name,document]].fields.[[title,Publisher]]" ,"value":"REMOVE_ENTRY"},
+      							{"key":"page_limit_def" ,"value":30},
+      							{"key":"categories.[[name,document]].fields.[[title,Cited by]].sort.default" ,"value":{"order": "desc"}},
+      							{"key":"progress_loader.visible" ,"value":false}
+      					]
               }
             ]
-          }
-          /*,
+          },
           "ext_data": {
-            "crossref4doi": {"name": call_crossref, "param": {"fields":["id_lit","FREE-TEXT"],"values":[null,1]}}
-          },*/
+            //"crossref4doi": {"name": call_crossref, "param": {"fields":["id_lit","FREE-TEXT"],"values":[null,1]}}
+          }
     },
 
     "author": {
@@ -195,8 +203,8 @@ var browser_conf = {
                 "config_mod" : [
       							{"key":"categories.[[name,document]].fields.[[title,Publisher]]" ,"value":"REMOVE_ENTRY"},
       							{"key":"page_limit_def" ,"value":20},
-      							{"key":"categories.[[name,document]].fields.[[title,Year]].sort.default" ,"value":{"order": "desc"}},
-      							{"key":"progress_loader.visible" ,"value":false}
+      							{"key":"categories.[[name,document]].fields.[[title,Year]].sort.default" ,"value":{"order": "desc"}}
+                    //{"key":"progress_loader.visible" ,"value":false}
       					]
               }
             ]
@@ -224,6 +232,8 @@ function call_crossref(str_doi, field){
                 result_data = b_util.get_obj_key_val(res_obj,field);
               }
             }
+            //console.log(result_data);
+            //browser._update_page();
         }
    });
    return result_data;
