@@ -385,6 +385,9 @@ The operations that this API implements are:
                         addon_abspath = abspath(dirname(conf_file) + sep + item["addon"])
                         path.append(dirname(addon_abspath))
                         self.addon = import_module(basename(addon_abspath))
+                    self.sparql_http_method = "post"
+                    if "method" in item:
+                        self.sparql_http_method = item["method"].strip().lower()
                 else:
                     self.conf[APIManager.nor_api_url(item, self.base_url)] = item
 
@@ -413,11 +416,12 @@ The operations that this API implements are:
     # Data type: START
     @staticmethod
     def duration(s):
-        """This method returns the data type for durations according to the XML Schema Recommendation
-        (https://www.w3.org/TR/xmlschema11-2/#duration) from the input string. In case the input string is None or
-        it is empty, an high duration value (i.e. 2000 years) is returned."""
-        if s is None and s != "":
-            d = parse_duration("PY2000")
+        """This method returns the data type for durations according to the XML Schema
+        Recommendation (https://www.w3.org/TR/xmlschema11-2/#duration) from the input string.
+        In case the input string is None or it is empty, an high duration value
+        (i.e. 2000 years) is returned."""
+        if s is None or s == "":
+            d = parse_duration("P2000Y")
         else:
             d = parse_duration(s)
 
@@ -677,7 +681,6 @@ The operations that this API implements are:
                                     APIManager.add_item_in_dict(row, keys,
                                                                 v.split(separator) if v != "" else [], idx)
                             elif op_type == "dict":
-                                print(op_type, separator, keys, entries, v)
                                 new_fields = entries[1:]
                                 new_fields_max_split = len(new_fields) - 1
                                 if type(v) is str:
@@ -945,12 +948,14 @@ The operations that this API implements are:
                             par_value = par_man[idx]
                         query = query.replace("[[%s]]" % par[idx], str(par_value))
 
-                    r = post(self.tp, data=query, headers={"Accept": "text/csv",
-                                                           "Content-Type": "application/sparql-query"})
+                    if self.sparql_http_method == "get":
+                        r = get(self.tp + "?query=" + quote(query), headers={"Accept": "text/csv"})
+                    else:
+                        r = post(self.tp, data=query, headers={"Accept": "text/csv",
+                                                               "Content-Type": "application/sparql-query"})
                     r.encoding = "utf-8"
                     sc = r.status_code
                     if sc == 200:
-                        print(r.text)
                         # This line has been added to avoid a strage behaviour of the 'splitlines' method in
                         # presence of strange characters (non-UTF8).
                         list_of_lines = [line.decode("utf-8") for line in r.text.encode("utf-8").splitlines()]
