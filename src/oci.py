@@ -43,6 +43,7 @@ PREFIX_REGEX = "0[1-9]+0"
 VALIDATION_REGEX = "^((%s[0-9])|[1-9])[0-9]*$" % PREFIX_REGEX
 FORMATS = {
     "xml": "xml",
+    "rdfxml": "xml",
     "rdf/xml": "xml",
     "application/rdf+xml": "xml",
     "turtle": "turtle",
@@ -53,8 +54,11 @@ FORMATS = {
     "scholix": "scholix",
     "application/json": "json",
     "json-ld": "json-ld",
+    "jsonld": "json-ld",
     "application/ld+json": "json-ld",
     "n-triples": "nt11",
+    "ntriples": "nt11",
+    "nt": "nt11",
     "text/plain": "nt11",
     "text/n-triples": "nt11",
     "csv": "csv",
@@ -620,7 +624,7 @@ if __name__ == "__main__":
     arg_parser.add_argument("-f", "--format", dest="format", default=None,
                             help="If the format is specified, the script tries to retrieve citation information that "
                                  "will be returned in the requested format. Possible formats: 'csv', 'json', "
-                                 "'scholix', 'json-ld', 'turtle', 'xml', 'n-triples'")
+                                 "'scholix', 'jsonld', 'ttl', 'rdfxml', 'nt'")
 
     args = arg_parser.parse_args()
 
