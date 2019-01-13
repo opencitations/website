@@ -22,6 +22,7 @@ from src.rrh import RewriteRuleHandler
 from src.ldd import LinkedDataDirector
 from src.ved import VirtualEntityDirector
 from src.ramose import APIManager
+from src.oci import OCIManager
 import requests
 import urllib.parse as urlparse
 import re
@@ -192,7 +193,6 @@ class Api:
                 return man.get_htmldoc()[1]
             else:
                 content_type = web.ctx.env.get('HTTP_ACCEPT')
-                print(content_type)
                 if content_type is not None and "text/csv" in content_type:
                     content_type = "text/csv"
                 else:
@@ -233,13 +233,47 @@ class OCI:
         data = web.input()
         if "oci" in data:
             clean_oci = re.sub("\s+", "", re.sub("^oci:", "", data.oci.strip(), flags=re.IGNORECASE))
-            raise web.seeother(c["oc_base_url"] + "/" + active + "/" + clean_oci)
+
+            cur_format = ".rdf"
+            if "format" in data:
+                cur_format = "." + data.format.strip().lower()
+
+            raise web.seeother(c["oc_base_url"] + "/" + active + "/" + clean_oci + cur_format)
+
         elif oci is None or oci.strip() == "":
             web_logger.mes()
             return render.oci(pages, active)
         else:
             web_logger.mes()
-            raise web.seeother(c["oc_base_url"] + c["virtual_local_url"] + "ci" + oci)
+            clean_oci, ex = re.findall("^([^\.]+)(\.[a-z]+)?$", oci.strip().lower())[0]
+            exs = (".csv", ".json", ".scholix", ".jsonld", ".ttl", ".nt", ".xml")
+            if ex in exs:
+                cur_format = ex[1:]
+                om_conf = c["ved_conf"]
+                om = OCIManager("oci:" + clean_oci[1:], om_conf["lookup"], om_conf["oci_conf"])
+                cit = om.get_citation_data(cur_format)
+                if cit:
+                    if cur_format == "csv":
+                        ct_header = "text/csv"
+                    elif cur_format == "jsonld":
+                        ct_header = "application/ld+json"
+                    elif cur_format == "ttl":
+                        ct_header = "text/turtle"
+                    elif cur_format == "nt":
+                        ct_header = "application/n-triples"
+                    elif cur_format == "xml":
+                        ct_header = "application/rdf+xml"
+                    else:
+                        ct_header = "application/json"
+
+                    web.header('Access-Control-Allow-Origin', '*')
+                    web.header('Access-Control-Allow-Credentials', 'true')
+                    web.header('Content-Type', ct_header)
+                    return cit
+            else:
+                raise web.seeother(c["oc_base_url"] + c["virtual_local_url"] + "ci" + clean_oci)
+
+
 
 
 class Index:

@@ -85,6 +85,15 @@ $def with (pages, active)
                         <label for="oci">oci</label>:
                         <input style="min-width:350px" name="oci" type="text" class="form-control" id="oci" placeholder="E.g.: 1-18">
                     </div>
+                    <div class="form-group">
+                        <label for="format">format</label>:
+                        <select class="form-control" name="format" id="format">
+                            <option selected="selected" value="rdf">RDF</option>
+                            <option value="scholix">Scholix</option>
+                            <option value="json">JSON</option>
+                            <option value="csv">CSV</option>
+                        </select>
+                    </div>
                     <input type="submit" class="btn btn-success" value="Look up citation"></input>
                 </form>
                 <div class="left" style="margin-top: 30px">

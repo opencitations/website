@@ -15,12 +15,7 @@
 
 import re
 import web
-from SPARQLWrapper import SPARQLWrapper, JSON
-from urllib.parse import quote
-from datetime import datetime
-from src.citation import Citation
-from urllib.parse import quote
-from csv import DictReader
+from src.oci import OCIManager
 
 
 class VirtualEntityDirector(object):
@@ -40,18 +35,6 @@ class VirtualEntityDirector(object):
         self.virtual_baseurl = self.ldd.baseurl.replace(self.ldd.corpus_local_url, self.virtual_local_url)
         self.conf = conf
         self.virtual_entity_director = self.ldd.baseurl + "prov/pa/7"
-        self.f = {
-            "doi_decode": self.__doi_decode,
-            "encode": quote
-        }
-
-        self.lookup = {}
-        if "lookup" in self.conf:
-            with open(self.conf["lookup"]) as f:
-                reader = DictReader(f)
-                for row in reader:
-                    self.lookup[row["code"]] = row["c"]
-
 
     def redirect(self, url):
         if url.endswith(self.__extensions):
@@ -81,85 +64,19 @@ class VirtualEntityDirector(object):
             elif re.match("^id/%s%s$" % (self.__identifier_local_url_re, ex_regex), url) is not None:
                 return self.__handle_identifier(url, ex_regex)
 
-    def __execute_query(self, citing_entity, cited_entity):
-        result = None
-
-        try:
-            i = iter(self.conf["ci"])
-            while result is None:
-                item = next(i)
-                query, prefix, tp, use_it, preprocess = item["query"], item["prefix"], item["tp"], item["use_it"], \
-                                                        item["preprocess"] if "preprocess" in item else []
-
-                citing = citing_entity
-                cited = cited_entity
-
-                if use_it == "yes" and citing.startswith(prefix) and cited.startswith(prefix):
-                    citing = re.sub("^" + prefix, "", citing)
-                    cited = re.sub("^" + prefix, "", cited)
-
-                    for f_name in preprocess:
-                        citing = self.f[f_name](citing)
-                        cited = self.f[f_name](cited)
-
-                    sparql = SPARQLWrapper(tp)
-                    sparql_query = re.sub("\\[\\[CITED\\]\\]", cited,
-                                          re.sub("\\[\\[CITING\\]\\]", citing, query))
-
-                    sparql.setQuery(sparql_query)
-                    sparql.setReturnFormat(JSON)
-                    q_res = sparql.query().convert()["results"]["bindings"]
-                    if len(q_res) > 0:
-                        answer = q_res[0]
-                        result = answer["citing"]["value"], answer["cited"]["value"], \
-                                 answer["citing_date"]["value"] if "citing_date" in answer else None, \
-                                 answer["cited_date"]["value"] if "cited_date" in answer else None, \
-                                 answer["creation"]["value"] if "creation" in answer else None, \
-                                 answer["timespan"]["value"] if "timespan" in answer else None, \
-                                 tp + "?query=" + quote(sparql_query)
-
-        except StopIteration:
-            pass  # No nothing
-
-        return result
-
     def __handle_citation(self, url, ex_regex):
-        citing_entity_local_id = re.sub("^ci/%s%s$" % (self.__citation_local_url_re, ex_regex), "\\1", url)
-        cited_entity_local_id = re.sub("^ci/%s%s$" % (self.__citation_local_url_re, ex_regex), "\\6", url)
-
-        res = self.__execute_query(citing_entity_local_id, cited_entity_local_id)
-        if res is not None:
-            citing_url, cited_url, full_citing_pub_date, full_cited_pub_date, creation, timespan, sparql_query_url = res
-
-            citation = Citation(citing_entity_local_id, citing_url, full_citing_pub_date,
-                                cited_entity_local_id, cited_url, full_cited_pub_date,
-                                creation, timespan,
-                                self.virtual_entity_director, sparql_query_url,
-                                datetime.now().strftime('%Y-%m-%dT%H:%M:%S'))
-
-            return self.ldd.get_representation(url, True, citation.get_citation_rdf(self.virtual_baseurl, False))
+        oci = "oci:%s" % re.sub("^ci/(.+)%s$" % ex_regex, "\\1", url).split(".")[0]
+        print(oci, self.conf["lookup"], self.conf["oci_conf"])
+        om = OCIManager(oci, self.conf["lookup"], self.conf["oci_conf"])
+        citation_g = om.get_citation_object().get_citation_rdf(self.virtual_baseurl, False)
+        if citation_g:
+            return self.ldd.get_representation(url, True, citation_g)
 
     def __handle_identifier(self, url, ex_regex):
         identified_entity_corpus_id = re.sub("^id/%s%s$" % (self.__identifier_local_url_re, ex_regex), "\\1/\\2-\\7",
                                              url)
-        identified_entity_rdf = self.get_representation(identified_entity_corpus_id + ".rdf")
-        if identified_entity_rdf is not None:
-            citing_entity_local_id, cited_entity_local_id = identified_entity_corpus_id[3:].split("-")
-            identifier = Citation(citing_entity_local_id, None, None,
-                                  cited_entity_local_id, None, None,
-                                  None, None,
-                                  self.virtual_entity_director,
-                                  self.virtual_baseurl + identified_entity_corpus_id,
-                                  datetime.now().strftime('%Y-%m-%dT%H:%M:%S'))
-            return self.ldd.get_representation(url, True, identifier.get_oci_rdf(self.virtual_baseurl))
-
-    def __doi_decode(self, s):
-        result = []
-
-        for code in re.findall("(9*[0-8][0-9])", s):
-            if code in self.lookup:
-                result.append(self.lookup[code])
-            else:
-                result.append(code)
-
-        return "10." + "".join(result)
+        oci = "oci:%s" % re.sub("^ci/(.+)$", "\\1", identified_entity_corpus_id)
+        om = OCIManager(oci, self.conf["lookup"], self.conf["oci_conf"])
+        oci_g = om.get_citation_object().get_oci_rdf(self.virtual_baseurl)
+        if oci_g:
+            return self.ldd.get_representation(url, True, oci_g)
