@@ -336,7 +336,8 @@ class OCIManager(object):
             "shape": OCIManager.__shape,
             "normdate": OCIManager.__normdate,
             "datestrings": OCIManager.__datestrings,
-            "api": OCIManager.__call_api
+            "api": OCIManager.__call_api,
+            "avoid_prefix_removal": OCIManager.__avoid_prefix_removal
         }
         self.lookup = {}
         if lookup_file is not None and exists(lookup_file):
@@ -372,6 +373,10 @@ class OCIManager(object):
             return l
 
     @staticmethod
+    def __avoid_prefix_removal(s):
+        return "0123567890" + s
+
+    @staticmethod
     def __shape(id_s, base=""):
         return base + quote(id_s)
 
@@ -402,16 +407,17 @@ class OCIManager(object):
                 i = iter(self.conf["services"])
                 while result is None:
                     item = next(i)
-                    name, query, api, tp, use_it, preprocess, prefix, id_type, id_shape = \
+                    name, query, api, tp, use_it, preprocess, prefix, id_type, id_shape, avoid_prefix_removal = \
                         item.get("name"), item.get("query"), item.get("api"), item.get("tp"), item.get("use_it"), \
                         item["preprocess"] if "preprocess" in item else [], \
-                        item["prefix"] if "prefix" in item else [], item.get("id_type"), item.get("id_shape")
+                        item["prefix"] if "prefix" in item else [], item.get("id_type"), item.get("id_shape"), \
+                        item["avoid_prefix_removal"] == "yes" if "avoid_prefix_removal" in item else False
 
                     if use_it == "yes":
                         citing = sub("^%s(.+)$" % PREFIX_REGEX, "\\1", citing_entity) \
-                            if citing_entity.startswith("0") else citing_entity
+                            if citing_entity.startswith("0") and not avoid_prefix_removal else citing_entity
                         cited = sub("^%s(.+)$" % PREFIX_REGEX, "\\1", cited_entity) \
-                            if cited_entity.startswith("0") else cited_entity
+                            if cited_entity.startswith("0") and not avoid_prefix_removal else cited_entity
 
                         for f_name in preprocess:
                             citing = self.f[f_name](citing)
