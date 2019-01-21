@@ -22,15 +22,20 @@ from rdflib import Graph, RDF, RDFS, XSD, URIRef, Literal, Namespace
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
-from json import dumps, load, loads
+from json import dumps, load, loads, JSONDecodeError
 from csv import DictWriter
 from io import StringIO
 from SPARQLWrapper import SPARQLWrapper, JSON
 from os.path import exists
 from collections import deque
 from requests import get
+from xml.etree import ElementTree
 
 
+REFERENCE_CITATION_TYPE = "reference"
+SUPPLEMENT_CITATION_TYPE = "supplement"
+DEFAULT_CITATION_TYPE = REFERENCE_CITATION_TYPE
+CITATION_TYPES = (REFERENCE_CITATION_TYPE, SUPPLEMENT_CITATION_TYPE)
 DEFAULT_DATE = datetime(1970, 1, 1, 0, 0)
 AGENT_NAME = "OpenCitations"
 USER_AGENT = "OCI / %s (via OpenCitations - http://opencitations.net; mailto:contact@opencitations.net)" % AGENT_NAME
@@ -40,7 +45,7 @@ W = "WARNING"
 E = "ERROR"
 I = "INFO"
 PREFIX_REGEX = "0[1-9]+0"
-VALIDATION_REGEX = "^((%s[0-9])|[1-9])[0-9]*$" % PREFIX_REGEX
+VALIDATION_REGEX = "^%s[0-9]+$" % PREFIX_REGEX
 FORMATS = {
     "xml": "xml",
     "rdfxml": "xml",
@@ -97,7 +102,7 @@ class Citation(object):
                  cited_url, cited_pub_date,
                  creation, timespan,
                  prov_agent_url, source, prov_date,
-                 service_name, id_type, id_shape):
+                 service_name, id_type, id_shape, citation_type):
         self.oci = oci
         self.citing_url = citing_url
         self.cited_url = cited_url
@@ -105,6 +110,7 @@ class Citation(object):
         self.creation_date = creation
         self.citing_pub_date = citing_pub_date[:10] if citing_pub_date else citing_pub_date
         self.cited_pub_date = cited_pub_date[:10] if cited_pub_date else cited_pub_date
+        self.citation_type = citation_type if citation_type in CITATION_TYPES else DEFAULT_CITATION_TYPE
 
         if self.contains_years(citing_pub_date):
             self.creation_date = citing_pub_date[:10]
@@ -217,13 +223,20 @@ class Citation(object):
         return dumps(result, indent=4, ensure_ascii=False)
 
     def get_citation_scholix(self):
+        if self.citation_type == REFERENCE_CITATION_TYPE:
+            rel_type = "References"
+        elif self.citation_type == SUPPLEMENT_CITATION_TYPE:
+            rel_type = "IsSupplementedBy"
+        else:
+            rel_type = "References"
+
         result = {
             "LinkPublicationDate": self.prov_date,
             "LinkProvider": [
                 {"Name": AGENT_NAME},
                 {"Name": self.service_name}
             ],
-            "RelationshipType": {"Name": "References"},
+            "RelationshipType": {"Name": rel_type},
             "LicenseURL": "https://creativecommons.org/publicdomain/zero/1.0/legalcode",
             "Source": {
                 "Identifier": {
@@ -334,6 +347,7 @@ class OCIManager(object):
             "encode": quote,
             "join": OCIManager.__join,
             "shape": OCIManager.__shape,
+            "remove": OCIManager.__remove,
             "normdate": OCIManager.__normdate,
             "datestrings": OCIManager.__datestrings,
             "api": OCIManager.__call_api,
@@ -381,6 +395,10 @@ class OCIManager(object):
         return base + quote(id_s)
 
     @staticmethod
+    def __remove(id_s, to_remove=""):
+        return id_s.replace(to_remove, "")
+
+    @staticmethod
     def __normdate(date_s):
         return sub("[^\d-]", "", date_s)
 
@@ -407,34 +425,38 @@ class OCIManager(object):
                 i = iter(self.conf["services"])
                 while result is None:
                     item = next(i)
-                    name, query, api, tp, use_it, preprocess, prefix, id_type, id_shape, avoid_prefix_removal = \
+                    name, query, api, tp, use_it, preprocess, prefix, id_type, id_shape, citation_type = \
                         item.get("name"), item.get("query"), item.get("api"), item.get("tp"), item.get("use_it"), \
                         item["preprocess"] if "preprocess" in item else [], \
                         item["prefix"] if "prefix" in item else [], item.get("id_type"), item.get("id_shape"), \
-                        item["avoid_prefix_removal"] == "yes" if "avoid_prefix_removal" in item else False
+                        item["citation_type"] if "citation_type" in item else DEFAULT_CITATION_TYPE
 
-                    if use_it == "yes":
-                        citing = sub("^%s(.+)$" % PREFIX_REGEX, "\\1", citing_entity) \
-                            if citing_entity.startswith("0") and not avoid_prefix_removal else citing_entity
-                        cited = sub("^%s(.+)$" % PREFIX_REGEX, "\\1", cited_entity) \
-                            if cited_entity.startswith("0") and not avoid_prefix_removal else cited_entity
+                    if use_it == "yes" and all(sub("^(%s).+$" % PREFIX_REGEX, "\\1", p) in prefix
+                                               for p in (citing_entity, cited_entity)):
+                        citing = sub("^%s(.+)$" % PREFIX_REGEX, "\\1", citing_entity)
+                        cited = sub("^%s(.+)$" % PREFIX_REGEX, "\\1", cited_entity)
 
                         for f_name in preprocess:
                             citing = self.f[f_name](citing)
                             cited = self.f[f_name](cited)
 
                         if tp is None:
-                            rest_query = api.replace("[[CITING]]", quote(citing))
-                            json_res = OCIManager.__call_api(rest_query)
-
-                            if json_res:
-                                result = self.__read_api_data(json_res, query.get("citing"), citing, cited, api), \
-                                         self.__read_api_data(json_res, query.get("cited"), citing, cited, api), \
-                                         self.__read_api_data(json_res, query.get("citing_date"), citing, cited, api), \
-                                         self.__read_api_data(json_res, query.get("cited_date"), citing, cited, api), \
-                                         self.__read_api_data(json_res, query.get("creation"), citing, cited, api), \
-                                         self.__read_api_data(json_res, query.get("timespan"), citing, cited, api), \
-                                         rest_query, name, id_type, id_shape
+                            rest_query = api.replace("[[CITING]]", quote(citing)).replace("[[CITED]]", quote(cited))
+                            structured_res, type_res = OCIManager.__call_api(rest_query)
+                            if structured_res:
+                                result = self.__read_api_data(structured_res, type_res, query.get("citing"),
+                                                              citing, cited, api), \
+                                         self.__read_api_data(structured_res, type_res, query.get("cited"),
+                                                              citing, cited, api), \
+                                         self.__read_api_data(structured_res, type_res, query.get("citing_date"),
+                                                              citing, cited, api), \
+                                         self.__read_api_data(structured_res, type_res, query.get("cited_date"),
+                                                              citing, cited, api), \
+                                         self.__read_api_data(structured_res, type_res, query.get("creation"),
+                                                              citing, cited, api), \
+                                         self.__read_api_data(structured_res, type_res, query.get("timespan"),
+                                                              citing, cited, api), \
+                                         rest_query, name, id_type, id_shape, citation_type
                         else:
                             sparql = SPARQLWrapper(tp)
                             sparql_query = sub("\\[\\[CITED\\]\\]", cited, sub("\\[\\[CITING\\]\\]", citing, query))
@@ -450,7 +472,7 @@ class OCIManager(object):
                                          answer["cited_date"]["value"] if "cited_date" in answer else None, \
                                          answer["creation"]["value"] if "creation" in answer else None, \
                                          answer["timespan"]["value"] if "timespan" in answer else None, \
-                                         tp + "?query=" + quote(sparql_query), name, id_type, id_shape
+                                         tp + "?query=" + quote(sparql_query), name, id_type, id_shape, citation_type
 
             except StopIteration:
                 pass  # No nothing
@@ -459,16 +481,25 @@ class OCIManager(object):
 
     @staticmethod
     def __call_api(u):
-        json_res = None
+        structured_res = None
+        type_res = None
 
         res = get(u, headers={"User-Agent": USER_AGENT}, timeout=30)
+
         if res.status_code == 200:
             res.encoding = "utf-8"
-            json_res = loads(res.text)
+            cur_str = res.text
 
-        return json_res
+            try:
+                structured_res = loads(cur_str)
+                type_res = "json"
+            except JSONDecodeError:
+                structured_res = ElementTree.fromstring(cur_str)
+                type_res = "xml"
 
-    def __read_api_data(self, data, access_list, citing, cited, api):
+        return structured_res, type_res
+
+    def __read_api_data(self, data, type_format, access_list, citing, cited, api):
         result = None
 
         if data and access_list:
@@ -494,6 +525,8 @@ class OCIManager(object):
                     f_name, f_params = findall("([^\(]+)\((.*)\)", access_operation)[0]
                     f_params = f_params.split(",") if f_params else []
                     result = self.f[f_name](*f_params)
+                    if type(result) is tuple:
+                        result, type_format = result
                 elif match("\[[0-9]+\]", access_operation):
                     cur_n = int(sub("\[([0-9]+)\]", "\\1", access_operation))
                     if type(data) is list and cur_n < len(data):
@@ -508,7 +541,24 @@ class OCIManager(object):
                             if item_value is not None and item_value.lower() == right.lower():
                                 result = item
                 else:
-                    result = data.get(access_operation)
+                    if type_format == "json":
+                        result = data.get(access_operation)
+                    elif type_format == "xml":
+                        el = None
+
+                        if match("^({.+})?%s$" % access_operation, data.tag):
+                            el = data
+                        else:
+                            children = deque(data)
+                            while el is None and children:
+                                child = children.popleft()
+                                if match("^({.+})?%s$" % access_operation, child.tag):
+                                    el = child
+
+                        result = el
+
+                if result is not None and not access_operations and type_format == "xml":
+                    result = sub("\s+", " ", result.text).strip()
 
                 if f_to_execute and result is not None:
                     for f in f_to_execute:
@@ -516,9 +566,12 @@ class OCIManager(object):
                         f_params = f_params.split(",") if f_params else []
                         f_params.insert(0, result)
                         result = self.f[f_name](*f_params)
+                        if type(result) is tuple:
+                            result, type_format = result
 
                 if access_operations:
-                    result = self.__read_api_data(result, ["::".join(access_operations)], citing, cited, api)
+                    result = self.__read_api_data(result, type_format, ["::".join(access_operations)],
+                                                  citing, cited, api)
 
         return result
 
@@ -537,21 +590,17 @@ class OCIManager(object):
 
                 while service_queue and not self.is_valid:
                     service_prefixes = service_queue.popleft()["prefix"]
-                    self.is_valid = all(
-                        (entity.startswith("0") and sub("^(%s).+$" % PREFIX_REGEX, "\\1", entity) in service_prefixes)
-                        or
-                        (not entity.startswith("0") and "" in service_prefixes)
-                        for entity in entities)
+                    self.is_valid = all(sub("^(%s).+$" % PREFIX_REGEX, "\\1", entity) in service_prefixes
+                                        for entity in entities)
 
                 if self.is_valid:
                     self.add_message("validate", I, "The OCI '%s' is syntactically valid." % self.oci)
                 else:
-
                     self.add_message("validate", E, "The supplier prefixes '%s' and '%s' used in the identifiers of "
                                                     "the citing and cited entities described by the OCI '%s' must be "
                                                     "assigned to the same supplier. A list of all the available "
                                                     "suppliers is available at http://opencitations.net/oci." %
-                                     (tuple(sub("^(%s).+$", "\\1", entity) if entity.startswith("0") else ""
+                                     (tuple(sub("^(%s).+$" % PREFIX_REGEX, "\\1", entity)
                                             for entity in entities) + (self.oci,)))
 
             else:
@@ -570,7 +619,7 @@ class OCIManager(object):
             res = self.__execute_query(citing_entity_local_id, cited_entity_local_id)
             if res is not None:
                 citing_url, cited_url, full_citing_pub_date, full_cited_pub_date, \
-                creation, timespan, sparql_query_url, name, id_type, id_shape = res
+                creation, timespan, sparql_query_url, name, id_type, id_shape, citation_type = res
 
                 citation = Citation(self.oci,
                                     citing_url, full_citing_pub_date,
@@ -578,7 +627,7 @@ class OCIManager(object):
                                     creation, timespan,
                                     URL, sparql_query_url,
                                     datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
-                                    name, id_type, id_shape)
+                                    name, id_type, id_shape, citation_type)
 
                 return citation
             else:
