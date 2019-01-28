@@ -103,6 +103,9 @@ rewrite = RewriteRuleHandler(
          True),
         ("^/ontology.ttl",
          "https://w3id.org/oc/ontology.ttl",
+         True),
+        ("^/bcite",
+         "http://212.47.249.17",
          True)
     ],
     urls
