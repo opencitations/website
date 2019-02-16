@@ -17,8 +17,8 @@ var search_conf = {
 "rules":  [
     {
       "name":"citingdoi",
-      "label": "References",
-      "placeholder": "DOI",
+      "label": "References of a specific document",
+      "placeholder": "DOI e.g. 10.1016/J.WEBSEM.2012.08.001",
       "advanced": true,
       "freetext": false,
       "heuristics": [[encodeURIStr]],
@@ -32,8 +32,8 @@ var search_conf = {
     },
     {
       "name":"citeddoi",
-      "label": "Citations",
-      "placeholder": "DOI",
+      "label": "Citations of a specific document",
+      "placeholder": "DOI e.g. 10.1016/J.WEBSEM.2012.08.001",
       "advanced": true,
       "freetext": false,
       "heuristics": [[encodeURIStr]],
@@ -47,8 +47,8 @@ var search_conf = {
     },
     {
       "name":"oci",
-      "label": "Citation resource",
-      "placeholder": "OCI",
+      "label": "Having a specific resource ID",
+      "placeholder": "OCI e.g: 0200101...-0200101...",
       "advanced": true,
       "freetext": false,
       "category": "citation",
@@ -59,6 +59,18 @@ var search_conf = {
             "}"
       ]
     },
+    {
+      "name":"cits_stats",
+      "advanced": false,
+      "freetext": false,
+      "category": "br_stats",
+      "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
+      "query": [
+            "{",
+            "BIND(<http://dx.doi.org/[[VAR]]> as ?doi_iri) .",
+            "}"
+      ]
+    }
   ],
 
 "categories": [
@@ -66,12 +78,12 @@ var search_conf = {
       "name": "citation",
       "label": "Citation",
       "macro_query": [
-        "SELECT DISTINCT ?iri ?browser_iri ?short_iri ?shorter_coci ?citing_doi ?citing_doi_iri ?cited_doi ?cited_doi_iri ?creationdate ?timespan",
+        "SELECT DISTINCT ?iri ?short_iri ?shorter_coci ?citing_doi ?citing_doi_iri ?cited_doi ?cited_doi_iri ?creationdate ?timespan",
             "WHERE  {",
               "[[RULE]]",
               "OPTIONAL {",
                 "BIND(REPLACE(STR(?iri), 'https://w3id.org/oc/index/coci/ci/', '', 'i') as ?short_iri) .",
-                "BIND(REPLACE(STR(?iri), '/coci/', '/coci/browser/', 'i') as ?browser_iri) .",
+                //"BIND(CONCAT(SUBSTR(STR(?short_iri), 0, 20), '...') as ?shorter_coci) .",
                 "?iri cito:hasCitingEntity ?citing_doi_iri .",
                 "BIND(REPLACE(STR(?citing_doi_iri), 'http://dx.doi.org/', '', 'i') as ?citing_doi) .",
                 "?iri cito:hasCitedEntity ?cited_doi_iri .",
@@ -84,7 +96,7 @@ var search_conf = {
             //"LIMIT 2000"
       ],
       "fields": [
-        {"iskey": true, "value":"short_iri", "value_map": [], "limit_length": 20, "title": "OCI","column_width":"10%", "type": "text", "sort":{"value": "short_iri", "type":"text"}, "link":{"field":"browser_iri","prefix":""}},
+        {"iskey": true, "value":"short_iri", "value_map": [], "limit_length": 20, "title": "COCI IRI","column_width":"10%", "type": "text", "sort":{"value": "short_iri", "type":"text"}, "link":{"field":"iri","prefix":""}},
         {"value":"citing_doi", "value_map": [decodeURIStr],"title": "Citing DOI", "column_width":"12%", "type": "text", "sort":{"value": "citing_doi", "type":"text"}, "link":{"field":"citing_doi_iri","prefix":""}},
         {"value": "ext_data.citing_doi_citation.reference", "title": "Citing reference", "column_width":"19%", "type": "text"},
         {"value":"cited_doi", "value_map": [decodeURIStr], "title": "Cited DOI", "column_width":"12%", "type": "text", "sort":{"value": "cited_doi", "type":"text"}, "link":{"field":"cited_doi_iri","prefix":""}},
@@ -103,6 +115,43 @@ var search_conf = {
         {"elem_type": "br","elem_value": "" ,"elem_class": "" ,"elem_innerhtml": ""},
       ]
     },
+    {
+      "name": "br_stats",
+      "interface": false,
+      "macro_query": [`
+        SELECT ?doi_iri ?date ?type ?count
+            WHERE  {
+          			  {
+                          Select ?doi_iri ?date ?type (COUNT (DISTINCT ?ci_in) as ?count){
+                        			  [[RULE]]
+                                ?doi_iri ^cito:hasCitedEntity ?ci_in .
+                                ?ci_in cito:hasCitationCreationDate ?creation_date_in .
+                        			  BIND(SUBSTR(str(?creation_date_in), 0, 4) as ?date) .
+                        			  values ?type { "cits_in" }
+                          		  #BIND(YEAR(?creation_date_in) as ?creation_date_in_year)
+                          }GROUP BY ?doi_iri ?date ?type
+          			  }
+          			  UNION
+          			  {
+                          Select ?doi_iri ?date ?type (COUNT (DISTINCT ?ci_out) as ?count){
+                        			  [[RULE]]
+                                ?doi_iri ^cito:hasCitedEntity ?ci_out .
+                                ?ci_out cito:hasCitationCreationDate ?creation_date_out .
+                        			  BIND(SUBSTR(str(?creation_date_out), 0, 4) as ?date) .
+                  				      values ?type { "cits_out" }
+                        			  #BIND(YEAR(?creation_date_out) as ?creation_date_out_year)
+                          }GROUP BY ?doi_iri ?date ?type
+          			  }
+          }ORDER BY ?date
+        `
+      ],
+      "fields": [
+        {"iskey": true, "value":"doi_iri", "value_map": [], "limit_length": 20, "title": "COCI IRI","column_width":"10%", "type": "text"},
+        {"value":"date", "value_map": [], "limit_length": 20, "title": "COCI IRI","column_width":"10%", "type": "int"},
+        {"value":"type", "value_map": [], "limit_length": 20, "title": "COCI IRI","column_width":"10%", "type": "text"},
+        {"value":"count", "value_map": [], "limit_length": 20, "title": "COCI IRI","column_width":"10%", "type": "int"}
+      ]
+    }
   ],
 
   "page_limit": [5,10,15,20,30,40,50],
@@ -110,9 +159,11 @@ var search_conf = {
   "search_base_path": "search",
   "advanced_search": true,
   "def_adv_category": "citation",
+  "adv_btn_title": "Search the COCI Corpus",
 
   "progress_loader":{
             "visible": true,
+            "spinner": true,
             "title":"Searching the COCI Corpus ...",
             "subtitle":"Be patient - this search might take several seconds!",
             "abort":{"title":"Abort Search","href_link":"search"}

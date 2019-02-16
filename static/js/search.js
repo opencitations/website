@@ -16,6 +16,34 @@ var search = (function () {
 				view: {"data": null, "page": 0, "page_limit": null, "fields_filter_index":{}, "sort": {"field":null, "order":null, "type":null}}
 		}
 
+		function init_oscar_obj(){
+			return {
+					'search_conf_json' : {},
+					'cat_conf' : {},
+					'sparql_results' : null,
+					'sparql_query_add' : null,
+					'ext_data_calls_cache' : {},
+					'async_call': null,
+					'table_conf' : {
+							'data_key' : null,
+							'data': null,
+							'category': "",
+							'filters' : {"limit":null, "arr_entries":[], "fields":[], "data":null},
+							'view': {"data": null, "page": 0, "page_limit": null, "fields_filter_index":{}, "sort": {"field":null, "order":null, "type":null}}
+					}
+			}
+		}
+
+		function reload_oscar_obj(obj){
+			search_conf_json = obj['search_conf_json'];
+			cat_conf = obj['cat_conf'];
+			sparql_results = obj['sparql_results'];
+			sparql_query_add = obj['sparql_query_add'];
+			ext_data_calls_cache = obj['ext_data_calls_cache'];
+			async_call = obj['async_call'];
+			table_conf = obj['table_conf'];
+		}
+
 
 		/* get the rules that matches my query_text*/
 		function _get_rules(query_text) {
@@ -90,7 +118,7 @@ var search = (function () {
 				}
 
 				//decode all boolean connectors
-				reg = /bc=(.+?)(?=&text)/g;
+				reg = /bc_\d{1,}=(and|or|and_not)/g;
 				while (match = reg.exec(qtext)) {
 					res.bcs.push(match[1]);
 				}
@@ -150,10 +178,12 @@ var search = (function () {
 					var qtext_match = qtext_arr[i].match(re);
 					if (qtext_match != null) {
 						qtext_arr[i] = qtext_arr[i].match(re)[0];
+
 					}else {
 						continue;
 					}
 				}
+
 
 				//define category from the first rule
 				var category = _get_rule_by_name(rule_names[0]).category;
@@ -332,8 +362,11 @@ var search = (function () {
         				}
     				},
 						success: function( res_data ) {
-								if (util.get_obj_key_val(search_conf_json,"progress_loader.visible") == true) {
-									htmldom.loader(false);
+
+								if (util.get_obj_key_val(search_conf_json,"interface") != false) {
+									if (util.get_obj_key_val(search_conf_json,"progress_loader.visible") == true) {
+										htmldom.loader(false);
+									}
 								}
 								//console.log(JSON.parse(JSON.stringify(res_data)));
 
@@ -345,10 +378,10 @@ var search = (function () {
 									//in this case don't build the table directly
 									if (callbk_fun != null) {
 									 //look at the rule name
-					 				 Reflect.apply(callbk_fun,undefined,[query_text, JSON.parse(JSON.stringify(res_data))]);
-									 return JSON.parse(JSON.stringify(res_data));
-					 			 	}
-									build_table(res_data);
+									 _init_data(res_data,callbk = callbk_fun, callbk_query = query_text);
+								 }else {
+								 	build_table(res_data);
+								 }
 
 								}else {
 										var sparql_query = _build_sparql_query(rules[rule_index+1], query_text);
@@ -365,17 +398,20 @@ var search = (function () {
 			 return sparql_results;
 		}
 
-		function build_table(results_data){
+		function build_table(results_data, do_init = true){
 			var res_data = JSON.parse(JSON.stringify(results_data));
 
 			//reset all doms
 			htmldom.reset_html_structure();
 
-			_init_data(res_data);
+			if (do_init) {
+				_init_data(res_data);
+			}
+
 			htmldom.build_extra_elems(cat_conf.extra_elems);
 			_build_filter_sec();
 			_limit_results();
-			_gen_data_checkboxes();
+			//_gen_data_checkboxes();
 			htmldom.filter_checkboxes(table_conf);
 			_build_header_sec();
 			_sort_results();
@@ -404,7 +440,7 @@ var search = (function () {
 			if (native) {
 				my_search_conf_json = search_conf;
 				if (config_mod != null) {
-					my_search_conf_json = util.update_obj(my_search_conf_json, config_mod);
+					my_search_conf_json = JSON.parse(JSON.stringify(util.update_obj(my_search_conf_json, config_mod)));
 				}
 			}
 
@@ -457,6 +493,7 @@ var search = (function () {
 				}else{
 					//console.log("It's an advanced search!");
 					//it's an advanced query
+
 					var sparql_query = build_adv_sparql_query(
 											query_comp.values,
 											query_comp.rules,
@@ -479,11 +516,9 @@ var search = (function () {
 
 
 		/*init all the local data*/
-		function _init_data(json_data){
-
+		function _init_data(json_data, callbk = null, callbk_query = null){
 			table_conf.category = cat_conf.name;
 			var category_conf_obj = cat_conf;
-
 			//Adapt the resulting data
 			// init uri values
 
@@ -492,6 +527,15 @@ var search = (function () {
 
 			json_data.results.bindings = _init_uris(json_data.results.bindings);
 			json_data.results.bindings = _init_lbls(json_data.results.bindings);
+
+			// order by the rows
+			var order_by = category_conf_obj.order_by;
+			if (order_by != undefined) {
+					if ((order_by.keys != []) && (order_by.concats != [])) {
+						json_data.results.bindings = util.order_by(json_data.results.bindings, order_by.keys, order_by.types, order = order_by.order);
+					}
+			}
+
 			// group by the rows
 			var group_by = category_conf_obj.group_by;
 			if (group_by != undefined) {
@@ -499,6 +543,10 @@ var search = (function () {
 					json_data.results.bindings = util.group_by(json_data.results.bindings, group_by.keys, group_by.concats);
 				}
 			}
+
+
+
+
 			//console.log("After linking and grouping :");
 			//console.log(JSON.parse(JSON.stringify(json_data)));
 
@@ -601,7 +649,6 @@ var search = (function () {
 			table_conf.filters.arr_entries = [];
 			//init all the view fields
 			table_conf.view.data = JSON.parse(JSON.stringify(table_conf.data));
-
 			table_conf.view.page = 0;
 
 			if (search_conf_json.page_limit != undefined) {
@@ -632,6 +679,16 @@ var search = (function () {
 						table_conf.view.sort.order = fields[i].sort.default.order;
 						table_conf.view.sort.type = fields[i].sort.type;
 				}
+			}
+
+			if (callbk != null){
+				Reflect.apply(callbk,undefined,[
+							callbk_query,
+							JSON.parse(JSON.stringify(table_conf)),
+							JSON.parse(JSON.stringify(cat_conf)),
+							table_conf.data.results.bindings.length == 0]
+				);
+				//return JSON.parse(JSON.stringify(table_conf.data.results.bindings));
 			}
 		}
 		/*map the fields with their corresponding links*/
@@ -1194,7 +1251,6 @@ var search = (function () {
 		function _gen_data_checkboxes(myfields = table_conf.filters.fields){
 
 			//table_conf.filters.arr_entries = [];
-
 			var new_arr_entries = [];
 			// create the list of values I can filter
 			for (var i = 0; i < myfields.length; i++) {
@@ -1585,6 +1641,59 @@ var util = (function () {
     }
 	}
 
+	/*order_by on the given keys Max 2 keys*/
+	function order_by(arr_objs, keys, types, order='asc', fixed=null) {
+
+		//console.log(keys, types, order, fixed);
+
+		if ((keys.length == 0) || (types.length == 0)){
+			return arr_objs;
+		}
+
+		var my_key = keys.splice(0, 1)[0];
+		var my_type = types.splice(0, 1)[0];
+
+		if (fixed == null) {
+			var arr_ordered_bykey = util.sort_objarr_by_key(arr_objs,order,my_key+".value",my_type);
+			return order_by(arr_ordered_bykey, keys, types, order= order, fixed = my_key);
+
+		}else {
+
+			var final_arr = [];
+
+				for (var i = 0; i < arr_objs.length; i++) {
+					var partial_arr = [];
+					var fixed_item = arr_objs[i][fixed].value;
+					while (true) {
+						partial_arr.push(arr_objs[i]);
+						i = i + 1;
+
+						if (i >= arr_objs.length) {
+							break;
+						}
+						if (arr_objs[i][fixed].value != fixed_item){
+							//to riconsider it next time
+							i = i - 1;
+							break;
+						}
+					}
+					//console.log(partial_arr);
+					//order partial array
+					final_arr = final_arr.concat(
+								util.sort_objarr_by_key(
+									partial_arr,
+									order,
+									my_key+".value",
+									my_type
+								)
+					);
+				}
+
+			return order_by(final_arr, keys, types, order= order, fixed = my_key);
+		}
+
+	}
+
 	/*group by the 'arr_objs' elements following the distinct 'keys' and by concatinating
 	the fields in 'arr_fields_concat'*/
 	function group_by(arr_objs, keys, arr_fields_concat){
@@ -1845,6 +1954,7 @@ var util = (function () {
 		remove_val_in_arr: remove_val_in_arr,
 		is_undefined_key: is_undefined_key,
 		group_by: group_by,
+		order_by: order_by,
 		collect_values: collect_values,
 		get_sub_arr: get_sub_arr,
 		sort_objarr_by_key: sort_objarr_by_key,
@@ -2087,11 +2197,14 @@ var htmldom = (function () {
 		var str_options = _build_rules_options(arr_rules, adv_cat_selected);
 
 		var first_placeholder = "";
-		if (arr_rules.length > 0) {
-			first_placeholder = arr_rules[0].placeholder;
-			if (first_placeholder == undefined) {
-				first_placeholder = "";
-			}
+		for (var i = 0; i < arr_rules.length; i++) {
+		  if (arr_rules[i].category == adv_cat_selected) {
+				first_placeholder = arr_rules[i].placeholder;
+				if (first_placeholder == undefined) {
+					first_placeholder = "";
+				}
+				break;
+		  }
 		}
 
 		var param0 = "adv_input_box_"+entryid;
@@ -2113,12 +2226,12 @@ var htmldom = (function () {
 		return str_html;
 	}
 	function adv_placeholder(inputbox_id, select_id) {
-		console.log(inputbox_id);
-		console.log(select_id);
+		//console.log(inputbox_id);
+		//console.log(select_id);
 
 		var e = document.getElementById(select_id);
 		var selected_opt_placeholder = e.options[e.selectedIndex].getAttribute("my_placeholder");
-		console.log(selected_opt_placeholder);
+		//console.log(selected_opt_placeholder);
 
 		document.getElementById(inputbox_id).setAttribute('placeholder',selected_opt_placeholder);
 	}
@@ -2327,21 +2440,21 @@ var htmldom = (function () {
 
 		id_rows++;
 		var str_html = ''+
-			'<fieldset>'+
-			'<div class="adv btn-group" data-toggle="buttons">'+
-				'<label class="btn btn-secondary active">'+
-				'<input name="bc" value="and" type="radio" entryid="'+id_rows+'" class="btn btn-default" checked>And'+
-				'</label>'+
-				'<label class="btn btn-secondary" value="or">'+
-				'<input name="bc" value="or" type="radio" entryid="'+id_rows+'" class="btn btn-default">Or'+
-				'</label>'+
-				'<label class="btn btn-secondary" value="and_not">'+
-				'<input name="bc" value="and_not" type="radio" entryid="'+id_rows+'" class="btn btn-default">And Not'+
-				'</label>'+
-			'</div>'+
-			'<div class="adv btn remove">'+
-			'<button entryid="'+id_rows+'" class="btn btn-default theme-color" id="remove_rule_btn" onclick="htmldom.remove_adv_rule('+id_rows+')" class="remove-rule-btn">Remove <i class="glyphicon glyphicon-minus normal-icon"></i> </button>'+
-			'</div>'+
+			'<fieldset id="'+id_rows+'">'+
+				'<div class="adv btn-group" data-toggle="buttons">'+
+					'<label class="btn btn-secondary active">'+
+					'<input name="bc_'+id_rows+'" value="and" type="radio" entryid="'+id_rows+'" class="btn btn-default" checked>And'+
+					'</label>'+
+					'<label class="btn btn-secondary" value="or">'+
+					'<input name="bc_'+id_rows+'" value="or" type="radio" entryid="'+id_rows+'" class="btn btn-default">Or'+
+					'</label>'+
+					'<label class="btn btn-secondary" value="and_not">'+
+					'<input name="bc_'+id_rows+'" value="and_not" type="radio" entryid="'+id_rows+'" class="btn btn-default">And Not'+
+					'</label>'+
+				'</div>'+
+				'<div class="adv btn remove">'+
+				'<button entryid="'+id_rows+'" class="btn btn-default theme-color" id="remove_rule_btn" onclick="htmldom.remove_adv_rule('+id_rows+')" class="remove-rule-btn">Remove <i class="glyphicon glyphicon-minus normal-icon"></i> </button>'+
+				'</div>'+
 			'</fieldset>'+
 			_build_rule_entry(id_rows, arr_rules, adv_cat_selected)+
 			'';
