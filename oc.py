@@ -30,7 +30,7 @@ import csv
 from datetime import datetime
 from os import path
 from io import StringIO
-from urllib.parse import unquote
+from urllib.parse import unquote, parse_qs
 
 # Load the configuration file
 with open("conf.json") as f:
@@ -200,11 +200,11 @@ class Api:
                     content_type = "text/csv"
                 else:
                     content_type = "application/json"
-                status_code, res = man.exec_op(call + unquote(web.ctx.query), content_type=content_type)
+                status_code, res, c_type = man.exec_op(call + unquote(web.ctx.query), content_type=content_type)
                 if status_code == 200:
                     web.header('Access-Control-Allow-Origin', '*')
                     web.header('Access-Control-Allow-Credentials', 'true')
-                    web.header('Content-Type', content_type)
+                    web.header('Content-Type', c_type)
                     web_logger.mes()
                     return res
                 else:
