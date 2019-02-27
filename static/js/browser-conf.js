@@ -23,7 +23,7 @@ var browser_conf = {
     "document": {
           "rule": "br\/.*",
           "query": [
-            "SELECT DISTINCT ?my_iri ?id_lit ?short_iri ?title ?subtitle ?year ?type ?short_type ?label ?author ?author_browser_iri (COUNT(?cites) AS ?out_cits) (COUNT(distinct ?cited_by) AS ?in_cits) Where{",
+            "SELECT DISTINCT ?my_iri ?id_lit ?short_iri ?title ?subtitle ?year ?type ?short_type ?label ?author ?author_browser_iri (COUNT(distinct ?cites) AS ?out_cits) (COUNT(distinct ?cited_by) AS ?in_cits) Where{",
             "  	BIND(<https://w3id.org/oc/corpus/[[VAR]]> as ?my_iri) .",
             "	  ?my_iri rdf:type ?type .",
             "  	OPTIONAL {?my_iri dcterms:title ?title .}",
