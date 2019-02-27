@@ -189,6 +189,7 @@ var search_conf = {
         SELECT DISTINCT ?iri ?type ?short_iri ?short_iri_id ?browser_iri ?short_type ?title ?doi ?subtitle ?year ?label ?author ?author_browser_iri (COUNT(distinct ?cites) AS ?out_cits) (COUNT(distinct ?cited_by) AS ?in_cits) (count(?next) as ?tot)
         Where{
                [[RULE]]
+               hint:Prior hint:runFirst true .
                {
                    	?iri rdf:type ?type .
                     BIND(REPLACE(STR(?iri), 'https://w3id.org/oc/corpus/', '', 'i') as ?short_iri) .
@@ -249,6 +250,7 @@ var search_conf = {
       "macro_query": [`
         SELECT ?author_iri ?author_browser_iri ?short_iri ?short_iri_id ?orcid ?author (COUNT(?doc) AS ?num_docs) WHERE {
             [[RULE]]
+            hint:Prior hint:runFirst true .
             BIND(REPLACE(STR(?author_iri), 'https://w3id.org/oc/corpus/', '', 'i') as ?short_iri) .
             BIND(REPLACE(STR(?author_iri), 'https://w3id.org/oc/corpus/ra/', '', 'i') as ?short_iri_id) .
             BIND(REPLACE(STR(?author_iri), '/corpus/', '/browser/', 'i') as ?author_browser_iri) .
