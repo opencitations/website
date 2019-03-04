@@ -7,7 +7,7 @@ $def with (pages, active, query_string)
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <link rel="icon" href="/static/favicon.ico" />
-        <title>OpenCitations - Search</title>
+        <title>OpenCitations Index - Search</title>
 
         <!-- Bootstrap core CSS -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
@@ -81,8 +81,8 @@ $def with (pages, active, query_string)
 
             <div class="cover left">
 
-              <h3>COCI Search Interface <small class="backlink">Back to <a href="/index/coci">COCI: home</a></small></h3>
-              <p style="text-align:left;">This interface let you perform queries on <b><a href="/index/coci">COCI</a></b>.
+              <h3>OpenCitations Index Search Interface <small class="backlink">Back to <a href="/index">Index: home</a></small></h3>
+              <p style="text-align:left;">This interface let you perform queries on all the <b><a href="/index">indexes</a></b>.
               Here we list some query examples:</p>
               <ul>
                   <li>Retrieve the citation data for all the references to other works appearing in the bibliographic entity identified by the input DOI: <a href="search?text=10.1186%2F1756-8722-6-59&rule=citingdoi">10.1186/1756-8722-6-59</a> </li>
@@ -158,7 +158,7 @@ $def with (pages, active, query_string)
 
         <!-- SEARCH GUI -->
         <!-- <script type="text/javascript" src="/staticsearch-conf.jsjson"></script> -->
-        <script type="text/javascript" src="/static/js/search-conf-coci.js"></script>
+        <script type="text/javascript" src="/static/js/search-conf-index.js"></script>
         <script type="text/javascript" src="/static/js/search.js"></script>
         <script>
           search.do_sparql_query("$query_string");

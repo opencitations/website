@@ -75,6 +75,8 @@ class Citation(object):
     __cito_base = "http://purl.org/spar/cito/"
     __cites = URIRef(__cito_base + "cites")
     __citation = URIRef(__cito_base + "Citation")
+    __author_self_citation = URIRef(__cito_base + "AuthorSelfCitation")
+    __journal_self_citation = URIRef(__cito_base + "JournalSelfCitation")
     __has_citation_creation_date = URIRef(__cito_base + "hasCitationCreationDate")
     __has_citation_time_span = URIRef(__cito_base + "hasCitationTimeSpan")
     __has_citing_entity = URIRef(__cito_base + "hasCitingEntity")
@@ -102,27 +104,47 @@ class Citation(object):
                  cited_url, cited_pub_date,
                  creation, timespan,
                  prov_agent_url, source, prov_date,
-                 service_name, id_type, id_shape, citation_type):
+                 service_name, id_type, id_shape, citation_type,
+                 journal_sc=False, author_sc=False):
         self.oci = oci
         self.citing_url = citing_url
         self.cited_url = cited_url
         self.duration = timespan
         self.creation_date = creation
+        self.author_sc = "yes" if author_sc else "no"
+        self.journal_sc = "yes" if journal_sc else "no"
         self.citing_pub_date = citing_pub_date[:10] if citing_pub_date else citing_pub_date
         self.cited_pub_date = cited_pub_date[:10] if cited_pub_date else cited_pub_date
         self.citation_type = citation_type if citation_type in CITATION_TYPES else DEFAULT_CITATION_TYPE
 
         if self.contains_years(citing_pub_date):
             self.creation_date = citing_pub_date[:10]
-            citing_pub_datetime = parse(self.creation_date, default=DEFAULT_DATE)
 
             if self.contains_years(cited_pub_date):
-                cited_pub_datetime = parse(cited_pub_date[:10], default=DEFAULT_DATE)
+                citing_contains_months = Citation.contains_months(citing_pub_date)
+                cited_contains_months = Citation.contains_months(cited_pub_date)
+                citing_contains_days = Citation.contains_days(citing_pub_date)
+                cited_contains_days = Citation.contains_days(cited_pub_date)
+
+                # Handling incomplete dates
+                citing_complete_pub_date = self.creation_date
+                cited_complete_pub_date = cited_pub_date[:10]
+                if citing_contains_months and not cited_contains_months:
+                    cited_complete_pub_date += citing_pub_date[4:7]
+                elif not citing_contains_months and cited_contains_months:
+                    citing_complete_pub_date += cited_pub_date[4:7]
+                if citing_contains_days and not cited_contains_days:
+                    cited_complete_pub_date += citing_pub_date[7:]
+                elif not citing_contains_days and cited_contains_days:
+                    citing_complete_pub_date += cited_pub_date[7:]
+
+                citing_pub_datetime = parse(citing_complete_pub_date, default=DEFAULT_DATE)
+                cited_pub_datetime = parse(cited_complete_pub_date, default=DEFAULT_DATE)
                 delta = relativedelta(citing_pub_datetime, cited_pub_datetime)
                 self.duration = Citation.get_duration(
                     delta,
-                    Citation.contains_months(citing_pub_date) and Citation.contains_months(cited_pub_date),
-                    Citation.contains_days(citing_pub_date) and Citation.contains_days(cited_pub_date))
+                    citing_contains_months and cited_contains_months,
+                    citing_contains_days and cited_contains_days)
 
         if not self.citing_pub_date and self.creation_date:
             self.citing_pub_date = self.creation_date
@@ -144,23 +166,23 @@ class Citation(object):
         g.namespace_manager.bind("literal", Namespace(Citation.__literal_base))
         g.namespace_manager.bind("prov", Namespace(Citation.__prov_base))
 
-    def get_citation_rdf(self, baseurl, include_oci=True):
-        citation_graph = Graph()
-        Citation.set_ns(citation_graph)
+    def get_citation_rdf(self, baseurl, include_oci=True, include_label=True, include_prov=True):
+        citation_graph, citation, citation_corpus_id = self.__get_citation_rdf_entity(baseurl)
 
         citing_br = URIRef(self.citing_url)
         cited_br = URIRef(self.cited_url)
 
-        oci_no_prefix = self.oci.replace("oci:", "")
-        citation_corpus_id = "ci/" + oci_no_prefix
-        citation = URIRef(baseurl + citation_corpus_id)
-        occ_citation_id = URIRef(baseurl + "id/ci-" + oci_no_prefix)
-        citation_graph.add((citation, RDFS.label,
-                            Literal("citation %s [%s]" % (self.oci, citation_corpus_id))))
+        if include_label:
+            citation_graph.add((citation, RDFS.label,
+                                Literal("citation %s [%s]" % (self.oci, citation_corpus_id))))
         citation_graph.add((citation, RDF.type, self.__citation))
+        if self.author_sc == "yes":
+            citation_graph.add((citation, RDF.type, self.__author_self_citation))
+        if self.journal_sc == "yes":
+            citation_graph.add((citation, RDF.type, self.__journal_self_citation))
+
         citation_graph.add((citation, self.__has_citing_entity, citing_br))
         citation_graph.add((citation, self.__has_cited_entity, cited_br))
-        citation_graph.add((citation, self.__has_identifier, occ_citation_id))
 
         if self.creation_date is not None:
             if Citation.contains_days(self.creation_date):
@@ -177,7 +199,17 @@ class Citation(object):
                                     Literal(self.duration, datatype=XSD.duration)))
 
         if include_oci:
-            citation_graph += self.get_oci_rdf(baseurl)
+            for s, p, o in self.get_oci_rdf(baseurl, include_label, include_prov).triples((None, None, None)):
+                citation_graph.add((s, p, o))
+
+        if include_prov:
+            for s, p, o in self.get_citation_prov_rdf(baseurl).triples((None, None, None)):
+                citation_graph.add((s, p, o))
+
+        return citation_graph
+
+    def get_citation_prov_rdf(self, baseurl):
+        citation_graph, citation, citation_corpus_id = self.__get_citation_rdf_entity(baseurl)
 
         citation_graph.add((citation, self.__was_attributed_to, URIRef(self.prov_agent_url)))
         citation_graph.add((citation, self.__had_primary_source, URIRef(self.source)))
@@ -185,30 +217,64 @@ class Citation(object):
 
         return citation_graph
 
-    def get_oci_rdf(self, baseurl):
+    def __get_citation_rdf_entity(self, baseurl):
+        citation_graph = Graph()
+        Citation.set_ns(citation_graph)
+
+        oci_no_prefix = self.oci.replace("oci:", "")
+        citation_corpus_id = "ci/" + oci_no_prefix
+        citation = URIRef(baseurl + citation_corpus_id)
+
+        return citation_graph, citation, citation_corpus_id
+
+    def get_oci_rdf(self, baseurl, include_label=True, include_prov=True):
+        identifier_graph, identifier, identifier_local_id, identifier_corpus_id = self.__get_oci_rdf_entity(baseurl)
+
+        if include_label:
+            identifier_graph.add((identifier, RDFS.label,
+                                  Literal("identifier %s [%s]" % (identifier_local_id, identifier_corpus_id))))
+        identifier_graph.add((identifier, RDF.type, self.__identifier))
+        identifier_graph.add((identifier, self.__uses_identifier_scheme, self.__oci))
+        identifier_graph.add((identifier, self.__has_literal_value, Literal(self.oci)))
+
+        if include_prov:
+            for s, p, o in self.get_oci_prov_rdf(baseurl).triples((None, None, None)):
+                identifier_graph.add((s, p, o))
+
+        return identifier_graph
+
+    def get_oci_prov_rdf(self, baseurl):
+        identifier_graph, identifier, identifier_local_id, identifier_corpus_id = self.__get_oci_rdf_entity(baseurl)
+
+        identifier_graph.add((identifier, self.__was_attributed_to, URIRef(self.prov_agent_url)))
+        identifier_graph.add((identifier, self.__had_primary_source, URIRef(self.source)))
+        identifier_graph.add((identifier, self.__generated_at_time,
+                              Literal(self.prov_date, datatype=XSD.dateTime)))
+
+        return identifier_graph
+
+    def __get_oci_rdf_entity(self, baseurl):
         identifier_graph = Graph()
         Citation.set_ns(identifier_graph)
 
         identifier_local_id = "ci-" + self.oci.replace("oci:", "")
         identifier_corpus_id = "id/" + identifier_local_id
         identifier = URIRef(baseurl + identifier_corpus_id)
-        identifier_graph.add((identifier, RDFS.label,
-                              Literal("identifier %s [%s]" % (identifier_local_id, identifier_corpus_id))))
-        identifier_graph.add((identifier, RDF.type, self.__identifier))
-        identifier_graph.add((identifier, self.__uses_identifier_scheme, self.__oci))
-        identifier_graph.add((identifier, self.__has_literal_value, Literal(self.oci)))
 
-        identifier_graph.add((identifier, self.__was_attributed_to, URIRef(self.prov_agent_url)))
-        identifier_graph.add((identifier, self.__had_primary_source, URIRef(self.source)))
-        identifier_graph.add((identifier, self.__generated_at_time, Literal(self.prov_date, datatype=XSD.dateTime)))
-
-        return identifier_graph
+        return identifier_graph, identifier, identifier_local_id, identifier_corpus_id
 
     def get_citation_csv(self):
         s_res = StringIO()
-        writer = DictWriter(s_res, ["oci", "citing", "cited", "creation", "timespan"])
+        writer = DictWriter(s_res, ["oci", "citing", "cited", "creation", "timespan", "journal_sc", "author_sc"])
         writer.writeheader()
         writer.writerow(loads(self.get_citation_json()))
+        return s_res.getvalue()
+
+    def get_citation_csv_prov(self):
+        s_res = StringIO()
+        writer = DictWriter(s_res, ["oci", "agent", "source", "datetime"])
+        writer.writeheader()
+        writer.writerow(loads(self.get_citation_json_prov()))
         return s_res.getvalue()
 
     def get_citation_json(self):
@@ -217,7 +283,19 @@ class Citation(object):
             "citing": self.get_id(self.citing_url),
             "cited": self.get_id(self.cited_url),
             "creation": self.creation_date,
-            "timespan": self.duration
+            "timespan": self.duration,
+            "journal_sc": self.journal_sc,
+            "author_sc": self.author_sc
+        }
+
+        return dumps(result, indent=4, ensure_ascii=False)
+
+    def get_citation_json_prov(self):
+        result = {
+            "oci": self.oci.replace("oci:", ""),
+            "agent": self.prov_agent_url,
+            "source": self.source,
+            "datetime": self.prov_date
         }
 
         return dumps(result, indent=4, ensure_ascii=False)
@@ -289,15 +367,12 @@ class Citation(object):
                 (delta.years == 0 and delta.months < 0 and consider_months) or \
                 (delta.years == 0 and delta.months == 0 and delta.days < 0 and consider_days):
             result += "-"
-        result += "P"
+        result += "P%sY" % abs(delta.years)
 
-        if delta.years != 0 or ((not consider_months or delta.months == 0) and (not consider_days or delta.days == 0)):
-            result += "%sY" % abs(delta.years)
-
-        if consider_months and delta.months != 0:
+        if consider_months:
             result += "%sM" % abs(delta.months)
 
-        if consider_days and delta.days != 0:
+        if consider_days:
             result += "%sD" % abs(delta.days)
 
         return result
@@ -338,8 +413,7 @@ class Citation(object):
 
 
 class OCIManager(object):
-    def __init__(self, oci_string, lookup_file=None, conf_file=None):
-        self.oci = oci_string.lower().strip()
+    def __init__(self, oci_string=None, lookup_file=None, conf_file=None, doi_1=None, doi_2=None, prefix=""):
         self.is_valid = None
         self.messages = []
         self.f = {
@@ -354,11 +428,13 @@ class OCIManager(object):
             "avoid_prefix_removal": OCIManager.__avoid_prefix_removal
         }
         self.lookup = {}
+        self.inverse_lookup = {}
         if lookup_file is not None and exists(lookup_file):
             with open(lookup_file) as f:
                 reader = DictReader(f)
                 for row in reader:
                     self.lookup[row["code"]] = row["c"]
+                    self.inverse_lookup[row["c"]] = row["code"]
         else:
             self.add_message("__init__", W, "No lookup file has been found (path: '%s')." % lookup_file)
         self.conf = None
@@ -367,6 +443,14 @@ class OCIManager(object):
                 self.conf = load(f)
         else:
             self.add_message("__init__", W, "No configuration file has been found (path: '%s')." % lookup_file)
+
+        if oci_string:
+            self.oci = oci_string.lower().strip()
+        elif doi_1 and doi_2:
+            self.oci = self.get_oci(doi_1, doi_2, prefix)
+        else:
+            self.oci = None
+            self.add_message("__init__", W, "No OCI specified!")
 
     def __decode(self, s):
         result = []
@@ -378,6 +462,18 @@ class OCIManager(object):
                 result.append(code)
 
         return "10." + "".join(result)
+
+    def __decode_inverse(self, doi):
+        result = []
+
+        for char in doi.replace("10.", ""):
+            result.append(self.inverse_lookup[char])
+
+        return "".join(result)
+
+    def get_oci(self, doi_1, doi_2, prefix):
+        self.oci = "oci:%s%s-%s%s" % (prefix, self.__decode_inverse(doi_1), prefix, self.__decode_inverse(doi_2))
+        return self.oci
 
     @staticmethod
     def __join(l, j_value=""):

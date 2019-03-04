@@ -21,10 +21,10 @@ var browser_conf = {
           "query": [`
             SELECT DISTINCT ?iri ?short_iri ?shorter_coci ?citing_doi ?citing_doi_iri ?cited_doi ?cited_doi_iri ?creationdate ?timespan ?isJSelfCitation ?isASelfCitation
                 WHERE  {
-                  GRAPH <https://w3id.org/oc/index/coci/> {
-                      BIND(<https://w3id.org/oc/index/coci/[[VAR]]> as ?iri) .
+                  GRAPH <https://w3id.org/oc/index/croci/> {
+                      BIND(<https://w3id.org/oc/index/croci/[[VAR]]> as ?iri) .
                       OPTIONAL {
-                        BIND(REPLACE(STR(?iri), 'https://w3id.org/oc/index/coci/ci/', '', 'i') as ?short_iri) .
+                        BIND(REPLACE(STR(?iri), 'https://w3id.org/oc/index/croci/ci/', '', 'i') as ?short_iri) .
                         ?iri cito:hasCitingEntity ?citing_doi_iri .
                         BIND(REPLACE(STR(?citing_doi_iri), 'http://dx.doi.org/', '', 'i') as ?citing_doi) .
                         ?iri cito:hasCitedEntity ?cited_doi_iri .

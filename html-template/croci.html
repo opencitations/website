@@ -8,7 +8,7 @@ $def with (pages, active)
 
 
         <link rel="icon" href="/static/favicon.ico" />
-        <title>OpenCitations - Contacts</title>
+        <title>OpenCitations - CROCI</title>
 
         <!-- Bootstrap core CSS -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
@@ -57,18 +57,19 @@ $def with (pages, active)
 
                     <div class="masthead-pages">
                       <ul class="nav masthead-nav navbar-nav">
-                          $for page in pages:
-                              $if page == active:
-                                  <li class="active">
-                              $else:
-                                  <li>
-                              <a href="$page">
-                                  $if page == "/":
-                                      Home
-                                  $else:
-                                      $page.title()
-                              </a>
-                              </li>
+                        $for page in pages:
+                            $if page == active:
+                                <li class="active">
+                            $else:
+                                <li>
+                            $if page == "/":
+                                <a href="$page">
+                                Home
+                            $else:
+                                <a href="/$page">
+                                $page.title()
+                            </a>
+                            </li>
                       </ul>
                     </div>
 
@@ -78,10 +79,27 @@ $def with (pages, active)
           </div>
 
             <div class="cover left">
-                 <h3>$active.title()</h3>
-                <p><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> is run by <a href="https://twitter.com/dshotton">David Shotton</a> (<a href="http://www.oerc.ox.ac.uk">Oxford e-Research Centre</a>, <a href="http://www.ox.ac.uk">University of Oxford</a>) and <a href="https://twitter.com/essepuntato">Silvio Peroni</a> (<a href="http://www.ficlit.unibo.it">Department of Classic Philology and Italian Studies</a>, <a href="http://www.unibo.it">University of Bologna</a>), who are the Directors of OpenCitations.</p>
-                 <p>Please do not hesitate to contact us for comments, questions, and further information at <a href="mailto:contact@opencitations.net">contact@opencitations.net</a>.</p>
-                <p>You can also follow us on <a href="http://www.twitter.com/opencitations">Twitter</a>, <a href="http://github.com/essepuntato/opencitations">GitHub</a>, and <a href="https://opencitations.wordpress.com/">Wordpress</a>.</p>
+                <h3>CROCI, the Croudsourced Open Citations Index</h3>
+                <p><strong>CROCI</strong>, the Crowdsourced Open Citations Index, is a new <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index containing citations deposited by individuals, identified by ORCiD identifiers, who have a legal right to publish them under a CC0 public domain waiver.</p>
+                <p>These citations are treated as first-class data entities, with accompanying properties including the citations timespan, modelled according to the data model described in the <a href="/index"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes</a> page. For a full explanation of how to provide citations to be ingested in CROCI, see our <a href="https://opencitations.wordpress.com/2019/02/07/crowdsourcing-open-citations-with-croci/">introductory blog post</a>.</p>
+
+                <p>CROCI was first created and released on 3 March 2019.</p>
+
+                <h4>Citation URLs</h4>
+                <p>Each citation (i.e. an individual of the class <code>cito:Citation</code>) is identified by an URL structured as follows: <code>https://w3id.org/oc/index/croci/ci/[[OCI]]</code>.</p>
+
+                <h4>Open Citation Identifiers</h4>
+                <p>Each Open Citation Identifier <code>[[OCI]]</code> has a simple structure: the lower-case letters "oci" followed by a colon, followed by two numbers separated by a dash (e.g. <a href="https://w3id.org/oc/index/croci/ci/05001000106361937321411281422370200010237000837000001-050010008073602000009020002">https://w3id.org/oc/index/coci/ci/05001000106361937321411281422370200010237000837000001-050010008073602000009020002</a>), in which the first number identifies the citing work and the second number identifies the cited work.</p>
+                <p>For citations in which the citing and cited works are identified by DOIs, which includes all the COCI citations, the OCI is created in the following manner, as explained more fully <a href="https://opencitations.wordpress.com/2018/03/12/citations-as-first-class-data-entities-open-citation-identifiers/">here</a>. Each case-insensitive DOI is first normalized to lower case letters. Then, after omitting the initial <q>doi:10.</q> prefix, the alphanumeric string of the DOI is converted reversibly to a pure numerical string using the simple two-numeral lookup table for numerals, lower case letters and other characters presented at <a href="https://github.com/opencitations/oci/blob/master/lookup.csv">https://github.com/opencitations/oci/blob/master/lookup.csv</a>. Finally, each converted numeral is prefixes by a <q>050</q>, which indicates that <a href="https://w3id.org/oc/index/croci">CROCI</a> is the supplier of the original metadata of the citation (as indicated at <a href="/oci">http://opencitations.net/oci</a>).</p>
+                <p>OCIs can be resolved using the <a href="/oci">OpenCitations OCI Resolution Service</a>.</p>
+
+                <h4>Access to CROCI data</h4>
+                <p>All the data in CROCI:</p>
+                <ul>
+                    <li><p>can be queried by means of the <a href="/index/sparql">Index SPARQL endpoint</a>;</p></li>
+                    <li><p>can be retrieved by using the <a href="/index/croci/api/v1">CROCI REST API</a>;</p></li>
+                    <li><p>can be searched by using the <a href="/index/search">Index Search Interface</a>.</p></li>
+                </ul>
             </div>
         </div>
 

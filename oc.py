@@ -38,25 +38,29 @@ with open("conf.json") as f:
 
 pages = [
     # Generic pages
-    "/", "about", "corpus", "model", "download",
+    "/", "about", "corpus", "index", "model", "download",
 
     # OCC SPARQL-related pages
     "sparql", "search",
 
     # Other generic pages
-    "oci", "index", "publications", "licenses", "contacts"
+    "oci", "publications", "licenses"
 ]
 
 urls = (
     # Generic URLs
     "(/)", "Home",
     "/(wikidata)(/api/.+)", "Api",
+    "/(index)(/api/.+)", "Api",
     "/index/([^/]+)(/api/.+)", "Api",
-    "/(index/coci/sparql)", "SparqlCOCI",
-    "/index/coci/search", "SearchCOCI",
+    "/(index/sparql)", "SparqlIndex",
+    "/index/search", "SearchIndex",
     "/index/coci/browser/(.+)", "BrowserCOCI",
+    "/index/croci/browser/(.+)", "BrowserCROCI",
     "/(index)/coci", "Coci",
-    "/index/coci/(.*)", "CociContentNegotiation",
+    "/(index)/croci", "Croci",
+    "/index/coci/(ci/.*)", "CociContentNegotiation",
+    "/index/croci/(ci/.*)", "CrociContentNegotiation",
     "/(about)", "About",
     "/(model)", "Model",
     "/(corpus)", "Corpus",
@@ -75,7 +79,6 @@ urls = (
     # Other generic URLs
     "/(publications)", "Publications",
     "/(licenses)", "Licenses",
-    "/(contacts)", "Contacts",
     "(/paper/.+)", "RawGit",
     "/(index)", "Index",
     "/robots.txt", "Robots"
@@ -106,6 +109,21 @@ rewrite = RewriteRuleHandler(
          True),
         ("^/bcite",
          "http://212.47.249.17",
+         True),
+        ("^/index/coci/sparql",
+         "/index/sparql",
+         True),
+        ("^/index/croci/sparql",
+         "/index/sparql",
+         True),
+        ("^/index/coci/search",
+         "/index/search",
+         True),
+        ("^/index/croci/search",
+         "/index/search",
+         True),
+        ("^/contacts",
+         "/about",
          True)
     ],
     urls
@@ -124,6 +142,8 @@ web_logger = WebLogger("opencitations.net", c["log_dir"], [
 )
 
 coci_api_manager = APIManager(c["api_coci"])
+croci_api_manager = APIManager(c["api_croci"])
+index_api_manager = APIManager(c["api_index"])
 occ_api_manager = APIManager(c["api_occ"])
 wikidata_api_manager = APIManager(c["api_wikidata"])
 
@@ -184,6 +204,10 @@ class Api:
             man = occ_api_manager
         elif dataset == "coci":
             man = coci_api_manager
+        elif dataset == "croci":
+            man = croci_api_manager
+        elif dataset == "index":
+            man = index_api_manager
         elif dataset == "wikidata":
             man = wikidata_api_manager
 
@@ -290,6 +314,11 @@ class Coci:
         web_logger.mes()
         return render.coci(pages, active)
 
+class Croci:
+    def GET(self, active):
+        web_logger.mes()
+        return render.croci(pages, active)
+
 
 class Download:
     def GET(self, active):
@@ -308,9 +337,9 @@ class Search:
         return self.render_page(pages, self.active_page, query_string)
 
 
-class SearchCOCI(Search):
+class SearchIndex(Search):
     def __init__(self):
-        Search.__init__(self, "index", render.search_coci)
+        Search.__init__(self, "index", render.search_index)
 
 
 class SearchOC(Search):
@@ -330,6 +359,10 @@ class Browser:
 class BrowserCOCI(Browser):
     def __init__(self):
         Browser.__init__(self, render.browser_coci)
+
+class BrowserCROCI(Browser):
+    def __init__(self):
+        Browser.__init__(self, render.browser_croci)
 
 
 class BrowserOC(Browser):
@@ -427,9 +460,9 @@ class SparqlOC(Sparql):
         Sparql.__init__(self, c["sparql_endpoint"], "OCC", c["oc_base_url"]+"/sparql")
 
 
-class SparqlCOCI(Sparql):
+class SparqlIndex(Sparql):
     def __init__(self):
-        Sparql.__init__(self, c["sparql_endpoint_coci"], "COCI", c["oc_base_url"]+"/index/coci/sparql")
+        Sparql.__init__(self, c["sparql_endpoint_index"], "Index", c["oc_base_url"]+"/index/sparql")
 
 
 class Virtual:
@@ -481,7 +514,12 @@ class CorpusContentNegotiation(ContentNegotiation):
 
 class CociContentNegotiation(ContentNegotiation):
     def __init__(self):
-        ContentNegotiation.__init__(self, c["coci_base_url"], c["coci_local_url"], c["sparql_endpoint_coci"],
+        ContentNegotiation.__init__(self, c["index_base_url"], c["coci_local_url"], c["sparql_endpoint_index"],
+                                    lambda u: "oci:%s" % re.findall("^.+/ci/(.+)$", u)[0])
+
+class CrociContentNegotiation(ContentNegotiation):
+    def __init__(self):
+        ContentNegotiation.__init__(self, c["index_base_url"], c["croci_local_url"], c["sparql_endpoint_index"],
                                     lambda u: "oci:%s" % re.findall("^.+/ci/(.+)$", u)[0])
 
 
