@@ -55,7 +55,7 @@ urls = (
     "/index/([^/]+)(/api/.+)", "Api",
     "/(index/sparql)", "SparqlIndex",
     "/index/search", "SearchIndex",
-    "/index/index/browser/(.+)", "BrowserIndex",
+    "/index/browser/(.+)", "BrowserIndex",
     "/(index)/coci", "Coci",
     "/(index)/croci", "Croci",
     "/index/coci/(ci/.*)", "CociContentNegotiation",
