@@ -32,10 +32,8 @@ $def with (data_path)
 ================================================== -->
   <body>
 
-
     <div class="__lucinda__" data-content="header details metrics"></div>
     <div class="cover __oscar__" data-type="free-text" data-view="rows_per_page sort_results" data-filter=""></div>
-
 
 
     <!-- Bootstrap core JavaScript
@@ -43,17 +41,21 @@ $def with (data_path)
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="/static/js/ie10-viewport-bug-workaround.js"></script>
+
+
+    <!-- we integrate also the search module -->
+    <!-- <script type="text/javascript" src="https://opencitations.github.io/oscar/example/v2/static/js/search-conf-occ.js"></script> -->
+    <script type="text/javascript" src="/static/js/search-conf.js"></script>
+    <!-- <script type="text/javascript" src="https://opencitations.github.io/oscar/static/js/search.js"></script> -->
+    <script type="text/javascript" src="/static/js/search.js"></script>
+
 
     <script type="text/javascript" src="/static/js/browser-conf.js"></script>
     <script type="text/javascript" src="/static/js/browser.js"></script>
-    <!-- we integrate also the search module -->
-    <script type="text/javascript" src="/static/js/search-conf.js"></script>
-    <script type="text/javascript" src="/static/js/search.js"></script>
     <script>
         browser.do_sparql_query("$data_path");
     </script>
 
   </body>
+
 </html>
