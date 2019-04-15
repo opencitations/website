@@ -177,11 +177,11 @@ var browser_conf = {
                 //A unique id
                 'id': 'coci_metadata_citing',
                 //The url call with a SPARQL var identified as [[?<VAR>]]
-                'call': 'http://opencitations.net/index/coci/api/v1/metadata/[[?citing_doi]]',
+                'call': 'https://citation.crosscite.org/format?doi=[[?citing_doi]]&style=apa&lang=en-US',
                 //The dat format of the results
                 'format': 'json',
                 //The function which handles the results retrieved after the end of the call
-                'handle': index_handle_title,
+                'handle': function(param) { console.log(param);  return param; },
                 //The container id to show the final results, this value could be repeated by other calls
                 'targets': 'header.[[citing_val]]',
                 //The functions which tests whether the call results are valid to be further elaborated and taken in consideration
@@ -195,11 +195,11 @@ var browser_conf = {
                 //A unique id
                 'id': 'coci_metadata_cited',
                 //The url call with a SPARQL var identified as [[?<VAR>]]
-                'call': 'http://opencitations.net/index/coci/api/v1/metadata/[[?cited_doi]]',
+                'call': 'https://citation.crosscite.org/format?doi=[[?citing_doi]]&style=apa&lang=en-US',
                 //The dat format of the results
                 'format': 'json',
                 //The function which handles the results retrieved after the end of the call
-                'handle': index_handle_title,
+                'handle': function(param) { return param; },
                 //The container id to show the final results, this value could be repeated by other calls
                 'targets': 'header.[[cited_val]]',
                 //The functions which tests whether the call results are valid to be further elaborated and taken in consideration
@@ -351,11 +351,11 @@ var browser_conf = {
                 //A unique id
                 'id': 'croci_metadata_citing',
                 //The url call with a SPARQL var identified as [[?<VAR>]]
-                'call': 'http://opencitations.net/index/croci/api/v1/metadata/[[?citing_doi]]',
+                'call': 'https://citation.crosscite.org/format?doi=[[?citing_doi]]&style=apa&lang=en-US',
                 //The dat format of the results
                 'format': 'json',
                 //The function which handles the results retrieved after the end of the call
-                'handle': index_handle_title,
+                'handle': function(param) { return param; },
                 //The container id to show the final results, this value could be repeated by other calls
                 'targets': 'header.[[citing_val]]',
                 //The functions which tests whether the call results are valid to be further elaborated and taken in consideration
@@ -369,11 +369,11 @@ var browser_conf = {
                 //A unique id
                 'id': 'croci_metadata_cited',
                 //The url call with a SPARQL var identified as [[?<VAR>]]
-                'call': 'http://opencitations.net/index/croci/api/v1/metadata/[[?cited_doi]]',
+                'call': 'https://citation.crosscite.org/format?doi=[[?citing_doi]]&style=apa&lang=en-US',
                 //The dat format of the results
                 'format': 'json',
                 //The function which handles the results retrieved after the end of the call
-                'handle': index_handle_title,
+                'handle': function(param) { return param; },
                 //The container id to show the final results, this value could be repeated by other calls
                 'targets': 'header.[[cited_val]]',
                 //The functions which tests whether the call results are valid to be further elaborated and taken in consideration
@@ -384,19 +384,6 @@ var browser_conf = {
   }
 }
 
-
-function index_handle_title(param) {
-  var str_title = null;
-  if (param.data[0] != undefined ) {
-    var title = param.data[0]['title'];
-    if (title != undefined) {
-      str_title = "<a href='http://dx.doi.org/"+param.data[0]['doi']+"' target='_blank'>"+title +"</a>";
-    }
-  }
-
-  var data = {'value':str_title,'source':param.call_param['label']};
-  browser.target_ext_call(param.call_param,{'title_lbl':data});
-}
 
 
 //Mapping functions
