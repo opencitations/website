@@ -181,7 +181,7 @@ var browser_conf = {
                 //The dat format of the results
                 'format': '',
                 //The function which handles the results retrieved after the end of the call
-                'handle': function(param) { console.log(param);  return param; },
+                'handle': function(param) { console.log(param);  return param.data; },
                 //The container id to show the final results, this value could be repeated by other calls
                 'targets': 'header.[[citing_val]]',
                 //The functions which tests whether the call results are valid to be further elaborated and taken in consideration
@@ -199,7 +199,7 @@ var browser_conf = {
                 //The dat format of the results
                 'format': '',
                 //The function which handles the results retrieved after the end of the call
-                'handle': function(param) { return param; },
+                'handle': function(param) { return param.data; },
                 //The container id to show the final results, this value could be repeated by other calls
                 'targets': 'header.[[cited_val]]',
                 //The functions which tests whether the call results are valid to be further elaborated and taken in consideration
@@ -355,7 +355,7 @@ var browser_conf = {
                 //The dat format of the results
                 'format': '',
                 //The function which handles the results retrieved after the end of the call
-                'handle': function(param) { return param; },
+                'handle': function(param) { return param.data; },
                 //The container id to show the final results, this value could be repeated by other calls
                 'targets': 'header.[[citing_val]]',
                 //The functions which tests whether the call results are valid to be further elaborated and taken in consideration
@@ -373,7 +373,7 @@ var browser_conf = {
                 //The dat format of the results
                 'format': '',
                 //The function which handles the results retrieved after the end of the call
-                'handle': function(param) { return param; },
+                'handle': function(param) { return param.data; },
                 //The container id to show the final results, this value could be repeated by other calls
                 'targets': 'header.[[cited_val]]',
                 //The functions which tests whether the call results are valid to be further elaborated and taken in consideration
