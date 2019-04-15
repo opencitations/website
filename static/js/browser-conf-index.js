@@ -181,7 +181,7 @@ var browser_conf = {
                 //The dat format of the results
                 'format': '',
                 //The function which handles the results retrieved after the end of the call
-                'handle': function(param) { console.log(param);  return param.data; },
+                'handle': index_handle_title,
                 //The container id to show the final results, this value could be repeated by other calls
                 'targets': 'header.[[citing_val]]',
                 //The functions which tests whether the call results are valid to be further elaborated and taken in consideration
@@ -199,7 +199,7 @@ var browser_conf = {
                 //The dat format of the results
                 'format': '',
                 //The function which handles the results retrieved after the end of the call
-                'handle': function(param) { return param.data; },
+                'handle': index_handle_title,
                 //The container id to show the final results, this value could be repeated by other calls
                 'targets': 'header.[[cited_val]]',
                 //The functions which tests whether the call results are valid to be further elaborated and taken in consideration
@@ -355,7 +355,7 @@ var browser_conf = {
                 //The dat format of the results
                 'format': '',
                 //The function which handles the results retrieved after the end of the call
-                'handle': function(param) { return param.data; },
+                'handle': index_handle_title,
                 //The container id to show the final results, this value could be repeated by other calls
                 'targets': 'header.[[citing_val]]',
                 //The functions which tests whether the call results are valid to be further elaborated and taken in consideration
@@ -373,7 +373,7 @@ var browser_conf = {
                 //The dat format of the results
                 'format': '',
                 //The function which handles the results retrieved after the end of the call
-                'handle': function(param) { return param.data; },
+                'handle': index_handle_title,
                 //The container id to show the final results, this value could be repeated by other calls
                 'targets': 'header.[[cited_val]]',
                 //The functions which tests whether the call results are valid to be further elaborated and taken in consideration
@@ -387,6 +387,22 @@ var browser_conf = {
 
 
 //Mapping functions
+function index_handle_title(param) {
+    console.log(param);
+  var str_title = null;
+  if (param.data != undefined ) {
+    var title = param.data;
+    var cur_url = /.+doi=(.+)&style.+/g/.replace("\1");
+    if (title != undefined) {
+      str_title = "<a href='http://dx.doi.org/"+cur_url+"' target='_blank'>"+title +"</a>";
+    }
+  }
+
+  var data = {'value':str_title,'source':param.call_param['label']};
+  browser.target_ext_call(param.call_param,{'title_lbl':data});
+}
+
+
 function decodeURIStr(str) {
   return decodeURIComponent(str);
 }
