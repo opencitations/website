@@ -392,7 +392,7 @@ function index_handle_title(param) {
   var str_title = null;
   if (param.data != undefined ) {
     var title = param.data;
-    var cur_url = /.+doi=(.+)&style.+/g/.replace("\1");
+    var cur_url = /.+doi=(.+)&style.+/g.replace("\1");
     if (title != undefined) {
       str_title = "<a href='http://dx.doi.org/"+cur_url+"' target='_blank'>"+title +"</a>";
     }
