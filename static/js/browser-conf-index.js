@@ -195,7 +195,7 @@ var browser_conf = {
                 //A unique id
                 'id': 'coci_metadata_cited',
                 //The url call with a SPARQL var identified as [[?<VAR>]]
-                'call': 'https://citation.crosscite.org/format?doi=[[?citing_doi]]&style=apa&lang=en-US',
+                'call': 'https://citation.crosscite.org/format?doi=[[?cited_doi]]&style=apa&lang=en-US',
                 //The dat format of the results
                 'format': '',
                 //The function which handles the results retrieved after the end of the call
@@ -369,7 +369,7 @@ var browser_conf = {
                 //A unique id
                 'id': 'croci_metadata_cited',
                 //The url call with a SPARQL var identified as [[?<VAR>]]
-                'call': 'https://citation.crosscite.org/format?doi=[[?citing_doi]]&style=apa&lang=en-US',
+                'call': 'https://citation.crosscite.org/format?doi=[[?cited_doi]]&style=apa&lang=en-US',
                 //The dat format of the results
                 'format': '',
                 //The function which handles the results retrieved after the end of the call
@@ -388,7 +388,6 @@ var browser_conf = {
 
 //Mapping functions
 function index_handle_title(param) {
-    console.log(param);
   var str_title = null;
   if (param.data != undefined ) {
     var title = param.data;
