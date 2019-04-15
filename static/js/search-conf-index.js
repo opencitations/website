@@ -112,7 +112,7 @@ var search_conf = {
 
   "page_limit": [5,10,15,20,30,40,50],
   "def_results_limit": 1,
-  "search_base_path": "search_index",
+  "search_base_path": "search",
   "advanced_search": true,
   "def_adv_category": "citation",
   "adv_btn_title": "Search in the OpenCitations Indexes",
@@ -122,12 +122,12 @@ var search_conf = {
             "spinner": true,
             "title":"Searching in the OpenCitations Indexes ...",
             "subtitle":"Be patient - this search might take several seconds!",
-            "abort":{"title":"Abort Search","href_link":"search_index.html"}
+            "abort":{"title":"Abort Search","href_link":"search.html"}
           },
 
    "timeout":{
             "value": 9000,
-            "link": "search_index.html"
+            "link": "search.html"
           }
 
   }
