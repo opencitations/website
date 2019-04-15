@@ -55,8 +55,7 @@ urls = (
     "/index/([^/]+)(/api/.+)", "Api",
     "/(index/sparql)", "SparqlIndex",
     "/index/search", "SearchIndex",
-    "/index/coci/browser/(.+)", "BrowserCOCI",
-    "/index/croci/browser/(.+)", "BrowserCROCI",
+    "/index/index/browser/(.+)", "BrowserIndex",
     "/(index)/coci", "Coci",
     "/(index)/croci", "Croci",
     "/index/coci/(ci/.*)", "CociContentNegotiation",
@@ -356,14 +355,9 @@ class Browser:
         return self.render_page(res_id)
 
 
-class BrowserCOCI(Browser):
+class BrowserIndex(Browser):
     def __init__(self):
-        Browser.__init__(self, render.browser_coci)
-
-class BrowserCROCI(Browser):
-    def __init__(self):
-        Browser.__init__(self, render.browser_croci)
-
+        Browser.__init__(self, render.browser_index)
 
 class BrowserOC(Browser):
     def __init__(self):

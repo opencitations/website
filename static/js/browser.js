@@ -1,5 +1,66 @@
+//GLOBALS
+var lucinda_tags = document.getElementsByClassName("__lucinda__");
+var lucinda_doms = [];
+
+//Get LUCINDA parameters from the HTML tag
+for (var i = 0; i < lucinda_tags.length; i++) {
+	var lucinda_container = lucinda_tags[i];
+
+	var data_content = ['switch','header','details','metrics'];
+	if(lucinda_container.getAttribute('data-content') != undefined){
+		data_content = lucinda_container.getAttribute('data-content');
+		data_content = data_content.split(" ");
+	}
+
+	lucinda_doms.push(
+		{
+			'container': lucinda_container,
+			'data-content': data_content
+		}
+	);
+}
+
+//Build all the inner elements
+for (var i = 0; i < lucinda_doms.length; i++) {
+
+	var str_html_inner = '';
+
+	//LUCINDA contents
+	if (lucinda_doms[i]["data-content"].length != 0) {
+			var switch_index = lucinda_doms[i]["data-content"].indexOf('switch');
+			if (switch_index != -1){
+				str_html_inner = str_html_inner + '<div id="browser_extra" class="browser-extra"><div id="browser_view_switch"></div></div>';
+			}
+
+			var header_index = lucinda_doms[i]["data-content"].indexOf('header');
+			var details_index = lucinda_doms[i]["data-content"].indexOf('details');
+
+			if ((header_index != -1) || (details_index != -1)){
+				str_html_inner = str_html_inner + '<div id="browser_info" class="browser-info">';
+				if (header_index != -1){
+					str_html_inner = str_html_inner + '<div id="browser_header" class="browser-header"></div>';
+				}
+				if (details_index != -1){
+					str_html_inner = str_html_inner + '<div id="browser_details" class="browser-details"></div>';
+				}
+				str_html_inner = str_html_inner + '</div>';
+			}
+
+			var metrics_index = lucinda_doms[i]["data-content"].indexOf('metrics');
+			if (metrics_index != 0){
+				str_html_inner = str_html_inner + '<div id="browser_metrics" class="browser-metrics"></div>';
+			}
+
+
+	}
+
+	//put it inside the page
+	lucinda_doms[i]['container'].innerHTML = '<div id="browser" class="browser">'+ str_html_inner + '</div>';
+}
+
 
 var browser = (function () {
+
 
 		var resource = null;
 		var resource_res = null;
@@ -646,7 +707,7 @@ var browser = (function () {
 			if (oscar_content != undefined) {
 				if ('oscar_conf' in contents) {
 					if ('progress_loader' in contents['oscar_conf']) {
-						b_htmldom.loader(true, progress_loader = contents['oscar_conf']['progress_loader']);
+						b_htmldom.loader(true, progress_loader = contents['oscar_conf']['progress_loader'], query_label=null);
 					}
 				}
 				pending_oscar_calls = oscar_content.length;
@@ -658,9 +719,10 @@ var browser = (function () {
 					var oscar_key = 'search?text='+query+'&rule='+rule;
 
 					oscar_data[oscar_key] = {};
-					oscar_data[oscar_key]["data"] = search.get_search_data(true, oscar_entry["config_mod"]);
+					//get the OSCAR configuration with the updates indicated
+					oscar_data[oscar_key]["data"] = search.get_search_data(rule = rule, native = true, config_mod = oscar_entry["config_mod"]);
 				}
-				//console.log(JSON.parse(JSON.stringify(oscar_data)));
+				//console.log(JSON.parse(JSON.stringify(oscar_data[oscar_key]["data"])));
 
 				for (var i = 0; i < oscar_content.length; i++) {
 					var oscar_entry = oscar_content[i];
@@ -746,8 +808,12 @@ var browser = (function () {
 				if (li_id != null) {
 					b_htmldom.update_oscar_li(oscar_content,li_id);
 				}
+
+				//in case there is still no results (first time)
 				if (!("results" in oscar_data[oscar_key])) {
-						search.do_sparql_query(oscar_key, null ,[], true, callbk_func_key);
+						// load new oscar data
+						search.change_search_data(oscar_data[oscar_key].data, check_and_update = false);
+						search.do_sparql_query(oscar_key, true ,[], true, callbk_func_key);
 				}else {
 					if (oscar_data[oscar_key]['results']) {
 							//in case the table data has not been yet initialized
@@ -758,7 +824,7 @@ var browser = (function () {
 								// save current state of oscar
 								oscar_data[current_oscar_tab].data = search.get_search_data();
 								// load new oscar data
-								search.change_search_data(oscar_data[oscar_key].data);
+								search.change_search_data(oscar_data[oscar_key].data, check_and_update = true);
 							}
 					}
 				}
@@ -806,6 +872,7 @@ var browser = (function () {
 
 				//console.log(oscar_data);
 				//build oscar menu
+				console.log(JSON.parse(JSON.stringify(resource_res)));
 				b_htmldom.build_oscar(resource_res, {"oscar": oscar_content});
 			}
 		}
