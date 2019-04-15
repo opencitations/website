@@ -179,7 +179,7 @@ var browser_conf = {
                 //The url call with a SPARQL var identified as [[?<VAR>]]
                 'call': 'https://citation.crosscite.org/format?doi=[[?citing_doi]]&style=apa&lang=en-US',
                 //The dat format of the results
-                'format': 'json',
+                'format': '',
                 //The function which handles the results retrieved after the end of the call
                 'handle': function(param) { console.log(param);  return param; },
                 //The container id to show the final results, this value could be repeated by other calls
@@ -197,7 +197,7 @@ var browser_conf = {
                 //The url call with a SPARQL var identified as [[?<VAR>]]
                 'call': 'https://citation.crosscite.org/format?doi=[[?citing_doi]]&style=apa&lang=en-US',
                 //The dat format of the results
-                'format': 'json',
+                'format': '',
                 //The function which handles the results retrieved after the end of the call
                 'handle': function(param) { return param; },
                 //The container id to show the final results, this value could be repeated by other calls
@@ -353,7 +353,7 @@ var browser_conf = {
                 //The url call with a SPARQL var identified as [[?<VAR>]]
                 'call': 'https://citation.crosscite.org/format?doi=[[?citing_doi]]&style=apa&lang=en-US',
                 //The dat format of the results
-                'format': 'json',
+                'format': '',
                 //The function which handles the results retrieved after the end of the call
                 'handle': function(param) { return param; },
                 //The container id to show the final results, this value could be repeated by other calls
@@ -371,7 +371,7 @@ var browser_conf = {
                 //The url call with a SPARQL var identified as [[?<VAR>]]
                 'call': 'https://citation.crosscite.org/format?doi=[[?citing_doi]]&style=apa&lang=en-US',
                 //The dat format of the results
-                'format': 'json',
+                'format': '',
                 //The function which handles the results retrieved after the end of the call
                 'handle': function(param) { return param; },
                 //The container id to show the final results, this value could be repeated by other calls
