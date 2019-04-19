@@ -517,4 +517,4 @@ class CrociContentNegotiation(ContentNegotiation):
 
 if __name__ == "__main__":
     app = web.application(rewrite.get_urls(), globals())
-    app.run(lambda app: web.httpserver.StaticMiddleware(app, '/.well-known/'))
+    app.run()
