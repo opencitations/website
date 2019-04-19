@@ -300,8 +300,6 @@ class OCI:
                 raise web.seeother(c["oc_base_url"] + c["virtual_local_url"] + "ci" + clean_oci)
 
 
-
-
 class Index:
     def GET(self, active):
         web_logger.mes()
@@ -519,4 +517,4 @@ class CrociContentNegotiation(ContentNegotiation):
 
 if __name__ == "__main__":
     app = web.application(rewrite.get_urls(), globals())
-    app.run()
+    app.run(lambda app: web.httpserver.StaticMiddleware(app, '/.well-known/'))
