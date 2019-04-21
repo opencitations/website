@@ -6,3 +6,7 @@ h1 {
     word-break: break-all !important;
     font-size: 150% !important;
 }
+
+body {
+    text-align: left !important;
+}

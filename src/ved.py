@@ -66,7 +66,6 @@ class VirtualEntityDirector(object):
 
     def __handle_citation(self, url, ex_regex):
         oci = "oci:%s" % re.sub("^ci/(.+)%s$" % ex_regex, "\\1", url).split(".")[0]
-        print(oci, self.conf["lookup"], self.conf["oci_conf"])
         om = OCIManager(oci, self.conf["lookup"], self.conf["oci_conf"])
         citation_g = om.get_citation_object().get_citation_rdf(self.virtual_baseurl, False)
         if citation_g:
