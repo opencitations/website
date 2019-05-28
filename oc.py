@@ -58,7 +58,7 @@ urls = (
     "/index/browser/(.+)", "BrowserIndex",
     "/(index)/coci", "Coci",
     "/(index)/croci", "Croci",
-    "/index/coci/(prov/.*|index.*|ci/.*)?", "CociContentNegotiation",
+    "/index/coci/(.*)", "CociContentNegotiation",
     "/index/croci/(ci/.*)?", "CrociContentNegotiation",
     "/(about)", "About",
     "/(model)", "Model",
