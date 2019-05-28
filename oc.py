@@ -58,8 +58,8 @@ urls = (
     "/index/browser/(.+)", "BrowserIndex",
     "/(index)/coci", "Coci",
     "/(index)/croci", "Croci",
-    "/index/coci/(ci/.*)", "CociContentNegotiation",
-    "/index/croci/(ci/.*)", "CrociContentNegotiation",
+    "/index/coci/(prov/.*|index.*|ci/.*)?", "CociContentNegotiation",
+    "/index/croci/(ci/.*)?", "CrociContentNegotiation",
     "/(about)", "About",
     "/(model)", "Model",
     "/(corpus)", "Corpus",
@@ -506,13 +506,17 @@ class CorpusContentNegotiation(ContentNegotiation):
 
 class CociContentNegotiation(ContentNegotiation):
     def __init__(self):
-        ContentNegotiation.__init__(self, c["index_base_url"], c["coci_local_url"], c["sparql_endpoint_index"],
-                                    lambda u: "oci:%s" % re.findall("^.+/ci/(.+)$", u)[0])
+        ContentNegotiation.__init__(self, c["index_base_url"], c["coci_local_url"],
+                                    c["sparql_endpoint_index"],
+                                    lambda u: "oci:%s" % re.findall("^.+/ci/(.+)$", u)[0]
+                                    if "/ci/" in u else "provenance agent 1" if "/pa/1" else "COCI")
 
 class CrociContentNegotiation(ContentNegotiation):
     def __init__(self):
-        ContentNegotiation.__init__(self, c["index_base_url"], c["croci_local_url"], c["sparql_endpoint_index"],
-                                    lambda u: "oci:%s" % re.findall("^.+/ci/(.+)$", u)[0])
+        ContentNegotiation.__init__(self, c["index_base_url"], c["croci_local_url"],
+                                    c["sparql_endpoint_index"],
+                                    lambda u: "oci:%s" % re.findall("^.+/ci/(.+)$", u)[0]
+                                    if "/ci/" in u else "CROCI")
 
 
 if __name__ == "__main__":

@@ -240,6 +240,9 @@ class LinkedDataDirector(object):
             else:
                 try:
                     resource_url = self.baseurl + url.rsplit(".", 1)[0]
+                    if resource_url.endswith("/index"):
+                        resource_url = resource_url[:-5]
+                    print(resource_url)
                     res = self.tp.query("DESCRIBE <%s>" % resource_url)
                     if res is not None:
                         cur_graph = Graph()
@@ -247,7 +250,8 @@ class LinkedDataDirector(object):
                             cur_graph.add(st)
 
                         if self.label_func is not None:
-                            cur_graph.add((URIRef(resource_url), RDFS.label, Literal(self.label_func(resource_url))))
+                            cur_graph.add((URIRef(resource_url), RDFS.label,
+                                           Literal(self.label_func(resource_url))))
                 except TypeError as e:
                     print("The function used for adding the label is not working correctly: %s" % e)
                 except Exception:
