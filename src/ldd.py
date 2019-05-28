@@ -243,7 +243,9 @@ class LinkedDataDirector(object):
                     if resource_url.endswith("/index"):
                         resource_url = resource_url[:-5]
                     print(resource_url)
-                    res = self.tp.query("DESCRIBE <%s>" % resource_url)
+                    res = self.tp.query("CONSTRUCT {?s ?p ?o} "
+                                        "WHERE { <%s> ?p ?o . BIND(<%s> as ?s) }" %
+                                        (resource_url, resource_url))
                     if res is not None:
                         cur_graph = Graph()
                         for st in res:
