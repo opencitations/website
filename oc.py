@@ -509,7 +509,8 @@ class CociContentNegotiation(ContentNegotiation):
         ContentNegotiation.__init__(self, c["index_base_url"], c["coci_local_url"],
                                     c["sparql_endpoint_index"],
                                     lambda u: "oci:%s" % re.findall("^.+/ci/(.+)$", u)[0]
-                                    if "/ci/" in u else "provenance agent 1" if "/pa/1" else "COCI")
+                                    if "/ci/" in u else "provenance agent 1" if "/pa/1" in u
+                                    else "COCI")
 
 class CrociContentNegotiation(ContentNegotiation):
     def __init__(self):
