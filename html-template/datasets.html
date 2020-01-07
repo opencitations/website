@@ -8,7 +8,7 @@ $def with (pages, active)
 
 
         <link rel="icon" href="/static/favicon.ico" />
-        <title>OpenCitations - Home</title>
+        <title>OpenCitations - Datasets</title>
 
         <!-- Bootstrap core CSS -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
@@ -74,23 +74,26 @@ $def with (pages, active)
 
           </div>
 
-            <div class="cover">
-                <h1 class="cover-heading">
-                    <img id="logo" class="img-responsive center-block" src="/static/img/logo.png" alt="Open Citations logo" />
-                </h1>
-                <p class="lead">Welcome to the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> homepage!</p>
-                <p><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> is an independent infrastructure organization for open scholarship dedicated to the publication of open bibliographic and citation data by the use of <a href="https://en.wikipedia.org/wiki/Semantic_Web">Semantic Web</a> (<a href="https://en.wikipedia.org/wiki/Linked_data">Linked Data</a>) technologies. It is also engaged in advocacy for open citations, particularly in its role as a key founding member of the <a href="https://i4oc.org">Initiative for Open Citations (I4OC)</a>. For administrative convenience, <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> is managed by the separate newly formed <a href="https://openscholarlymetadata.org">Research Centre for Open Scholarly Metadata</a> at the <a href="https://www.unibo.it/en">University of Bologna</a>.</p>
+            <div class="cover left">
+                <h3>Datasets</h3>
+                <p><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> provides the following datasets:</p>
 
-                <p><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> espouses fully the founding principles of Open Science. It complies with the <a href="https://doi.org/10.1038/sdata.2016.18">FAIR data principles</a> by <a href="https://www.force11.org">Force11</a> that data should be <strong>findable</strong>, <strong>accessible</strong>, <strong>interoperable</strong> and <strong>re-usable</strong>, and it complies with the recommendations of <a href="https://i4oc.org">I4OC</a> that citation data in particular should be <strong>structured</strong>, <strong>separable</strong>, and <strong>open</strong>. On the latter topic, <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> has recently published a formal definition of an <a href="https://doi.org/10.6084/m9.figshare.6683855">Open Citation</a>, and has launched a system for globally unique and persistent identifiers (PIDs) for bibliographic citations – <a href="https://doi.org/10.6084/m9.figshare.7127816">Open Citation Identifiers (OCIs)</a>.</p>
-
-                <p>Please follow us on <a href="http://www.twitter.com/opencitations">Twitter</a> and read the <a href="https://opencitations.wordpress.com/">OpenCitations Blog</a> to be kept updated with news about <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>!</p>
-
-                <p class="mt-more"><a href="https://opencitations.wordpress.com/2019/12/05/opencitations-selected-for-scoss-second-funding-cycle/"><img id="scoss" style="max-width: 300px" class="img-responsive center-block" src="/static/img/scoss.png" alt="SCOSS + OpenCitations" /></a></p>
+                <ul>
+                    <li>
+                        <p><strong><a href="/index"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes</a>.</strong> The Indexes contain information about the citations themselves, in which the citations, instead of being considered as simple links, are treated as <a href="https://opencitations.wordpress.com/2018/02/19/citations-as-first-class-data-entities-introduction/">first-class data entities</a> in their own right. This permits each Index to endow each citation with descriptive properties, such as the date on which the citation was created, its timespan (i.e.the interval between the publication date of the cited entity and the publication date of the citing entity), and its type (e.g. whether or not it is a self-citation). These Indexes do not store metadata about the citing and cited bibliographic entities internally. Rather, these entities are identified in the Indexes by their unique identifiers (e.g. DOIs), enabling bibliographic information to be retrieved on-the-fly upon request by means of the external APIs (see the operation “metadata” at https://w3id.org/oc/index/api/v1 for additional information). The Indexes currently available are:</p>
+                        <ul>
+                            <li><p><a href="/index/coci">COCI, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of Crossref open DOI-to-DOI citations</a>;</p></li>
+                            <li><p><a href="/index/croci">CROCI, the Crowdsourced Open Citations Index</a>.</p></li>
+                        </ul>
+                    </li>
+                    <li><p><strong><a href="/corpus"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus (OCC)</a>.</strong> The OCC is a database of open downloadable bibliographic and citation data recorded in RDF and released under a Creative Commons CC0 public domain waiver. The current content of the OCC has been mainly derived from biomedical articles within the <a href="https://www.ncbi.nlm.nih.gov/pmc/tools/openftlist/">Open Access Subset of PubMed Central</a>, harvested using the <a href="https://europepmc.org/RestfulWebService">Europe PubMed Central REST API</a>.</p></li>
+                </ul>
             </div>
         </div>
 
         <footer>
             <div class="container">
+                <div class="container">
                 <div class="row">
                     <div id="disi" class="col-xs-12 col-sm-3">
                         <p>
@@ -111,6 +114,7 @@ $def with (pages, active)
                         </p>
                     </div>
                 </div>
+            </div>
             </div>
             <p>
                 <a class="social oc-purple" href="mailto:contact@opencitations.net"><i class="fa fa-envelope" aria-hidden="true"></i></a>

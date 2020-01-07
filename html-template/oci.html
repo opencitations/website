@@ -57,21 +57,18 @@ $def with (pages, active)
                       </div>
 
                       <div class="masthead-pages">
-                        <ul class="nav masthead-nav navbar-nav">
-                            $for page in pages:
-                                $if page == active:
-                                    <li class="active">
-                                $else:
-                                    <li>
-                                <a href="$page">
-                                    $if page == "/":
-                                        Home
-                                    $else:
-                                        $page.title()
-                                </a>
-                                </li>
-                        </ul>
-                      </div>
+                      <ul class="nav masthead-nav navbar-nav">
+                          $for page in pages:
+                              $if page['name'] == active:
+                                  <li class="active">
+                              $else:
+                                  <li>
+                              <a href="/$page['name']">
+                                  $page['label']
+                              </a>
+                          </li>
+                      </ul>
+                    </div>
 
                     </div>
                 </nav>

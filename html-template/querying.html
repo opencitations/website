@@ -8,7 +8,7 @@ $def with (pages, active)
 
 
         <link rel="icon" href="/static/favicon.ico" />
-        <title>OpenCitations - Home</title>
+        <title>OpenCitations - Querying Data</title>
 
         <!-- Bootstrap core CSS -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
@@ -74,23 +74,41 @@ $def with (pages, active)
 
           </div>
 
-            <div class="cover">
-                <h1 class="cover-heading">
-                    <img id="logo" class="img-responsive center-block" src="/static/img/logo.png" alt="Open Citations logo" />
-                </h1>
-                <p class="lead">Welcome to the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> homepage!</p>
-                <p><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> is an independent infrastructure organization for open scholarship dedicated to the publication of open bibliographic and citation data by the use of <a href="https://en.wikipedia.org/wiki/Semantic_Web">Semantic Web</a> (<a href="https://en.wikipedia.org/wiki/Linked_data">Linked Data</a>) technologies. It is also engaged in advocacy for open citations, particularly in its role as a key founding member of the <a href="https://i4oc.org">Initiative for Open Citations (I4OC)</a>. For administrative convenience, <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> is managed by the separate newly formed <a href="https://openscholarlymetadata.org">Research Centre for Open Scholarly Metadata</a> at the <a href="https://www.unibo.it/en">University of Bologna</a>.</p>
+            <div class="cover left">
+                <h3>Querying Data</h3>
+                <p><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> provides the following mechanisms to query the data it provides:</p>
 
-                <p><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> espouses fully the founding principles of Open Science. It complies with the <a href="https://doi.org/10.1038/sdata.2016.18">FAIR data principles</a> by <a href="https://www.force11.org">Force11</a> that data should be <strong>findable</strong>, <strong>accessible</strong>, <strong>interoperable</strong> and <strong>re-usable</strong>, and it complies with the recommendations of <a href="https://i4oc.org">I4OC</a> that citation data in particular should be <strong>structured</strong>, <strong>separable</strong>, and <strong>open</strong>. On the latter topic, <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> has recently published a formal definition of an <a href="https://doi.org/10.6084/m9.figshare.6683855">Open Citation</a>, and has launched a system for globally unique and persistent identifiers (PIDs) for bibliographic citations – <a href="https://doi.org/10.6084/m9.figshare.7127816">Open Citation Identifiers (OCIs)</a>.</p>
-
-                <p>Please follow us on <a href="http://www.twitter.com/opencitations">Twitter</a> and read the <a href="https://opencitations.wordpress.com/">OpenCitations Blog</a> to be kept updated with news about <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>!</p>
-
-                <p class="mt-more"><a href="https://opencitations.wordpress.com/2019/12/05/opencitations-selected-for-scoss-second-funding-cycle/"><img id="scoss" style="max-width: 300px" class="img-responsive center-block" src="/static/img/scoss.png" alt="SCOSS + OpenCitations" /></a></p>
+                <ul>
+                    <li>
+                        <p><strong><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> SPARQL endpoints.</strong> <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> made available a <a href="https://www.w3.org/TR/sparql11-query/">SPARQL</a> endpoint for all the datasets released. When such a SPARQL endpoint is accessed with a browser, it shows an editor GUI generated with <a href="https://yasgui.org/">YASGUI</a>. Of course, any SPARQL endpoint can additionally be queried using the <a href="https://www.w3.org/TR/sparql11-protocol/">SPARQL Protocol</a>, e.g. via <code>curl</code>. The SPARQL endpoints available are:</p>
+                        <ul>
+                            <li><p><a href="/sparql"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus SPARQL endpoint</a>;</p></li>
+                            <li><p><a href="/index/sparql"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes SPARQL endpoint</a>.</p></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p><strong><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> REST APIs.</strong> All the data in any of the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> datasets can be retrieved by using an HTTP REST API. The rationale of making REST APIs available in addition to the SPARQL endpoints was to provide convenient access to the data included in the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> datasets for Web developers and users who are not necessarily experts in Semantic Web technologies. All the REST APIs made available by <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>, has been implemented by means of <a href="https://github.com/opencitations/ramose">RAMOSE, the Restful API Manager Over SPARQL Endpoints</a>, which is a Python application that allows one to simply create a REST API over any SPARQL endpoint by means of a simple configuration file that execute a SPARQL query dependently of the particular API call specified. The REST APIs available are:</p>
+                        <ul>
+                            <li><p><a href="/api/v1"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus REST API</a>;</p></li>
+                            <li><p><a href="/index/api/v1"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes unifying REST API</a>;</p></li>
+                            <li><p><a href="/index/coci/api/v1">COCI REST API</a>;</p></li>
+                            <li><p><a href="/index/croci/api/v1">CROCI REST API</a>.</p></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p><strong><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Search Interfaces.</strong> <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> has additionally developed user-friendly text search interfaces and browsing interfaces that can be used to search data in all the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> datasets and to visualise and browse them, respectively. These two interfaces have been developed by means of <a href="https://github.com/opencitations/oscar">OSCAR, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> RDF Search Application</a>, and <a href="https://github.com/opencitations/lucinda">LUCINDA, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> RDF Resource Browser</a>, that provide a configurable layer over SPARQL endpoints that permit one easily to create Web interfaces for querying and visualising the results of SPARQL queries. The search interfaces available are:</p>
+                        <ul>
+                            <li><p><a href="/search"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus Search Interface</a>;</p></li>
+                            <li><p><a href="/index/search"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes Search Interface</a>.</p></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
 
         <footer>
             <div class="container">
+                <div class="container">
                 <div class="row">
                     <div id="disi" class="col-xs-12 col-sm-3">
                         <p>
@@ -111,6 +129,7 @@ $def with (pages, active)
                         </p>
                     </div>
                 </div>
+            </div>
             </div>
             <p>
                 <a class="social oc-purple" href="mailto:contact@opencitations.net"><i class="fa fa-envelope" aria-hidden="true"></i></a>

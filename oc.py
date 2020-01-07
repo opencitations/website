@@ -37,49 +37,65 @@ with open("conf.json") as f:
     c = json.load(f)
 
 pages = [
-    # Generic pages
-    "/", "about", "corpus", "index", "model", "download",
-
-    # OCC SPARQL-related pages
-    "sparql", "search",
-
-    # Other generic pages
-    "oci", "publications", "licenses"
+    {"name": "", "label": "Home"},
+    {"name": "about", "label": "About"},
+    {"name": "donate", "label": "Donate"},
+    {"name": "model", "label": "Data Model"},
+    {"name": "datasets", "label": "Datasets"},
+    {"name": "querying", "label": "Querying Data"},
+    {"name": "tools", "label": "Tools"},
+    {"name": "download", "label": "Download"},
+    {"name": "publications", "label": "Publications"}
 ]
+
+active = {
+    "corpus": "datasets",
+    "index": "datasets",
+    "coci": "datasets",
+    "croci": "datasets",
+    "oci": "tools",
+    "api": "querying",
+    "sparql": "querying",
+    "search": "querying"
+}
 
 urls = (
     # Generic URLs
-    "(/)", "Home",
+    "/", "Home",
     "/(wikidata)(/api/.+)", "Api",
     "/(index)(/api/.+)", "Api",
     "/index/([^/]+)(/api/.+)", "Api",
-    "/(index/sparql)", "SparqlIndex",
+    "/index/sparql", "SparqlIndex",
     "/index/search", "SearchIndex",
     "/index/browser/(.+)", "BrowserIndex",
-    "/(index)/coci", "Coci",
-    "/(index)/croci", "Croci",
+    "/index/coci", "Coci",
+    "/index/croci", "Croci",
     "/index/coci/(.*)", "CociContentNegotiation",
     "/index/croci/(ci/.*)?", "CrociContentNegotiation",
     "/(about)", "About",
     "/(model)", "Model",
-    "/(corpus)", "Corpus",
+    "/(datasets)", "Datasets",
+    "/corpus", "Corpus",
     "/corpus/(.+)", "CorpusContentNegotiation",
     "/corpus/", "CorpusContentNegotiation",
     "/virtual/(.+)", "Virtual",
-    "/(oci)(/.+)?", "OCI",
+    "/oci(/.+)?", "OCI",
     "/(download)", "Download",
 
     # OCC SPARQL-related urls
-    "/(sparql)", "SparqlOC",
+    "/sparql", "SparqlOC",
     "/search", "SearchOC",
     "/browser/(.+)", "BrowserOC",
     "()(/api/.+)", "Api",
 
     # Other generic URLs
+    "/(tools)", "Tools",
+    "/(donate)", "Donate",
+    "/(querying)", "Querying",
     "/(publications)", "Publications",
     "/(licenses)", "Licenses",
     "(/paper/.+)", "RawGit",
-    "/(index)", "Index",
+    "/index", "Index",
     "/robots.txt", "Robots"
 )
 
@@ -173,26 +189,28 @@ class WorkInProgress:
         return render.wip(pages, active)
 
 
-class Home:
+class Querying:
     def GET(self, active):
         web_logger.mes()
-        cur_date = "January 1, 1970"
-        cur_tot = "0"
-        cur_cit = "0"
-        cur_cited = "0"
+        return render.querying(pages, active)
 
-        if path.exists(c["statistics"]):
-            with open(c["statistics"]) as f:
-                lastrow = None
-                for lastrow in csv.reader(f):
-                    pass
-                cur_date = datetime.strptime(
-                    lastrow[0], "%Y-%m-%dT%H:%M:%S").strftime("%B %d, %Y")
-                cur_tot = lastrow[5]
-                cur_cit = lastrow[2]
-                cur_cited = lastrow[6]
 
-        return render.home(pages, active, cur_date, cur_tot, cur_cit, cur_cited)
+class Tools:
+    def GET(self, active):
+        web_logger.mes()
+        return render.tools(pages, active)
+
+
+class Donate:
+    def GET(self, active):
+        web_logger.mes()
+        return render.donate(pages, active)
+
+
+class Home:
+    def GET(self):
+        web_logger.mes()
+        return render.home(pages, "")
 
 
 class Api:
@@ -249,13 +267,28 @@ class About:
 
 
 class Corpus:
-    def GET(self, active):
+    def GET(self):
         web_logger.mes()
-        return render.corpus(pages, active)
+        cur_date = "January 1, 1970"
+        cur_tot = "0"
+        cur_cit = "0"
+        cur_cited = "0"
+
+        if path.exists(c["statistics"]):
+            with open(c["statistics"]) as f:
+                lastrow = None
+                for lastrow in csv.reader(f):
+                    pass
+                cur_date = datetime.strptime(
+                    lastrow[0], "%Y-%m-%dT%H:%M:%S").strftime("%B %d, %Y")
+                cur_tot = lastrow[5]
+                cur_cit = lastrow[2]
+                cur_cited = lastrow[6]
+        return render.corpus(pages, active["corpus"], cur_date, cur_tot, cur_cit, cur_cited)
 
 
 class OCI:
-    def GET(self, active, oci):
+    def GET(self, oci):
         data = web.input()
         if "oci" in data:
             clean_oci = re.sub("\s+", "", re.sub("^oci:", "", data.oci.strip(), flags=re.IGNORECASE))
@@ -264,11 +297,11 @@ class OCI:
             if "format" in data:
                 cur_format = "." + data.format.strip().lower()
 
-            raise web.seeother(c["oc_base_url"] + "/" + active + "/" + clean_oci + cur_format)
+            raise web.seeother(c["oc_base_url"] + "/oci/" + clean_oci + cur_format)
 
         elif oci is None or oci.strip() == "":
             web_logger.mes()
-            return render.oci(pages, active)
+            return render.oci(pages, active["oci"])
         else:
             web_logger.mes()
             clean_oci, ex = re.findall("^([^\.]+)(\.[a-z]+)?$", oci.strip().lower())[0]
@@ -301,20 +334,20 @@ class OCI:
 
 
 class Index:
-    def GET(self, active):
+    def GET(self):
         web_logger.mes()
-        return render.index(pages, active)
+        return render.index(pages, active["index"])
 
 
 class Coci:
-    def GET(self, active):
+    def GET(self):
         web_logger.mes()
-        return render.coci(pages, active)
+        return render.coci(pages, active["coci"])
 
 class Croci:
-    def GET(self, active):
+    def GET(self):
         web_logger.mes()
-        return render.croci(pages, active)
+        return render.croci(pages, active["croci"])
 
 
 class Download:
@@ -324,24 +357,23 @@ class Download:
 
 
 class Search:
-    def __init__(self, active_page, render_page):
-        self.active_page = active_page
+    def __init__(self, render_page):
         self.render_page = render_page
 
     def GET(self):
         web_logger.mes()
         query_string = web.ctx.env.get("QUERY_STRING")
-        return self.render_page(pages, self.active_page, query_string)
+        return self.render_page(pages, active["search"], query_string)
 
 
 class SearchIndex(Search):
     def __init__(self):
-        Search.__init__(self, "index", render.search_index)
+        Search.__init__(self, render.search_index)
 
 
 class SearchOC(Search):
     def __init__(self):
-        Search.__init__(self, "search", render.search)
+        Search.__init__(self, render.search)
 
 
 class Browser:
@@ -368,6 +400,12 @@ class Model:
         return render.model(pages, active)
 
 
+class Datasets:
+    def GET(self, active):
+        web_logger.mes()
+        return render.datasets(pages, active)
+
+
 class Publications:
     def GET(self, active):
         web_logger.mes()
@@ -392,17 +430,17 @@ class Sparql:
         self.sparql_endpoint_title = sparql_endpoint_title
         self.yasqe_sparql_endpoint = yasqe_sparql_endpoint
 
-    def GET(self, active):
+    def GET(self):
         content_type = web.ctx.env.get('CONTENT_TYPE')
-        return self.__run_query_string(active, web.ctx.env.get("QUERY_STRING"), content_type)
+        return self.__run_query_string(active["sparql"], web.ctx.env.get("QUERY_STRING"), content_type)
 
-    def POST(self, active):
+    def POST(self):
         content_type = web.ctx.env.get('CONTENT_TYPE')
 
         cur_data = web.data().decode("utf-8")
 
         if "application/x-www-form-urlencoded" in content_type:
-            return self.__run_query_string(active, cur_data, True, content_type)
+            return self.__run_query_string(active["sparql"], cur_data, True, content_type)
         elif "application/sparql-query" in content_type:
             return self.__contact_tp(cur_data, True, content_type)
         else:
@@ -449,12 +487,12 @@ class Sparql:
 
 class SparqlOC(Sparql):
     def __init__(self):
-        Sparql.__init__(self, c["sparql_endpoint"], "OCC", c["oc_base_url"]+"/sparql")
+        Sparql.__init__(self, c["sparql_endpoint"], "Corpus", c["oc_base_url"]+"/sparql")
 
 
 class SparqlIndex(Sparql):
     def __init__(self):
-        Sparql.__init__(self, c["sparql_endpoint_index"], "Index", c["oc_base_url"]+"/index/sparql")
+        Sparql.__init__(self, c["sparql_endpoint_index"], "Indexes", c["oc_base_url"]+"/index/sparql")
 
 
 class Virtual:

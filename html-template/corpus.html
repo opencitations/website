@@ -1,4 +1,4 @@
-$def with (pages, active)
+$def with (pages, active, date, tot, cit, cited)
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
     <head>
@@ -8,7 +8,7 @@ $def with (pages, active)
 
 
         <link rel="icon" href="/static/favicon.ico" />
-        <title>OpenCitations - Corpus</title>
+        <title>OpenCitations - OpenCitations Corpus</title>
 
         <!-- Bootstrap core CSS -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
@@ -58,17 +58,14 @@ $def with (pages, active)
                     <div class="masthead-pages">
                       <ul class="nav masthead-nav navbar-nav">
                           $for page in pages:
-                              $if page == active:
+                              $if page['name'] == active:
                                   <li class="active">
                               $else:
                                   <li>
-                              <a href="$page">
-                                  $if page == "/":
-                                      Home
-                                  $else:
-                                      $page.title()
+                              <a href="/$page['name']">
+                                  $page['label']
                               </a>
-                              </li>
+                          </li>
                       </ul>
                     </div>
 
@@ -78,41 +75,50 @@ $def with (pages, active)
           </div>
 
             <div class="cover left">
-                 <h3>$active.title()</h3>
-                <p><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> is now populating the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus (OCC), an open repository of scholarly citation data made available under <a href="https://creativecommons.org/publicdomain/zero/1.0/">a Creative Commons public domain dedication (CC0)</a>, which provides accurate bibliographic references harvested from the scholarly literature that others may freely build upon, enhance and reuse for any purpose, without restriction under copyright or database law.</p>
-            <p>The OCC includes information about six different kinds of bibliographic entities:</p>
-            <ul>
-               <li>
-                  <p>bibliographic resources (br), class <code>fabio:Expression</code> – resources that either cite or are cited by other bibliographic resources (e.g. journal articles), or that contain such citing/cited resources (e.g. journals);</p>
-               </li>
-               <li>
-                  <p>resource embodiments (re), class <code>fabio:Manifestation</code> – details of the physical or digital forms in which the bibliographic resources are made available by their publishers;</p>
-               </li>
-               <li>
-                  <p>bibliographic entries (be), class <code>biro:BibliographicReference</code> – the literal textual bibliographic entries occurring in the reference lists within bibliographic resources, that reference other bibliographic resources;</p>
-               </li>
-               <li>
-                  <p>responsible agents (ra), class <code>foaf:Agent</code> – names of agents having certain roles with respect to bibliographic resources (i.e. names of authors, editors, publishers, etc.);</p>
-               </li>
-               <li>
-                  <p>agent roles (ar), class <code>pro:RoleInTime</code> – roles held by agents with respect to bibliographic resources (e.g. author, editor, publisher);</p>
-               </li>
-               <li>
-                  <p>identifiers (id) (class <code>datacite:Identifier</code>) – external identifiers (e.g. DOI, ORCID, PubMedID) associated with the bibliographic entities.</p>
-               </li>
-            </ul>
-                <p>The corpus URL (<a href="https://w3id.org/oc/corpus/">https://w3id.org/oc/corpus/</a>) identifies the entire OCC, which is composed of several sub-datasets, one for each of the aforementioned bibliographic entities included in the corpus. Each of these has a URL composed by suffixing the corpus URL with the two-letter short name for the class of entity (e.g. <q>be</q> for a bibliographic entry) followed by an oblique slash (e.g. <a href="https://w3id.org/oc/corpus/be/">https://w3id.org/oc/corpus/be/</a>). Individual members of each sub-dataset are identified by incrementing numbers, unique within that sub-dataset, e.g. <a href="https://w3id.org/oc/corpus/br/1">https://w3id.org/oc/corpus/br/1</a> or <a href="https://w3id.org/oc/corpus/be/24">https://w3id.org/oc/corpus/be/24</a>.</p>
+                <h3><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus</h3>
+                <p>The <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus (OCC) is an open repository of scholarly citation data made available under <a href="https://creativecommons.org/publicdomain/zero/1.0/">a Creative Commons public domain dedication (CC0)</a>, which provides accurate bibliographic references harvested from the scholarly literature that others may freely build upon, enhance and reuse for any purpose, without restriction under copyright or database law. An in-depth description of the OCC is available in the following paper:</p>
+                <blockquote><p>Silvio Peroni, David Shotton, Fabio Vitali (2017). One year of the OpenCitations Corpus: Releasing RDF-based scholarly citation data into the Public Domain. In Proceedings of the 16th International Semantic Web Conference (ISWC 2017): 184-192. <a href="https://doi.org/10.1007/978-3-319-68204-4_19">https://doi.org/10.1007/978-3-319-68204-4_19</a>, OA at <a href="https://w3id.org/people/essepuntato/papers/oc-iswc2017.html">https://w3id.org/people/essepuntato/papers/oc-iswc2017.html</a></p></blockquote>
+                <p>The OCC includes information about six different kinds of bibliographic entities:</p>
+                <ul>
+                   <li>
+                      <p>bibliographic resources (br), class <code>fabio:Expression</code> – resources that either cite or are cited by other bibliographic resources (e.g. journal articles), or that contain such citing/cited resources (e.g. journals);</p>
+                   </li>
+                   <li>
+                      <p>resource embodiments (re), class <code>fabio:Manifestation</code> – details of the physical or digital forms in which the bibliographic resources are made available by their publishers;</p>
+                   </li>
+                   <li>
+                      <p>bibliographic references (be), class <code>biro:BibliographicReference</code> – the literal textual bibliographic references occurring in the reference lists within bibliographic resources, that reference other bibliographic resources;</p>
+                   </li>
+                   <li>
+                      <p>responsible agents (ra), class <code>foaf:Agent</code> – names of agents having certain roles with respect to bibliographic resources (i.e. names of authors, editors, publishers, etc.);</p>
+                   </li>
+                   <li>
+                      <p>agent roles (ar), class <code>pro:RoleInTime</code> – roles held by agents with respect to bibliographic resources (e.g. author, editor, publisher);</p>
+                   </li>
+                   <li>
+                      <p>identifiers (id) (class <code>datacite:Identifier</code>) – external identifiers (e.g. DOI, ORCID, PubMedID) associated with the bibliographic entities.</p>
+                   </li>
+                </ul>
+                <p>The corpus URL (<a href="https://w3id.org/oc/corpus/">https://w3id.org/oc/corpus/</a>) identifies the entire OCC, which is composed of several sub-datasets, one for each of the aforementioned bibliographic entities included in the corpus. Each of these has a URL composed by suffixing the corpus URL with the two-letter short name for the class of entity (e.g. <q>be</q> for a bibliographic reference) followed by an oblique slash (e.g. <a href="https://w3id.org/oc/corpus/be/">https://w3id.org/oc/corpus/be/</a>). Individual members of each sub-dataset are identified by incrementing numbers, unique within that sub-dataset, e.g. <a href="https://w3id.org/oc/corpus/br/1">https://w3id.org/oc/corpus/br/1</a> or <a href="https://w3id.org/oc/corpus/be/24">https://w3id.org/oc/corpus/be/24</a>.</p>
                 <p>The OCC stores data relevant to these citations in RDF, encoded as JSON-LD, and each dataset is described appropriately by means of the <a href="https://www.w3.org/TR/vocab-dcat/">Data Catalog Vocabulary</a> and the <a href="https://www.w3.org/TR/void/">VoID Vocabulary</a>.</p>
-                <p>All the data within the OCC are available via a <a href="http://w3id.org/oc/sparql">SPARQL endpoint</a>, and by downloading data dumps that are created regularly every month for the corpus as a whole and for each major datatype within it, and which are stored in Figshare.  Previous versions of the OCC are archived in earlier data dumps.  Data can be unpacked from the zip files of these data dumps and exported in a number of commonly used reference management formats.</p>
-                <p>In addition, the metadata for each individual bibliographic resource recorded in the OCC are available for browsing in a variety of formats (plain text, RDF/XML, Turtle and JSON-LD) by means of a simple Web interface.  This shows only the data concerning that one bibliographic entity (e.g. <a href="https://w3id.org/oc/corpus/br/1">https://w3id.org/oc/corpus/br/1</a>) and the citations it contains.</p>
-            <h4 class="mt-more">The ingestion workflow</h4>
-            <p>The ingestion of citation data into the oCC, briefly summarised in <a class="cgen" href="#refIllustration1">Figure 1</a>, is handled by two Python scripts called the <em>Bibliographic Entries Extractor</em> (<em>BEE</em>) and the <em>SPAR Citation Indexer</em> (<em>SPACIN</em>), available in the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> <a href="https://github.com/essepuntato/opencitations">GitHub repository</a>.</p>
-        <figure class="mt-more" id="refIllustration1">
+
+                <p>All the data in the OCC are available for download in the following ways:</p>
+                <ul>
+                    <li><p>by querying the <a href="/sparql">OCC SPARQL endpoint</a>;</p></li>
+                    <li><p>by using the <a href="/api/v1">OCC REST API</a>, implemented by means of <a href="https://github.com/opencitations/ramose">RAMOSE</a> (the Restful API Manager Over SPARQL Endpoints), where they can be downloaded in JSON and CSV formats;</p></li>
+                    <li><p>as <a href="download#occ">dumps</a> of the full Corpus on <a href="https://figshare.com">Figshare</a> in JSON-LD format;</p></li>
+                    <li><p>using the HTTP URI of the individual bibliographic entities (e.g. <a href="https://w3id.org/oc/corpus/br/1">https://w3id.org/oc/corpus/br/1</a>), where they can be downloaded in different formats (HTML, RDF/XML, Turtle, and JSON-LD) via content negotiation;</p></li>
+                    <li><p>additionally, bibliographic entities can be <a href="index/search">searched</a> and browsed using  <a href="https://github.com/opencitations/oscar">OSCAR</a> and <a href="https://github.com/opencitations/lucinda">LUCINDA</a>, the search and browse interfaces developed by <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>.</p></li>
+                </ul>
+
+                <h4 class="mt-more">The ingestion workflow</h4>
+                <p>The ingestion of citation data into the OCC, briefly summarised in <a class="cgen" href="#refIllustration1">Figure 1</a>, is handled by two Python scripts called the <em>bibliographic references Extractor</em> (<em>BEE</em>) and the <em>SPAR Citation Indexer</em> (<em>SPACIN</em>), available in the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> <a href="https://github.com/opencitations/script">GitHub repository</a>.</p>
+                <figure class="mt-more" id="refIllustration1">
                   <p>
                      <img class="img-responsive center-block" src="/static/img/workflow.png" alt="The steps involving BEE and SPACIN, and their related Python classes, in the production of the OpenCitations Corpus.">
                   </p>
-                  <figcaption class="center"><strong class="cgen">Figure 1. </strong>The steps involving BEE and SPACIN, and their related Python classes, in the production of the OpenCitations Corpus.</figcaption>
-               </figure>
+                  <figcaption class="center"><strong class="cgen">Figure 1. </strong>The steps involving BEE and SPACIN, and their related Python classes, in the production of the OCC.</figcaption>
+                </figure>
                 <p class="mt-more">BEE is responsible for the creation of JSON files containing information about the articles in the <a href="https://www.ncbi.nlm.nih.gov/pmc/tools/openftlist/">Open Access subset of PubMed Central</a> (retrieved by using the <a href="https://europepmc.org/RestfulWebService">Europe PubMed Central API</a>). Each of these JSON files is created by asking Europe PubMed Central for all the metadata of the articles it stores, for which the source XML file is available. Once identified, BEE processes all the XML sources so as to extract the complete reference list of the paper under consideration, and includes all these data in the final JSON file. An excerpt of one of those JSON files is introduced as follows:</p>
                <pre><code>{
   "doi": "10.1007/s11892-016-0752-4",
@@ -136,8 +142,8 @@ $def with (pages, active)
 }</code></pre>
                <p>In particular, for each article retrieved by means of the Europe PubMed Central API, BEE stores all the possible identifiers (in the example, <q>doi</q>, <q>pmid</q>, <q>pmcid</q>, and <q>localid</q>) and all the textual references, enriched by their own related identifiers if these are available. In addition, the JSON file also includes provenance information about the source, its provider and the curator (i.e. the particular BEE Python class responsible for the extraction of these metadata from the source).</p>
                <p>Starting from the output provided by BEE, SPACIN processes each JSON file, retrieving metadata information about all the citing/cited articles described in it by querying the <a href="http://api.crossref.org/">Crossref API</a> and the <a href="http://members.orcid.org/api/">ORCID API</a>. These APIs are also used to disambiguate bibliographic resources and agents by means of the identifiers retrieved (e.g., DOI, ISSN, ISBN, ORCID, URL, and Crossref Member URL). Once SPACIN has retrieved all these metadata, appropriate RDF resources are created (or reused, if they have been already added to the OCC in the past). These are stored in the file system in JSON-LD format and additionally within the OCC triplestore. It is worth noting that, for space and performance reasons, the triplestore includes all the data about the curated entities, but does not store their provenance data nor the descriptions of the datasets themselves, which are accessible only via HTTP.</p>
-               <p>The SPACIN workflow introduced in <a class="cgen" href="#refIllustration1">Figure 1</a> is a process that runs until no more JSON files are available from BEE. Thus, the current instance of the OCC is evolving dynamically in time, and can be easily extended beyond ingest from Europe PubMed Central by reconfiguring it to interact with additional REST APIs provided by different bibliographic sources, so as to gather new article metadata and their related references, thereby expanding the scope and coverage provided by the OCC.</p>
-               <p>At present, each day the workflow adds ~20,000 new citing/cited bibliographic resources and approximately 3000 new ORCID identifiers to the OCC. We plan to accelerate this rate of ingest considerably in the coming months.</p>
+               <p>The SPACIN workflow introduced in <a class="cgen" href="#refIllustration1">Figure 1</a> is a process that runs until no more JSON files are available from BEE. Thus, the current instance of the OCC is evolving dynamically in time (even if now it has been stopped for updating the ingestion scripts), and can be easily extended beyond ingest from Europe PubMed Central by reconfiguring it to interact with additional REST APIs provided by different bibliographic sources, so as to gather new article metadata and their related references, thereby expanding the scope and coverage provided by the OCC.</p>
+                <p>As of $date, the OCC has ingested the references from $tot citing bibliographic resources and contains information about $cit citation links to $cited cited resources.</p>
             </div>
         </div>
 

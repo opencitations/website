@@ -57,19 +57,15 @@ $def with (pages, active)
 
                     <div class="masthead-pages">
                       <ul class="nav masthead-nav navbar-nav">
-                        $for page in pages:
-                            $if page == active:
-                                <li class="active">
-                            $else:
-                                <li>
-                            $if page == "/":
-                                <a href="$page">
-                                Home
-                            $else:
-                                <a href="/$page">
-                                $page.title()
-                            </a>
-                            </li>
+                          $for page in pages:
+                              $if page['name'] == active:
+                                  <li class="active">
+                              $else:
+                                  <li>
+                              <a href="/$page['name']">
+                                  $page['label']
+                              </a>
+                          </li>
                       </ul>
                     </div>
 
@@ -80,17 +76,16 @@ $def with (pages, active)
 
             <div class="cover left">
                 <h3>COCI, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of Crossref open DOI-to-DOI citations</h3>
-                <p><strong>COCI</strong>, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of Crossref open DOI-to-DOI citations, is an RDF dataset containing details of all the citations that are specified by the open references to DOI-identified works present in <a href="https://www.crossref.org/">Crossref</a>, as of the latest COCI update. COCI does not index Crossref references that are not open, nor Crossref open references to entities that lack DOIs.</p>
-                <p>These citations are treated as first-class data entities, with accompanying properties including the citations timespan, modelled according to the data model described in the <a href="/index"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes</a> page. For a full explanation of this, see our <a href="https://opencitations.wordpress.com/2018/02/19/citations-as-first-class-data-entities-introduction/">introductory blog post</a> and following posts, particularly the <a href="https://opencitations.wordpress.com/2018/07/12/the-crossref-open-citation-index-coci/">one about the launch of COCI</a> and about the <a href="https://opencitations.wordpress.com/2018/11/19/coci-nov-2018-release/">November 2018 release</a>.</p>
+                <p><strong>COCI</strong>, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of Crossref open DOI-to-DOI citations, is an RDF dataset containing details of all the citations that are specified by the open references to DOI-identified works present in <a href="https://www.crossref.org/">Crossref</a>, as of the latest COCI update. COCI does not index Crossref references that are not open, nor Crossref open references to entities that lack DOIs. The citations available in COCI are treated as first-class data entities, with accompanying properties including the citations timespan, modelled according to the <a href="/model"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Data Model</a>. For an in-depth description of COCI, see:</p>
+                <blockquote><p>Ivan Heibi, Silvio Peroni, David Shotton (2019). Software review: COCI, the OpenCitations Index of Crossref open DOI-to-DOI citations. <a href="https://link.springer.com/journal/11192">Scientometrics</a>, 121 (2): 1213-1228. <a href="https://doi.org/10.1007/s11192-019-03217-6">https://doi.org/10.1007/s11192-019-03217-6</a></p></blockquote>
                 <p>Currently, COCI contains:</p>
                 <ul>
                     <li><p>445,826,118 citations;</p></li>
                     <li><p>46,534,705 bibliographic resources.</p></li>
                 </ul>
 
-                <p>COCI was first created and released on 4 June 2018.</p>
-                <p>Most recent update of COCI:  <strong>12 November 2018</strong></p>
-                <p>Future updates will occur at least every six months as more open DOI-to-DOI citations appear in Crossref.</p>
+                <p>COCI was first created and released on <a href="https://opencitations.wordpress.com/2018/07/12/the-crossref-open-citation-index-coci/">4 June 2018</a>.</p>
+                <p>Most recent update of COCI:  <a href="https://opencitations.wordpress.com/2018/11/19/coci-nov-2018-release/"><strong>12 November 2018</strong></a>.</p>
 
                 <h4>Citation URLs</h4>
                 <p>Each citation (i.e. an individual of the class <code>cito:Citation</code>) is identified by an URL structured as follows: <code>https://w3id.org/oc/index/coci/ci/[[OCI]]</code>.</p>
@@ -98,14 +93,14 @@ $def with (pages, active)
                 <h4>Open Citation Identifiers</h4>
                 <p>Each Open Citation Identifier <code>[[OCI]]</code> has a simple structure: the lower-case letters "oci" followed by a colon, followed by two numbers separated by a dash (e.g. <a href="https://w3id.org/oc/index/coci/ci/02001010806360107050663080702026306630509-02001010806360107050663080702026305630301">https://w3id.org/oc/index/coci/ci/02001010806360107050663080702026306630509-02001010806360107050663080702026305630301</a>), in which the first number identifies the citing work and the second number identifies the cited work.</p>
                 <p>For citations in which the citing and cited works are identified by DOIs, which includes all the COCI citations, the OCI is created in the following manner, as explained more fully <a href="https://opencitations.wordpress.com/2018/03/12/citations-as-first-class-data-entities-open-citation-identifiers/">here</a>. Each case-insensitive DOI is first normalized to lower case letters. Then, after omitting the initial <q>doi:10.</q> prefix, the alphanumeric string of the DOI is converted reversibly to a pure numerical string using the simple two-numeral lookup table for numerals, lower case letters and other characters presented at <a href="https://github.com/opencitations/oci/blob/master/lookup.csv">https://github.com/opencitations/oci/blob/master/lookup.csv</a>. Finally, each converted numeral is prefixes by a <q>020</q>, which indicates that <a href="https://crossref.org">Crossref</a> is the supplier of the original metadata of the citation (as indicated at <a href="/oci">http://opencitations.net/oci</a>).</p>
-                <p>OCIs can be resolved using the <a href="/oci">OpenCitations OCI Resolution Service</a>.</p>
+                <p>OCIs can be resolved using the <a href="/oci"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> OCI Resolution Service</a>.</p>
 
                 <h4>Access to COCI data</h4>
                 <p>All the data in COCI:</p>
                 <ul>
-                    <li><p>can be queried by means of the <a href="/index/sparql">Index SPARQL endpoint</a>;</p></li>
+                    <li><p>can be queried by means of the <a href="/index/sparql"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes SPARQL endpoint</a>;</p></li>
                     <li><p>can be retrieved by using the <a href="/index/coci/api/v1">COCI REST API</a>;</p></li>
-                    <li><p>can be searched by using the <a href="/index/search">Index Search Interface</a>;</p></li>
+                    <li><p>can be searched by using the <a href="/index/search"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes Search Interface</a>;</p></li>
                     <li><p>are available as <a href="/download#coci">dumps</a> on <a href="https://figshare.com">Figshare</a> in CSV and N-Triples, while the dump of the whole triplestore is available on <a href="https://archive.org">The Internet Archive</a>.</p></li>
                 </ul>
             </div>

@@ -72,6 +72,11 @@ figure {
     margin-top: 3%;
 }
 
+dd > blockquote {
+    margin-bottom: 0px;
+
+}
+
 .search-entry .form-control{
   font-size:20px;
 }
@@ -130,12 +135,14 @@ footer .row div {
 .masthead-nav > li > a:hover {
   background-color: transparent;
   border-bottom-color: darkgrey;
+  padding-bottom: 0px;
 }
 
 .masthead-nav > .active > a,
 .masthead-nav > .active > a:hover,
 .masthead-nav > .active > a:focus {
   color: #9931FC;
+  padding-bottom: 0px;
   border-bottom-color: #2D22DE ;
 }
 
@@ -164,7 +171,7 @@ a.anchor {
 }
 
 /*when the resolution is bigger than min-width*/
-@media (min-width: 1251px) {
+@media (min-width: 1201px) {
 
       .cover {
         padding-top:12%;
@@ -212,7 +219,7 @@ a.anchor {
 
 
 /*when the resolution is less than max-width*/
-@media (max-width: 1250px) {
+@media (max-width: 1200px) {
 
       /*make the website page larger*/
       .cover-container {
@@ -265,22 +272,27 @@ a.anchor {
       }
 
       /*the nav pages must be displayed in blocks*/
-      .masthead-nav > li {
-        margin-left: 20px;
-        display: block;
+      .masthead-nav {
+        text-align: left;
       }
-      .masthead-nav > li + li {
-          display: block;
-          float: none;
-       }
+
+      .masthead-nav > li  {
+        margin-left: 20px !important;
+      }
        .masthead-nav > li > a {
           padding: 8px 15px 10px 0px;
-          float: left;
+          text-align: left;
+       }
+       .masthead-nav > li > a:hover {
+          background-color: transparent;
+          padding: 8px 15px 10px 0px;
+          border-bottom-color: transparent;
        }
       .masthead-nav > .active > a,
       .masthead-nav > .active > a:hover,
       .masthead-nav > .active > a:focus {
         color: #9931FC;
+        padding: 8px 15px 10px 0px;
         border-bottom-color: transparent ;
       }
 }

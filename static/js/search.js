@@ -1480,7 +1480,7 @@ var search = (function () {
 				for (var i = 0; i < tab_results.length; i++) {
 					var row_elem = [];
 					for (var j = 0; j < set_keys.length; j++) {
-						row_elem.push(util.build_str(tab_results[i][set_keys[j]],"inline"));
+						row_elem.push(util.build_str(tab_results[i][set_keys[j]],"inline",false));
 					}
 					matrix.push(row_elem);
 				}
