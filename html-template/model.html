@@ -8,7 +8,7 @@ $def with (pages, active)
 
 
         <link rel="icon" href="/static/favicon.ico" />
-        <title>OpenCitations - Model</title>
+        <title>OpenCitations - Data Model</title>
 
         <!-- Bootstrap core CSS -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
@@ -58,17 +58,14 @@ $def with (pages, active)
                     <div class="masthead-pages">
                       <ul class="nav masthead-nav navbar-nav">
                           $for page in pages:
-                              $if page == active:
+                              $if page['name'] == active:
                                   <li class="active">
                               $else:
                                   <li>
-                              <a href="$page">
-                                  $if page == "/":
-                                      Home
-                                  $else:
-                                      $page.title()
+                              <a href="/$page['name']">
+                                  $page['label']
                               </a>
-                              </li>
+                          </li>
                       </ul>
                     </div>
 
@@ -78,45 +75,36 @@ $def with (pages, active)
           </div>
 
             <div class="cover left">
-                 <h3>$active.title()</h3>
-                 <p>The metadata model used for the data stored in the <a href="/corpus"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus</a> and in the <a href="/index"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes</a> is briefly summarised in <a class="cgen" href="#refIllustration0">Figure 1</a> and is described in:
-                 <blockquote><p>Silvio Peroni, David Shotton (2016). The OpenCitations Data Model. Figshare. <a href="https://doi.org/10.6084/m9.figshare.3443876">https://doi.org/10.6084/m9.figshare.3443876</a></p></blockquote>
-                 <p>The model is explicitly aligned with the <a href="http://www.sparontologies.net">SPAR Ontologies</a> and other well-known vocabularies, including:</p>
-            <ul>
-               <li>
-                  <p>the <a href="http://purl.org/spar/fabio">FRBR-aligned Bibliographic Ontology (FaBiO)</a>, shich is used to describe of all the metadata of the citing and the cited resources (conference papers, book chapters, journal articles, etc.) and their related container resources (academic proceedings, books, journals, etc.), as well as metadata about the particular formats in which they have been embodied (digital vs. print, first and ending pages, etc.);</p>
-               </li>
-               <li>
-                  <p>the <a href="http://purl.org/spar/pro">Publishing Roles Ontology (PRO)</a>, which is used to describe the roles of agents (author, editor, publisher, etc.) related to bibliographic resource – while the order among these roles, specifying the order of author names in the list of authors of a paper, is handled by extending PRO with an additional property, i.e. <code>oco:hasNext</code>;</p>
-               </li>
-               <li>
-                  <p>the <a href="http://purl.org/spar/biro">Bibliographic Reference Ontology (BiRO)</a> and the <a href="http://purl.org/spar/c4o">Citation Counting and Context Characterization Ontology (C4O)</a> are used for describing the textual content of each reference in the reference list of a citing bibliographic resource;</p>
-               </li>
-               <li>
-                  <p>the <a href="http://purl.org/spar/datacite">DataCite Ontology</a>, which is used to define all the identifiers (e.g. DOI, PubMed ID, PubMed Central ID, ORCID, ISSN, etc.) for the bibliographic resources and all the agents involved, while the <a href="http://xmlns.com/foaf/spec/">Friend Of A Friend (FOAF)</a> ontology is used to define additional data about agents (specifically their names).</p>
-               </li>
-               <li>
-                   <p>and, finally, the <a href="http://purl.org/spar/cito">Citation Typing Ontology (CiTO)</a>, which is used to define citations (i.e. conceptual directional links from a citing entity to a cited entity, created by a human performative act of making a citation) as first-class data entities.</p>
-               </li>
-            </ul>
-            <p>For convenience, all the terms from the aforementioned ontologies are collected within a new ontology called <a href="https://w3id.org/oc/ontology">OpenCitations Ontology (OCO)</a>. This is not yet another bibliographic ontology, but rather just a place where existing complementary ontological entities from several other ontologies are grouped together for the purpose of providing descriptive metadata for the OCC.</p>
-            <figure id="refIllustration0">
-               <p>
-                  <img class="img-responsive center-block" src="/static/img/model.png" alt="The Graffoo diagram of the main ontological entities described by the OCC metadata model.">
-               </p>
-               <figcaption class="center"><strong class="cgen">Figure 1. </strong>The <a href="http://www.essepuntato.it/graffoo">Graffoo</a> diagram of the main ontological entities described by the OCC metadata model.</figcaption>
-            </figure>
+                <h3>Data Model</h3>
+                <p>The <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Data Model (OCDM) is the metadata model used for the data stored in all the <a href="/datasets"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span>' datasets</a>. It is briefly summarised in <a href="#refIllustration0">Figure 1</a> and is described in:</p>
 
-                <h4 id="index"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes sub-module</h4>
-                <p>The RDF statements in each of the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes are organised according to the data model shown in Figure 2.</p>
-                <figure id="refIllustration1">
-                    <p>
-                        <img class="img-responsive center-block" src="/static/img/citation_diagram.png" alt="The Graffoo diagram of the data model adopted by all the OpenCitations Indexes.">
-                    </p>
-                    <figcaption class="center"><strong class="cgen">Figure 2. </strong>The <a href="http://www.essepuntato.it/graffoo">Graffoo</a> diagram of the data model adopted by all the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes.</figcaption>
+                <blockquote><p>Marilena Daquino, Silvio Peroni, David Shotton (2019). The OpenCitations Data Model. Figshare. <a href="https://doi.org/10.6084/m9.figshare.3443876">https://doi.org/10.6084/m9.figshare.3443876</a></p></blockquote>
+
+                <figure id="refIllustration0">
+                   <p>
+                      <img class="img-responsive center-block" src="/static/img/model.png" alt="The Graffoo diagram of the main ontological entities described by the OCC metadata model.">
+                   </p>
+                   <figcaption class="center"><strong class="cgen">Figure 1. </strong>The <a href="http://www.essepuntato.it/graffoo">Graffoo</a> diagram of the main ontological entities described in the OCDM.</figcaption>
                 </figure>
-                <p>This model is based on the <a href="http://purl.org/spar/cito">Citation Typing Ontology (CiTO)</a> for describing the data, and the <a href="https://www.w3.org/TR/prov-o/">Provenance Ontology (PROV-O)</a> for the provenance information.</p>
 
+                <p>The OCDM is used to model all the bibliographic and citation entities (i.e. the yellow rectangles in <a href="#refIllustration0">Figure 1</a>, defining the classes of objects the data model allows one to describe), their attributes (i.e. the green arrows) and the relations to other entities (i.e. the blue arrows). All these aspects are exposed in any OpenCitation dataset in RDF, using the 'language' of the Semantic Web, in particular by employing OpenCitations' <a href="http://www.sparontologies.net">SPAR (Semantic Publishing and Referencing) Ontologies</a>. Such usage permits the publication of bibliographic and citation data as Linked Open Data (LOD), thereby conferring machine readability and interoperability of the data on the Web. The OCDM may also be employed by third parties, either for their own use or to structure their data for submission to and publication by <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>.</p>
+
+                <p>The OCDM allows one to record information about:</p>
+                <ul>
+                    <li><p>published <strong>bibliographic resources</strong> (class <code>fabio:Expression</code> in <a href="#refIllustration0">Figure 1</a>) that either cite or are cited by another published bibliographic resources, or that contain citing/cited entities (e.g. a journal containing an article or a book containing chapter);</p></li>
+                    <li><p>possible <strong>resource embodiments</strong> (class <code>fabio:Manifestation</code> in <a href="#refIllustration0">Figure 1</a>) defining the particular physical or digital format in which a bibliographic resource was made available;</p></li>
+                    <li><p><strong>bibliographic references</strong> (class <code>biro:BibliographicReference</code> in <a href="#refIllustration0">Figure 1</a>) usually occurring in the reference list (and usually denoted by one or more in-text reference pointers within a citing bibliographic resource) of a citing entity, that references another bibliographic resource;</p></li>
+                    <li><p><strong>responsible agents</strong> (class <code>foaf:Agent</code> in <a href="#refIllustration0">Figure 1</a>), such as people or organizations, having a certain role with respect to a bibliographic resource (e.g. an author of a paper or book, or the publisher of a journal);</p></li>
+                    <li><p>the <strong>roles</strong> (class <code>pro:RoleInTime</code> in <a href="#refIllustration0">Figure 1</a>) held by an agent with respect to bibliographic resources (e.g. a person being the author of an article and the editor of another book);</p></li>
+                    <li><p>the <strong>citations</strong> (class <code>cito:Citation</code> in <a href="#refIllustration0">Figure 1</a>) between two bibliographic resources;</p></li>
+                    <li><p>the external <strong>identifiers</strong> (class <code>datacite:Identifier</code> in <a href="#refIllustration0">Figure 1</a>), such as DOI, ORCID, PubMedID, Open Citation Identifier, associated with the bibliographic entities.</p></li>
+                </ul>
+
+                <p>In November 2019, a new release of the OCDM was published, revised and extended with additional kinds of entities that enable the description of <strong>in-text reference pointers</strong> (class <code>c4o:InTextRefefencePointer</code> in <a href="#refIllustration0">Figure 1</a>) denoting bibliographic references – i.e. the textual devices (e.g. "[1]" or "Peroni & Shotton 2019") that are embedded in the text of a document within the context of a particular sentence, paragraph or section (which are kinds of <strong>discourse elements</strong>, defined by the class <code>deo:DiscourseElement</code> in <a href="#refIllustration0">Figure 1</a>) – and the citations they instantiate (linked via <string>annotations</string>, defined by the class <code>oa:Annotation</code> in <a href="#refIllustration0">Figure 1</a>), accompanied by a description of their <strong>functions</strong>, i.e. the reason why a bibliographic resource is cited.</p>
+
+                <p>All the entities mentioned above included in the datasets released by <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> are accompanied by provenance information, so as to keep track of the curatorial activities related to each entity, the curatorial agents involved, and the sources used to obtain such data. In addition, <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> also tracks how the data related to its entities may have changed in time, to allow one to reconstruct the particular description status (or snapshot) of an entity at a specified time. This has been technically implemented by extending the <a href="https://www.w3.org/TR/prov-o/">Provenance Ontology</a> with a <a href="http://ceur-ws.org/Vol-1799/Drift-a-LOD2016_paper_4.pdf">SPARQL-based construct</a> that has been inspired by existing works on change tracking mechanisms in documents created through word-processors such as Microsoft Word and OpenOffice Writer.</p>
+
+                <p>For convenience, all the terms of the OCDM described in <a href="#refIllustration0">Figure 1</a>, including those used for keeping track of provenance information, are collected within an ontology called <a href="https://w3id.org/oc/ontology">OpenCitations Ontology (OCO)</a>. This is not yet another bibliographic ontology, but rather just a place where existing complementary ontological entities from several other ontologies are grouped together for the purpose of providing descriptive metadata described by the OCDM.</p>
             </div>
         </div>
 
