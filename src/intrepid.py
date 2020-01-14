@@ -210,7 +210,7 @@ class InTRePIDManager(object):
 
         return result
 
-    def __execute_query(self):
+    def execute_query(self):
         result = None
 
         if self.conf is None:
@@ -221,13 +221,13 @@ class InTRePIDManager(object):
                 i = iter(self.conf["services"])
                 while result is None:
                     item = next(i)
-                    name, query, api, tp, use_it, prefix, = \
+                    name, query, tp, use_it, prefix, = \
                         item.get("name"), item.get("query"), item.get("tp"), item.get("use_it"), \
                         item["prefix"] if "prefix" in item else []
 
                     if use_it == "yes":
                         sparql = SPARQLWrapper(tp)
-                        sparql_query = sub("\\[\\[INTREPID\\]\\]", self.intrepid, query)
+                        sparql_query = sub("\\[\\[INTREPID\\]\\]", self.intrepid.replace("intrepid:", ""), query)
 
                         sparql.setQuery(sparql_query)
                         sparql.setReturnFormat(JSON)
@@ -301,10 +301,10 @@ class InTRePIDManager(object):
 
     def get_rp_object(self):
         if self.validate():
-            res = self.__execute_query()
+            res = self.execute_query()
             if res is not None:
                 try:
-                    r = get(res, headers={"Accept: text/turtle"}, timeout=10)
+                    r = get(res, headers={"Accept": "text/turtle"}, timeout=10)
                     if r.status_code == 200:
                         r.encoding = "utf-8"
                         g = Graph()
@@ -352,7 +352,7 @@ if __name__ == "__main__":
                             help="The input InTRePID to use.")
     arg_parser.add_argument("-l", "--lookup", dest="lookup", default="lookup.csv",
                             help="The lookup file to be used for encoding identifiers.")
-    arg_parser.add_argument("-c", "--conf", dest="conf", default="oci.json",
+    arg_parser.add_argument("-c", "--conf", dest="conf", default="intrepid.json",
                             help="The configuration file to run the query services to retrieve in-text reference "
                                  "pointer information.")
     arg_parser.add_argument("-f", "--format", dest="format", default=None,

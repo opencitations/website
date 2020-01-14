@@ -1,0 +1,11 @@
+{
+    "services": [
+        {
+            "name": "CCC",
+            "query": "PREFIX c4o: <http://purl.org/spar/c4o/> PREFIX datacite: <http://purl.org/spar/datacite/> PREFIX literal: <http://www.essepuntato.it/2010/06/literalreification/> SELECT ?rp { ?rp datacite:hasIdentifier [ datacite:usesIdentifierScheme datacite:intrepid ; literal:hasLiteralValue '[[INTREPID]]' ] } LIMIT 1",
+            "prefix": ["070"],
+            "tp": "http://opencitations.net/ccc/sparql",
+            "use_it": "yes"
+        }
+    ]
+}

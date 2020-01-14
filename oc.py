@@ -341,7 +341,7 @@ class InTRePID:
     def GET(self, intrepid):
         data = web.input()
         if "intrepid" in data:
-            clean_intrepid = re.sub("\s+", "", re.sub("^intrepid:", "", data.oci.strip(), flags=re.IGNORECASE))
+            clean_intrepid = re.sub("\s+", "", re.sub("^intrepid:", "", data.intrepid.strip(), flags=re.IGNORECASE))
 
             cur_format = ".rdf"
             if "format" in data:
@@ -376,7 +376,10 @@ class InTRePID:
                     web.header('Content-Type', ct_header)
                     return rp
             else:
-                raise web.seeother(c["oc_base_url"] + c["ccc_local_url"] + "rp" + clean_intrepid)
+                om_conf = c["ved_conf"]
+                im = InTRePIDManager("intrepid:" + clean_intrepid[1:], om_conf["lookup"], om_conf["intrepid_conf"])
+                rp = im.execute_query()
+                raise web.seeother(c["oc_base_url"] + c["ccc_local_url"] + rp.split("/ccc/")[1])
 
 
 class Index:
