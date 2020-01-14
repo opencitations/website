@@ -5,10 +5,13 @@
   "index_base_url": "https://w3id.org/oc",
   "tmp_dir": "/tmp/",
   "json_context_path": "/srv/data/corpus/context.json",
+  "ocdm_json_context_path": "/srv/data/ccc/context.json",
   "sparql_endpoint": "http://localhost:3000/blazegraph/sparql",
   "sparql_endpoint_index": "http://localhost:3001/blazegraph/sparql",
+  "sparql_endpoint_ccc": "http://localhost:3002/blazegraph/sparql",
   "corpus_local_url": "/corpus/",
   "virtual_local_url": "/virtual/",
+  "ccc_local_url": "/ccc/",
   "coci_local_url": "/index/coci/",
   "croci_local_url": "/index/croci/",
   "api_coci": [ "../api/coci_v1.hf" ],
@@ -30,12 +33,17 @@
     "http://purl.org/dc/terms/issued": "publication date",
     "http://purl.org/dc/terms/modified": "modification date",
     "http://purl.org/spar/biro/references": "references",
-    "http://www.w3.org/ns/dcat#Dataset": "dataset"
+    "http://www.w3.org/ns/dcat#Dataset": "dataset",
+    "http://purl.org/spar/biro/BibliographicReference": "bibliographic reference",
+    "http://purl.org/spar/c4o/denotes": "denoted bibliographic reference",
+    "http://purl.org/spar/cito/Citation": "citation",
+    "http://purl.org/spar/doco/DiscourseElement": "discourse element"
   },
   "robots": [ "crawler", "spider", "bot", "yahoo! slurp", "bubing", "360Spider", "360Spider-Image", "360Spider-Video", "AdsBot-Google", "AdsBot-Google-Mobile-Apps", "adidxbot", "Applebot", "AppleNewsBot", "Baiduspider", "Baiduspider-image", "bingbot", "BingPreview", "CCBot", "Cliqzbot", "coccoc", "coccocbot-image", "coccocbot-web", "Daumoa", "Dazoobot", "DeuSu", "DuckDuckBot", "DuckDuckGo-Favicons-Bot", "EuripBot", "Exploratodo", "Facebot", "Feedly", "Findxbot", "Googlebot", "Googlebot-Image", "Googlebot-Mobile", "Googlebot-News", "Googlebot-Video", "HaoSouSpider", "ichiro", "istellabot", "JikeSpider", "Lycos", "Mail.Ru", "Mediapartners-Google", "MojeekBot", "msnbot", "msnbot-media", "OrangeBot", "Pinterest", "Plukkie", "Qwantify", "Rambler", "SeznamBot", "Sosospider", "Slurp", "Sogou blog", "Sogou inst spider", "Sogou News Spider", "Sogou Orion spider", "Sogou spider2", "Sogou web spider", "SputnikBot", "Teoma", "Twitterbot", "wotbox", "yacybot", "Yandex", "YandexMobileBot", "Yeti", "YioopBot", "yoozBot", "YoudaoBot", "AhrefsBot", "DotBot", "SemanticScholarBot", "BLEXBot", "Mb2345Browser", "LieBaoFast", "MQQBrowser", "UCBrowser" ],
   "robots-all": [ "SemrushBot", "SemrushBot-SA" ],
   "ved_conf": {
     "lookup": "../oci/lookup.csv",
-    "oci_conf": "../oci/oci.json"
+    "oci_conf": "../oci/oci.json",
+    "intrepid_conf": "../intrepid/intrepid.json"
   }
 }

@@ -23,6 +23,7 @@ from src.ldd import LinkedDataDirector
 from src.ved import VirtualEntityDirector
 from src.ramose import APIManager
 from src.oci import OCIManager
+from src.intrepid import InTRePIDManager
 import requests
 import urllib.parse as urlparse
 import re
@@ -54,6 +55,7 @@ active = {
     "coci": "datasets",
     "croci": "datasets",
     "oci": "tools",
+    "intrepid": "tools",
     "api": "querying",
     "sparql": "querying",
     "search": "querying"
@@ -72,6 +74,8 @@ urls = (
     "/index/croci", "Croci",
     "/index/coci/(.*)", "CociContentNegotiation",
     "/index/croci/(ci/.*)?", "CrociContentNegotiation",
+    "/ccc/sparql", "SparqlCCC",
+    "/ccc/(../.+)", "CCCContentNegotiation",
     "/(about)", "About",
     "/(model)", "Model",
     "/(datasets)", "Datasets",
@@ -80,6 +84,7 @@ urls = (
     "/corpus/", "CorpusContentNegotiation",
     "/virtual/(.+)", "Virtual",
     "/oci(/.+)?", "OCI",
+    "/intrepid(/.+)?", "InTRePID",
     "/(download)", "Download",
 
     # OCC SPARQL-related urls
@@ -332,6 +337,47 @@ class OCI:
             else:
                 raise web.seeother(c["oc_base_url"] + c["virtual_local_url"] + "ci" + clean_oci)
 
+class InTRePID:
+    def GET(self, intrepid):
+        data = web.input()
+        if "intrepid" in data:
+            clean_intrepid = re.sub("\s+", "", re.sub("^intrepid:", "", data.oci.strip(), flags=re.IGNORECASE))
+
+            cur_format = ".rdf"
+            if "format" in data:
+                cur_format = "." + data.format.strip().lower()
+
+            raise web.seeother(c["oc_base_url"] + "/intrepid/" + clean_intrepid + cur_format)
+
+        elif intrepid is None or intrepid.strip() == "":
+            web_logger.mes()
+            return render.intrepid(pages, active["intrepid"])
+        else:
+            web_logger.mes()
+            clean_intrepid, ex = re.findall("^([^\.]+)(\.[a-z]+)?$", intrepid.strip().lower())[0]
+            exs = (".jsonld", ".ttl", ".nt", ".xml")
+            if ex in exs:
+                cur_format = ex[1:]
+                om_conf = c["ved_conf"]
+                im = InTRePIDManager("intrepid:" + clean_intrepid[1:], om_conf["lookup"], om_conf["intrepid_conf"])
+                rp = im.get_rp_data(cur_format)
+                if rp:
+                    if cur_format == "jsonld":
+                        ct_header = "application/ld+json"
+                    elif cur_format == "ttl":
+                        ct_header = "text/turtle"
+                    elif cur_format == "nt":
+                        ct_header = "application/n-triples"
+                    else:
+                        ct_header = "application/rdf+xml"
+
+                    web.header('Access-Control-Allow-Origin', '*')
+                    web.header('Access-Control-Allow-Credentials', 'true')
+                    web.header('Content-Type', ct_header)
+                    return rp
+            else:
+                raise web.seeother(c["oc_base_url"] + c["ccc_local_url"] + "rp" + clean_intrepid)
+
 
 class Index:
     def GET(self):
@@ -495,6 +541,11 @@ class SparqlIndex(Sparql):
         Sparql.__init__(self, c["sparql_endpoint_index"], "Indexes", c["oc_base_url"]+"/index/sparql")
 
 
+class SparqlCCC(Sparql):
+    def __init__(self):
+        Sparql.__init__(self, c["sparql_endpoint_ccc"], "CCC", c["oc_base_url"]+"/ccc/sparql")
+
+
 class Virtual:
     def GET(self, file_path=None):
         ldd = LinkedDataDirector(
@@ -514,16 +565,17 @@ class Virtual:
 
 
 class ContentNegotiation:
-    def __init__(self, base_url, local_url, from_triplestore=None, label_func=None):
+    def __init__(self, base_url, local_url, context_path=None, from_triplestore=None, label_func=None):
         self.base_url = base_url
         self.local_url = local_url
         self.from_triplestore = from_triplestore
         self.label_func = label_func
+        self.context_path = context_path
 
     def GET(self, file_path=None):
         ldd = LinkedDataDirector(
             c["occ_base_path"], c["html"], self.base_url,
-            c["json_context_path"], self.local_url,
+            self.context_path, self.local_url,
             label_conf=c["label_conf"], tmp_dir=c["tmp_dir"],
             dir_split_number=int(c["dir_split_number"]),
             file_split_number=int(c["file_split_number"]),
@@ -539,22 +591,33 @@ class ContentNegotiation:
 
 class CorpusContentNegotiation(ContentNegotiation):
     def __init__(self):
-        ContentNegotiation.__init__(self, c["oc_base_url"], c["corpus_local_url"])
+        ContentNegotiation.__init__(self, c["oc_base_url"], c["corpus_local_url"],
+                                    context_path=c["json_context_path"])
+
+
+class CCCContentNegotiation(ContentNegotiation):
+    def __init__(self):
+        ContentNegotiation.__init__(self, c["oc_base_url"], c["ccc_local_url"],
+                                    context_path=c["ocdm_json_context_path"],
+                                    from_triplestore=c["sparql_endpoint_ccc"],
+                                    label_func=lambda u: "%s %s" % re.findall("^.+/ccc/(..)/070(.+)$", u)[0])
 
 
 class CociContentNegotiation(ContentNegotiation):
     def __init__(self):
         ContentNegotiation.__init__(self, c["index_base_url"], c["coci_local_url"],
-                                    c["sparql_endpoint_index"],
-                                    lambda u: "oci:%s" % re.findall("^.+/ci/(.+)$", u)[0]
+                                    context_path=c["ocdm_json_context_path"],
+                                    from_triplestore=c["sparql_endpoint_index"],
+                                    label_func=lambda u: "oci:%s" % re.findall("^.+/ci/(.+)$", u)[0]
                                     if "/ci/" in u else "provenance agent 1" if "/pa/1" in u
                                     else "COCI")
 
 class CrociContentNegotiation(ContentNegotiation):
     def __init__(self):
         ContentNegotiation.__init__(self, c["index_base_url"], c["croci_local_url"],
-                                    c["sparql_endpoint_index"],
-                                    lambda u: "oci:%s" % re.findall("^.+/ci/(.+)$", u)[0]
+                                    context_path=c["ocdm_json_context_path"],
+                                    from_triplestore=c["sparql_endpoint_index"],
+                                    label_func=lambda u: "oci:%s" % re.findall("^.+/ci/(.+)$", u)[0]
                                     if "/ci/" in u else "CROCI")
 
 
