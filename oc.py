@@ -593,7 +593,7 @@ class CorpusContentNegotiation(ContentNegotiation):
     def __init__(self):
         ContentNegotiation.__init__(self, c["oc_base_url"], c["corpus_local_url"],
                                     context_path=c["json_context_path"],
-                                    sparql_endpoint=c["sparql_endpoint"])
+                                    from_triplestore=c["sparql_endpoint"])
 
 
 class CCCContentNegotiation(ContentNegotiation):
