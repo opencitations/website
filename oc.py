@@ -343,12 +343,10 @@ class InTRePID:
         if "intrepid" in data:
             clean_intrepid = re.sub("\s+", "", re.sub("^intrepid:", "", data.intrepid.strip(), flags=re.IGNORECASE))
 
-            cur_format = ".rdf"
-            if "format" in data:
-                cur_format = "." + data.format.strip().lower()
-
-            raise web.seeother(c["oc_base_url"] + "/intrepid/" + clean_intrepid + cur_format)
-
+            om_conf = c["ved_conf"]
+            im = InTRePIDManager("intrepid:" + clean_intrepid, om_conf["lookup"], om_conf["intrepid_conf"])
+            rp = im.execute_query()
+            raise web.seeother(c["oc_base_url"] + c["ccc_local_url"] + rp.split("/ccc/")[1])
         elif intrepid is None or intrepid.strip() == "":
             web_logger.mes()
             return render.intrepid(pages, active["intrepid"])
@@ -359,7 +357,7 @@ class InTRePID:
             if ex in exs:
                 cur_format = ex[1:]
                 om_conf = c["ved_conf"]
-                im = InTRePIDManager("intrepid:" + clean_intrepid[1:], om_conf["lookup"], om_conf["intrepid_conf"])
+                im = InTRePIDManager("intrepid:" + clean_intrepid, om_conf["lookup"], om_conf["intrepid_conf"])
                 rp = im.get_rp_data(cur_format)
                 if rp:
                     if cur_format == "jsonld":
