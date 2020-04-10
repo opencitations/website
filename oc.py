@@ -40,7 +40,7 @@ with open("conf.json") as f:
 pages = [
     {"name": "", "label": "Home"},
     {"name": "about", "label": "About"},
-    {"name": "donate", "label": "Donate"},
+    {"name": "membership", "label": "Be a member"},
     {"name": "model", "label": "Data Model"},
     {"name": "datasets", "label": "Datasets"},
     {"name": "querying", "label": "Querying Data"},
@@ -95,7 +95,7 @@ urls = (
 
     # Other generic URLs
     "/(tools)", "Tools",
-    "/(donate)", "Donate",
+    "/(membership)", "Membership",
     "/(querying)", "Querying",
     "/(publications)", "Publications",
     "/(licenses)", "Licenses",
@@ -144,6 +144,9 @@ rewrite = RewriteRuleHandler(
          True),
         ("^/contacts",
          "/about",
+         True),
+        ("^/donate",
+         "/membership",
          True)
     ],
     urls
@@ -206,10 +209,10 @@ class Tools:
         return render.tools(pages, active)
 
 
-class Donate:
+class Membership:
     def GET(self, active):
         web_logger.mes()
-        return render.donate(pages, active)
+        return render.membership(pages, active)
 
 
 class Home:
