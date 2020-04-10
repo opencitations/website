@@ -40,7 +40,7 @@ with open("conf.json") as f:
 pages = [
     {"name": "", "label": "Home"},
     {"name": "about", "label": "About"},
-    {"name": "membership", "label": "Be a member"},
+    {"name": "membership", "label": "Help us"},
     {"name": "model", "label": "Data Model"},
     {"name": "datasets", "label": "Datasets"},
     {"name": "querying", "label": "Querying Data"},
