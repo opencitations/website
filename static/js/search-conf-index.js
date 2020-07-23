@@ -21,7 +21,7 @@ var search_conf = {
       "placeholder": "DOI e.g. 10.1016/J.WEBSEM.2012.08.001",
       "advanced": true,
       "freetext": false,
-      "heuristics": [['encodeURIStr']],
+      "heuristics": [['decodeURIStr'],['encodeDOIURL']],
       "category": "citation",
       "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
       "query": [
@@ -36,7 +36,7 @@ var search_conf = {
       "placeholder": "DOI e.g. 10.1016/J.WEBSEM.2012.08.001",
       "advanced": true,
       "freetext": false,
-      "heuristics": [['encodeURIStr']],
+      "heuristics": [['decodeURIStr'],['encodeDOIURL']],
       "category": "citation",
       "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
       "query": [
@@ -150,7 +150,20 @@ var heuristics = (function () {
         return decodeURIComponent(str);
       }
       function encodeURIStr(str) {
-        return encodeURIComponent(str);
+        var dec_str = decodeURIStr(str);
+        return encodeURIComponent(dec_str).replace(/[!'()*]/g, function (c) {
+          return '%' + c.charCodeAt(0).toString(16);
+        });
+      }
+      function encodeDOIURL(str) {
+        //encode only the last part of the DOI
+        //e.g. 10.3241/<ENCODE THIS>
+        var dec_str = decodeURIStr(str);
+        var parts = dec_str.split('/');
+        var decoded_doi = parts[0] + "/" + encodeURIComponent(parts[1]).replace(/[!'()*]/g, function (c) {
+          return '%' + c.charCodeAt(0).toString(16);
+        });
+        return decoded_doi;
       }
 
       function timespan_translate(str) {
@@ -234,6 +247,7 @@ var heuristics = (function () {
         capitalize_1st_letter: capitalize_1st_letter,
         decodeURIStr: decodeURIStr,
         encodeURIStr: encodeURIStr,
+        encodeDOIURL: encodeDOIURL,
         short_version: short_version,
         timespan_in_days: timespan_in_days,
         timespan_translate: timespan_translate
