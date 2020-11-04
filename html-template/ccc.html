@@ -1,0 +1,304 @@
+$def with (pages, active)
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+        <link rel="icon" href="/static/favicon.ico" />
+        <title>OpenCitations - Citations in Context Corpus</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
+
+        <!-- Font Awesome -->
+        <link href="/static/css/font-awesome.min.css" rel="stylesheet" />
+
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <link href="/static/css/ie10-viewport-bug-workaround.css" rel="stylesheet" />
+
+        <!-- Custom styles for this template -->
+        <link href="/static/css/cover.css" rel="stylesheet" />
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="/static/js/html5shiv.min.js"><![CDATA[ ]]></script>
+            <script src="/static/js/respond.min.js"><![CDATA[ ]]></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div class="cover-container">
+          <div class="masthead clearfix">
+
+              <nav class="navbar">
+                  <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                       <span class="icon-bar"></span>
+                       <span class="icon-bar"></span>
+                       <span class="icon-bar"></span>
+                    </button>
+                    <h3 class="masthead-brand">
+                        <a href="/"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span></a>
+                    </h3>
+                  </div>
+
+                  <div class="navbar-collapse collapse">
+
+                    <div class="masthead-search">
+                      <form class="input-group" action="search" method="get">
+                        <input type="text" class="form-control oc-purple" placeholder="Search..." name="text">
+                        <div class="input-group-btn">
+                          <button class="btn btn-default oc-purple" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                      </form>
+                    </div>
+
+                    <div class="masthead-pages">
+                      <ul class="nav masthead-nav navbar-nav">
+                          $for page in pages:
+                              $if page['name'] == active:
+                                  <li class="active">
+                              $else:
+                                  <li>
+                              <a href="/$page['name']">
+                                  $page['label']
+                              </a>
+                          </li>
+                      </ul>
+                    </div>
+
+                  </div>
+              </nav>
+
+          </div>
+
+            <div class="cover left">
+                <h3><span class="oc-purple">Open</span> Biomedical <span class="oc-blue">Citations</span> in Context Corpus</h3>
+                <p>The CCC is a RDF dataset including bibliographic and citation data mined from the full-text of articles collected in the <a href="https://www.ncbi.nlm.nih.gov/pmc/tools/openftlist/">Open Access Subset of PubMed Central</a>.
+                  Articles served as JATS/XML documents and have been harvested by using the <a href="https://europepmc.org/RestfulWebService">Europe PubMed Central REST API</a>.
+                  </p>
+                <h4>Scope</h4>
+                <p>Similarly to the <a href="/corpus">OpenCitations Corpus</a>,
+                  CCC includes information about bibliographic entities such as
+                  bibliographic resources (br), resource embodiments (re), bibliographic references (be),
+                  citations (ci), responsible agents (ra), agents' roles (ar),
+                  and identifiers (id).
+                  In addition, CCC includes detailed information about in-text references (rp) -
+                  e.g. <code>(Daquino et al. 2020)</code> -, groupings of in-text references (pl), discourse elements (de) - including sentences, paragraphs, footnotes, captions, tables, sections -, and citation annotations (an).
+                  Read about the <a href="/model">OCDM model</a> for further details.
+                </p>
+                <p>It's worth noting that CCC extends OpenCitations identifiers to address the following aspects:</p>
+                  <ul>
+                    <li><p><strong>XPath</strong>: in-text reference pointers and discourse elements mined from JATS/XML documents are identified by means of a local identifier, that is, a XPath selector (e.g. <code>/article/body/section[1]/p[3]/xref[1]</code>).
+                      XPath identifiers allow one to parse the XML source document and to extract the full-text of the entity at hand.
+                      However, while strings identifying in-text reference pointers are available (e.g. <code>"(Daquino et al. 2020)"</code>, <code>"[13-18]"</code>), the full-text of sentences, paragraphs, and sections, is not available due to Intellectual Property restrictions.
+                      CCC includes XPath identifiers of all the in-text references, and only of discourse elements including at least one in-text reference.</p> </li>
+                    <li><p><strong>Sequence number</strong>:
+                      along with XPath identifiers, discourse elements are identified with a more human-readable sequence number
+                      (e.g. Section n. <code>1</code>, Paragraph n. <code>3</code>, Table n. <code>2</code>),
+                      indentifying their relative position in the document. CCC stores sequence numbers of discourse elements that include at least one in-text reference.</p> </li>
+                    <li><p><strong>OCI</strong>: an OCI is a global persistent identifier of citations. It usually appears in the form <code>oci:&lt;citing&gt;-&lt;cited&gt;</code> where <code>citing</code> and <code>cited</code> are locally assigned numerical identifiers of respectively a citing document and a cited document.
+                      In CCC an OCI is assigned to both the general citation - in the same form <code>&lt;citing&gt;-&lt;cited&gt;</code> - and to every occurrence of an in-text reference in the citing document relevant to that citation.
+                       For instance: the article identified as <code>0701</code> in CCC cites the article identified as <code>07090</code>, and two in-text references appear in the citing article referencing the cited article.
+                       The general OCI for the citation will be <code>0701-07090</code>, while the two specific citations instatiated by in-text references will be addressed as <code>0701-07090/1</code> and <code>0701-07090/2</code> respectively.</p> </li>
+                    <li><p><strong>InTRePID</strong>: the In-Text Reference Pointer Identifier (InTRePID) is a global unique persistent identifier (PID) of in-text reference pointers.
+                      InTRePID is an extention of OCI that appears in the following form: <code>intrepid:&lt;oci&gt;/&lt;ordinal&gt;-&lt;total&gt;</code>
+                      where <code>&lt;oci&gt;</code> is is the numerical part of the OCI identiying a citation between a citing and cited entity,
+                      <code>&lt;ordinal&gt;</code> is the n<sup>th</sup> occurrence of an in-text reference pointer within the text of the citing entity
+                      relevant to the cited entity addressed in the OCI, and <code>&lt;total&gt;</code> is the total number of in-text reference pointers
+                      that appear in the full-text of the citing entity relevant to the (same) cited entity.
+                      Following the prior example, the two in-text references addressing the citation between <code>0701</code> and <code>07090</code>
+                      will be respectively associated with the following intrepids: <code>intrepid:0701-07090/1-2</code> and <code>intrepid:0701-07090/2-2</code> </p> </li>
+                  </ul>
+                  <h4>Data access</h4>
+                  <p>The corpus (<a href="https://w3id.org/oc/ccc/">https://w3id.org/oc/ccc/</a>) is composed by several subsets, one for each type of entity.
+                    For instance <a href="https://w3id.org/oc/ccc/rp/">https://w3id.org/oc/ccc/rp/</a> is the subset of all the in-text reference pointers.
+                    Each entity of the subset is identified by an incremental number, unique within the subset (e.g. <a href="https://w3id.org/oc/ccc/rp/1">https://w3id.org/oc/ccc/rp/1</a>).
+                    Data are served in JSON-LD (see the <a href="https://github.com/opencitations/ccc/blob/master/scripts/ccc/context.json">context.json</a> file) and each subset is described by means of the Data Catalog Vocabulary and the VoID Vocabulary.</p>
+                  <p>CCC data can be accessed via the following methods:</p>
+                  <ul>
+                    <li><a href="/ccc/sparql">CCC SPARQL endpoint</a> can be queried either via GUI or via its REST API.</li>
+                    <li><a href="/ccc/api/v1">CCC REST API</a> (implemented by means of <a href="https://github.com/opencitations/ramose">RAMOSE</a>) which allows web developers to easily retrieve JSON / CSV data. </li>
+                    <li>content negotiation, by using the HTTP URI of the individual bibliographic entities (e.g. https://w3id.org/oc/ccc/br/1), where data can be downloaded in different formats (HTML, RDF/XML, Turtle, and JSON-LD).</li>
+                    <li><a href="/ccc/search">CCC search interface</a> (developed by means of OpenCitations <a href="https://github.com/opencitations/oscar">OSCAR</a> and <a href="https://github.com/opencitations/lucinda">LUCINDA</a> searching and browsing interfaces).</li>
+                  </ul>
+                  <h4>Licensing and disclaimer</h4>
+                  <p>CCC is (proudly) released under a Creative Commons CC0 public domain waiver.
+                    For this reason, CCC does not include information that may fall under IP restrictions (e.g. full-text of articles). When searching and browsing data via <a href="/ccc/search">CCC web search interface</a>, text of sentences including in-text references are shown to users for a better experience.
+                    However, such data are not persistently stored in CCC and its reuse must follow publishers' rules.</p>
+                  <h4>An example</h4>
+                  <p>Here below a brief example (in .ttl syntax) of some aspects already addressed in the <a href="/corpus">OpenCitations Corpus</a> and new ones introduced in CCC. </p>
+                  <p><em>The journal article <code>br/0701</code> cites the journal article <code>br/0702</code>.
+                    The journal article <code>br/0702</code> is referenced in the list of bibliographic references by the reference identified as <code>be/0701</code></em>.</p>
+<pre><code># a simple citation
+ccc:br/0701 a fabio:JournalArticle ;
+  cito:cites ccc:br/0702 ;
+  frbr:part ccc:be/0701 .
+
+ccc:br/0702 a fabio:JournalArticle .
+
+ccc:be/0701 a biro:BibliographicReference ;
+  biro:references ccc:br/0702 ;
+  oco:hasAnnotation ccc:an/0701 .
+
+ccc:ci/0701-0702 a cito:Citation ;
+  cito:hasCitingEntity ccc:br/0701 ;
+  cito:hasCitedEntity ccc:br/0702 ;
+  datacite:hasIdentifier ccc:id/1 .
+
+ccc:id/1 a datacite:Identifier ;
+  datacite:usesIdentifierScheme datacite:oci ;
+  literal:hasLiteralValue "oci:0701-0702".
+
+ccc:an/0701 a oa:Annotation ;
+  oa:hasBody ccc:ci/0701-0702 .
+</code></pre>
+                  <p><em>In <code>br/0701</code> there are two in-text references (<code>rp/0701</code> and <code>rp/0702</code>) denoting the bibliographic reference <code>be/0701</code>.
+                    Each in-text reference is identified by an InTRePID, and it is associated with an annotation that refers to a (new, specific) citation</em>.</p>
+<pre><code># first in-text reference and citation
+ccc:rp/0701 a c4o:InTextReferencePointer ;
+  oco:hasAnnotation ccc:an/0702 ;
+  datacite:hasIdentifier ccc:id/0705 .
+
+ccc:an/0702 a oa:Annotation ;
+  oa:hasBody ccc:ci/0701-0702/1 .
+
+ccc:id/0705 a datacite:Identifier ;
+  datacite:usesIdentifierScheme datacite:intrepid ;
+  literal:hasLiteralValue "intrepid:0701-0702/1-2".
+
+ccc:ci/0701-0702/1 a cito:Citation ;
+  cito:hasCitingEntity ccc:br/0701 ;
+  cito:hasCitedEntity ccc:br/0702 ;
+  datacite:hasIdentifier ccc:id/0702 .
+
+ccc:id/0702 a datacite:Identifier ;
+  datacite:usesIdentifierScheme datacite:oci ;
+  literal:hasLiteralValue "oci:0701-0702/1".
+
+# second in-text reference and citation
+ccc:rp/0702 a c4o:InTextReferencePointer ;
+  oco:hasAnnotation ccc:an/0703 ;
+  datacite:hasIdentifier ccc:id/0706 .
+
+ccc:an/0703 a oa:Annotation ;
+  oa:hasBody ccc:ci/0701-0702/2 .
+
+ccc:id/0706 a datacite:Identifier ;
+  datacite:usesIdentifierScheme datacite:intrepid ;
+  literal:hasLiteralValue "intrepid:0701-0702/2-2".
+
+ccc:ci/0701-0702/2 a cito:Citation ;
+  cito:hasCitingEntity ccc:br/0701 ;
+  cito:hasCitedEntity ccc:br/0702 ;
+  datacite:hasIdentifier ccc:id/0703 .
+
+ccc:id/0703 a datacite:Identifier ;
+  datacite:usesIdentifierScheme datacite:oci ;
+  literal:hasLiteralValue "oci:0701-0702/2".
+</code></pre>
+                    <p><em>The first in-text reference <code>rp/0701</code> appears as <code>"Doe et al. 2020"</code>. It appears in the firt section <code>de/0701</code>, called "Introduction",
+                      second paragraph <code>de/0702</code>, third sentence <code>de/0703</code> (being section, paragraph and sentence numbers relative to the entire document and not to the parent element).
+                      Both in-text references and the discourse elements are also identified by a XPath.</em></p>
+<pre><code># the sentence
+ccc:de/0703 a deo:DiscourseElement , doco:Sentence ;
+  c4o:isContextOf ccc:rp/0701 ;
+  fabio:hasSequenceIdentifier "3" ;
+  datacite:hasIdentifier ccc:id/0708 .
+
+# the in-text reference
+ccc:rp/0701 c4o:hasContent "Doe et al. 2020";
+  fabio:hasSequenceIdentifier "1" ;
+  datacite:hasIdentifier ccc:id/0707 .
+
+ccc:id/0707 a datacite:Identifier ;
+  datacite:usesIdentifierScheme datacite:local-resource-identifier-scheme ;
+  literal:hasLiteralValue "/article/body/sec[1]/p[2]/xref[1]".
+
+ccc:id/0708 a datacite:Identifier ;
+  datacite:usesIdentifierScheme datacite:local-resource-identifier-scheme ;
+  literal:hasLiteralValue "substring(string(/article/body/sec[1]/p[2]),190,278)".
+
+# the paragraph
+ccc:de/0702 a deo:DiscourseElement , doco:Paragraph ;
+  frbr:part ccc:de/0703 ;
+  fabio:hasSequenceIdentifier "2" ;
+  datacite:hasIdentifier ccc:id/0709 .
+
+ccc:id/0709 a datacite:Identifier ;
+  datacite:usesIdentifierScheme datacite:local-resource-identifier-scheme ;
+  literal:hasLiteralValue "/article/body/sec[1]/p[2]".
+
+# the section
+ccc:de/0701 a deo:DiscourseElement , doco:Section ;
+  dcterms:title "Introduction" ;
+  frbr:part ccc:de/0702 ;
+  fabio:hasSequenceIdentifier "1" ;
+  datacite:hasIdentifier ccc:id/07010 .
+
+ccc:id/07010 a datacite:Identifier ;
+  datacite:usesIdentifierScheme datacite:local-resource-identifier-scheme ;
+  literal:hasLiteralValue "/article/body/sec[1]".
+</code></pre>
+                    <p><em>The second in-text reference <code>rp/0702</code> appears in a list of in-text references <code>pl/0701</code>, which includes other three pointers</em>.</p>
+<pre><code># the list of in-text references
+ccc:pl/0701 a c4o:SingleLocationPointerList ;
+  c4o:hasContent "(Doe et al. 2020 ; Smith 2019 ; Ellis et al .2011 ; Phillips 2020)" ;
+  co:element ccc:rp/0702 , ccc:rp/0703 , ccc:rp/0704 , ccc:rp/0705 ;
+  datacite:hasIdentifier ccc:id/07011 .
+
+ccc:id/07011 a datacite:Identifier ;
+  datacite:usesIdentifierScheme datacite:local-resource-identifier-scheme ;
+  literal:hasLiteralValue "substring(string(/article/body/sec[3]/p[2]),247,66)".
+</code></pre>
+
+            </div>
+        </div>
+
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div id="disi" class="col-xs-12 col-sm-2">
+                        <p>
+                            <a href="http://www.unibo.it"><img src="/static/img/unibo.png" /></a>
+                    </div>
+                    <div id="ficlit" class="col-xs-12 col-sm-2">
+                        <p>
+                            <a href="http://www.ficlit.unibo.it"><img src="/static/img/ficlit.png" /></a></p>
+                    </div>
+                    <div id="openscholarlymetadata" class="col-xs-12 col-sm-2">
+                        <p>
+                            <a href="https://openscholarlymetadata.org"><img src="/static/img/openscholarlymetadata.png" /></a></p>
+                    </div>
+                    <div id="oerc" class="col-xs-12 col-sm-2">
+                        <p>
+                            <a href="http://www.oerc.ox.ac.uk/"><img src="/static/img/oerc.png" /></a>
+                        </p>
+                    </div>
+                    <div id="ox" class="col-xs-12 col-sm-2">
+                        <p>
+                            <a href="http://www.ox.ac.uk"><img src="/static/img/uniox.png" /></a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <p>
+                <a class="social oc-purple" href="mailto:contact@opencitations.net"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+                <a class="social oc-purple" href="http://www.twitter.com/opencitations"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                <a class="social oc-blue" href="http://github.com/opencitations"><i class="fa fa-github" aria-hidden="true"></i></a>
+                <a class="social oc-blue" href="https://opencitations.wordpress.com/"><i class="fa fa-wordpress" aria-hidden="true"></i></a>
+            </p>
+        </footer>
+
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="/static/js/jquery.min.js"><![CDATA[ ]]></script>
+        <script>window.jQuery || document.write('<script src="/static/js/jquery.min.js"><\/script>')</script>
+        <script src="/static/js/bootstrap.min.js"><![CDATA[ ]]></script>
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <script src="/static/js/ie10-viewport-bug-workaround.js"><![CDATA[ ]]></script>
+    </body>
+</html>

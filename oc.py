@@ -34,6 +34,7 @@ from io import StringIO
 from urllib.parse import unquote, parse_qs
 
 # Load the configuration file
+# with open("conf_local.json") as f:
 with open("conf.json") as f:
     c = json.load(f)
 
@@ -54,6 +55,7 @@ active = {
     "index": "datasets",
     "coci": "datasets",
     "croci": "datasets",
+    "ccc": "datasets",
     "oci": "tools",
     "intrepid": "tools",
     "api": "querying",
@@ -74,8 +76,15 @@ urls = (
     "/index/croci", "Croci",
     "/index/coci/(.*)", "CociContentNegotiation",
     "/index/croci/(ci/.*)?", "CrociContentNegotiation",
+
+    # CCC related urls
+    "/(ccc)(/api/.+)", "Api",
+    "/ccc", "CCC",
     "/ccc/sparql", "SparqlCCC",
+    "/ccc/search", "SearchCCC",
+    "/ccc/browser/(.+)", "BrowserCCC",
     "/ccc/(../.+)", "CCCContentNegotiation",
+
     "/(about)", "About",
     "/(model)", "Model",
     "/(datasets)", "Datasets",
@@ -169,6 +178,7 @@ croci_api_manager = APIManager(c["api_croci"])
 index_api_manager = APIManager(c["api_index"])
 occ_api_manager = APIManager(c["api_occ"])
 wikidata_api_manager = APIManager(c["api_wikidata"])
+ccc_api_manager = APIManager(c["api_ccc"])
 
 class RawGit:
     def GET(self, u):
@@ -235,6 +245,8 @@ class Api:
             man = index_api_manager
         elif dataset == "wikidata":
             man = wikidata_api_manager
+        elif dataset == "ccc":
+            man = ccc_api_manager
 
         if man is not None:
             if re.match("^/api/v[1-9][0-9]*/?$", call):
@@ -388,6 +400,10 @@ class Index:
         web_logger.mes()
         return render.index(pages, active["index"])
 
+class CCC:
+    def GET(self):
+        web_logger.mes()
+        return render.ccc(pages, active["ccc"])
 
 class Coci:
     def GET(self):
@@ -425,6 +441,9 @@ class SearchOC(Search):
     def __init__(self):
         Search.__init__(self, render.search)
 
+class SearchCCC(Search):
+    def __init__(self):
+        Search.__init__(self, render.search_ccc)
 
 class Browser:
     def __init__(self, render_page):
@@ -443,6 +462,9 @@ class BrowserOC(Browser):
     def __init__(self):
         Browser.__init__(self, render.browser)
 
+class BrowserCCC(Browser):
+    def __init__(self):
+        Browser.__init__(self, render.browser_ccc)
 
 class Model:
     def GET(self, active):

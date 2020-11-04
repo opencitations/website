@@ -80,16 +80,20 @@ $def with (pages, active)
 
                 <ul>
                     <li><p><strong><a href="/oci">Open Citation Identifier Resolution Service</a>.</strong> <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> provides a resolution service for <a href="https://doi.org/10.6084/m9.figshare.7127816">Open Citation Identifiers (OCIs)</a>. An OCI is a globally unique persistent identifier for bibliographic citations, created and maintained by <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>. The resolution service enables one to specify an OCI and returns information about that citation.</p></li>
+                    <li><p><strong><a href="/intrepid">In-Text Reference Pointer Identifier Resolution Service</a>.</strong> <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> provides a resolution service for <a href="https://doi.org/10.6084/m9.figshare.11674032.v1">In-Text Reference Pointer Identifiers (InTRePID)</a>. An InTRePID is a globally unique persistent identifier for in-text reference pointers, created and maintained by <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>. The resolution service enables one to specify an InTRePID and returns information about that specific citation.</p></li>
+
                 </ul>
 
                 <h3>Software</h3>
                 <p><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> created several software applications and libraries used to create all the data stored in the various databases. In particular:</p>
                 <ul>
-                    <li><p><strong><a href="https://github.com/opencitations/script/tree/master/bee">BEE</a></strong>, a software for parsing articles from the Open Access Subset of biomedical literature hosted by Europe PubMed Central (EPMC) and encoded in JATS/XML;</p></li>
-                    <li><p><strong><a href="https://github.com/opencitations/script/tree/master/spacin">SPACIN</a></strong>, a software for transforming JSON data (output of BEE) into RDF according to the OCDM;</p></li>
+                    <li><p><strong><a href="https://github.com/opencitations/script/tree/master/bee">BEE</a></strong>, a software for parsing articles from the Open Access Subset of biomedical literature hosted by Europe PubMed Central (EPMC) and encoded in JATS/XML; we have recently extended it for creating <a href="https://github.com/opencitations/ccc">the CCC corpus</a>, which now allows to extract also in-text references and discourse elements (e.g. sentences, paragraphs, sections)</p></li>
+                    <li><p><strong><a href="https://github.com/opencitations/script/tree/master/spacin">SPACIN</a></strong>, a software for transforming JSON data (output of BEE) into RDF according to the OCDM; we have recently extended it for creating <a href="https://github.com/opencitations/ccc">the CCC corpus</a>, so as to reengineer information about in-text references and discourse elements.</p></li>
                     <li><p><strong><a href="https://github.com/opencitations/index">Create New Citations</a></strong>, a software for creating citation indexes (i.e. doi-to-doi citations) according to OCDM;</p></li>
                     <li><p><strong><a href="https://github.com/opencitations/bcite">BCite</a></strong>, a user-friendly web application - released in beta version - for creating RDF-data according to OCDM from lists of bibliographic references;</p></li>
-Moreover, the following tools support the development of applications leveraging data organised according to OCDM.
+                </ul>
+                <p>Moreover, the following tools support the development of applications leveraging data organised according to OCDM.</p>
+                <ul>
                     <li><p><strong><a href="https://github.com/opencitations/ramose">RAMOSE</a></strong>, a software for managing APIs to systematically query SPARQL endpoints and return JSON or CSV data;</p></li>
                     <li><p><strong><a href="https://github.com/opencitations/oscar">OSCAR</a></strong>, a user-friendly search interface for querying SPARQL endpoints;</p></li>
                     <li><p><strong><a href="https://github.com/opencitations/lucinda">Lucinda</a></strong>, a RDF-browser for visualising data organised according to any ontology.</p></li>
