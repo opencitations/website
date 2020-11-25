@@ -1549,7 +1549,7 @@ function call_crossref(str_doi, field){
 }
 
 function call_ramose(str_doi,field) {
-  var call_ramose_api_metadata = "http://localhost:8080/api/v1/citations/";
+  var call_ramose_api_metadata = "https://w3id.org/oc/ccc/api/v1/citations/";
   var call_full = call_ramose_api_metadata + encodeURIComponent(str_doi);
   var result_data = "";
   $.ajax({
