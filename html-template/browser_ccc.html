@@ -70,10 +70,10 @@ $def with (data_path)
     <script type="text/javascript" src ="static/js/ramose.js"></script>
     <script>
       // cursor ajax
-      $(document).ajaxStart(function() {
-          $(document.body).css({'cursor' : 'wait'});
+      \$(document).ajaxStart(function() {
+          \$(document.body).css({'cursor' : 'wait'});
       }).ajaxStop(function() {
-          $(document.body).css({'cursor' : 'default'});
+          \$(document.body).css({'cursor' : 'default'});
       });
 
       // lucinda
@@ -86,11 +86,11 @@ $def with (data_path)
 
       // graphs sidebar
       var resize = true;
-      $(document).on("click", ".know_more", function(event) {
-        if ( $(".graph_block").length == 0) {
+      \$(document).on("click", ".know_more", function(event) {
+        if ( \$(".graph_block").length == 0) {
           document.body.style.cursor = 'wait';
-          if ( $(".doi_before > a").length ) {
-            var doi = $(".doi_before > a").attr('href').split('doi.org/')[1] ;
+          if ( \$(".doi_before > a").length ) {
+            var doi = \$(".doi_before > a").attr('href').split('doi.org/')[1] ;
             var data_citations = call_ramose_citations(doi);
             citations_by_year(data_citations[0]);
             //self_citations(data_citations[1]);
@@ -98,53 +98,53 @@ $def with (data_path)
             //citing_authors(data_citations[2]);
           };
 
-          if ( $(".issn_before").length ) {
-            var issn = $(".issn_before").text();
-            var br_type = $(".doc-type").text();
+          if ( \$(".issn_before").length ) {
+            var issn = \$(".issn_before").text();
+            var br_type = \$(".doc-type").text();
             if (br_type == "Journal") {
               console.log('its a journal');
             }
           }
         document.body.style.cursor = 'auto';
-        } else { $(".graph_block").toggle(); };
+        } else { \$(".graph_block").toggle(); };
 
-        $("#browser_metrics").css("z-index","20000");
-        $("#browser_metrics").toggleClass("col-sm-2 col-sm-4",1000, "easeOutSine");
-        $("#browser_info").toggleClass("col-sm-10 col-sm-8",1000, "easeOutSine");
-        $(".__oscar__").toggleClass("col-sm-8 col-sm-6",1000, "easeOutSine");
+        \$("#browser_metrics").css("z-index","20000");
+        \$("#browser_metrics").toggleClass("col-sm-2 col-sm-4",1000, "easeOutSine");
+        \$("#browser_info").toggleClass("col-sm-10 col-sm-8",1000, "easeOutSine");
+        \$(".__oscar__").toggleClass("col-sm-8 col-sm-6",1000, "easeOutSine");
         if (resize) {
-          $(".know_more").text("read less");
+          \$(".know_more").text("read less");
           resize = false;
         } else {
-          $(".know_more").text("read more");
+          \$(".know_more").text("read more");
           resize = true;
         }
       } );
 
       // popup menu
-      $("#home, #terms, #search_ccc, #share").tooltip();
+      \$("#home, #terms, #search_ccc, #share").tooltip();
 
       // CCC call EPMC for in-text citations
-      $(document).on("click", "td[field='mentions']>a", function(event) {
+      \$(document).on("click", "td[field='mentions']>a", function(event) {
           event.preventDefault();
-          var pointers = $(this).attr('href');
-          var td = $(this).parent();
+          var pointers = \$(this).attr('href');
+          var td = \$(this).parent();
 
           // toggle sentences
-          if ( $(td).next("td").length != 0) {
-              $(td).next("td").toggle();
+          if ( \$(td).next("td").length != 0) {
+              \$(td).next("td").toggle();
           } else {
             var new_td = expand_context(td,pointers)[0]
               , rp_content = expand_context(td,pointers)[1];
             // append sentences
-            $(td).parent().append(new_td);
+            \$(td).parent().append(new_td);
 
-            $(new_td).each(function(){
-                $(this).hover(function(){
-                  $(this).children('.sentence').each(function () {
-                      var rp = rp_content[$(this).text()];
+            \$(new_td).each(function(){
+                \$(this).hover(function(){
+                  \$(this).children('.sentence').each(function () {
+                      var rp = rp_content[\$(this).text()];
                       var options = {"separateWordSearch": false}
-                      $(this).mark(rp, options);
+                      \$(this).mark(rp, options);
                    });
                 });
             });
@@ -153,38 +153,38 @@ $def with (data_path)
       });
 
       // default image for no results / no oscar calls
-      if ( $('#search_results').is(':empty') ) {
-        $("#search_results").append("<div class='no_results'><img src='static/img/poor.png'/></div>")
+      if ( \$('#search_results').is(':empty') ) {
+        \$("#search_results").append("<div class='no_results'><img src='static/img/poor.png'/></div>")
       }
       // responsive layout
       var dev_width = window.matchMedia("(max-width: 700px)");
       var metrics_block = document.getElementById("#browser_metrics");
-      $(document).ajaxComplete(function() {
+      \$(document).ajaxComplete(function() {
         if (window.matchMedia("(max-width: 1210px)").matches) {
-            if ($("#browser_metrics").length != 0) { console.log("metrics included ipad"); }
+            if (\$("#browser_metrics").length != 0) { console.log("metrics included ipad"); }
             else {
               console.log("no metrics ipad");
-              $("#browser_info").removeClass("col-sm-10").addClass("col-sm-12");
-              $(".browser-info").css("margin-right","");
+              \$("#browser_info").removeClass("col-sm-10").addClass("col-sm-12");
+              \$(".browser-info").css("margin-right","");
               document.getElementById("browser_info").style.marginRight = "10px";
-              $(".__oscar__").removeClass("col-sm-8").addClass("col-sm-12");
-              // $(".__oscar__").css("margin-right","");
+              \$(".__oscar__").removeClass("col-sm-8").addClass("col-sm-12");
+              // \$(".__oscar__").css("margin-right","");
               // document.getElementsByClassName("__oscar__").style.marginRight = "10px";
             }
           };
 
         if (window.matchMedia("(max-width: 700px)").matches) {
-            if ($("#browser_metrics").length != 0) { console.log("metrics included smartphone"); }
+            if (\$("#browser_metrics").length != 0) { console.log("metrics included smartphone"); }
             else {
               console.log("no metrics smartphone");
-              $("#browser_info").removeClass("col-sm-10").addClass("col-sm-12");
-              $(".browser-info").css("margin-right","");
+              \$("#browser_info").removeClass("col-sm-10").addClass("col-sm-12");
+              \$(".browser-info").css("margin-right","");
               document.getElementById("browser_info").style.marginRight = "10px";
-              $(".__oscar__").removeClass("col-sm-8").addClass("col-sm-12");
-              $(".__oscar__").css("margin-right","");
-              $(".__oscar__").css("margin-right","20px");
-              //$(".__oscar__").style.marginRight = "10px";
-              // $(".browser-info").css("margin-right","");
+              \$(".__oscar__").removeClass("col-sm-8").addClass("col-sm-12");
+              \$(".__oscar__").css("margin-right","");
+              \$(".__oscar__").css("margin-right","20px");
+              //\$(".__oscar__").style.marginRight = "10px";
+              // \$(".browser-info").css("margin-right","");
             }
           };
 
