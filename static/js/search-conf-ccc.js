@@ -1,5 +1,5 @@
 var search_conf = {
-  "sparql_endpoint": "https://w3id.org/oc/ccc/sparql",
+  "sparql_endpoint": "https://opencitations.net/ccc/sparql",
   "prefixes": [
       {"prefix":"cito","iri":"http://purl.org/spar/cito/"},
       {"prefix":"dcterms","iri":"http://purl.org/dc/terms/"},
