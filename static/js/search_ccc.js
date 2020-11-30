@@ -415,7 +415,9 @@ var search = (function () {
 		/*call the SPARQL end point through a GET*/
 		function _call_ts(rule_category, rules, rule_index, sparql_query, query_text=null, query_label=null, callbk_fun=null){
 			//use this url to contact the sparql_endpoint triple store
-			var query_contact_tp = String(search_conf_json.sparql_endpoint)+"?query="+ encodeURIComponent(sparql_query) +"&format=json";
+			//var query_contact_tp = String(search_conf_json.sparql_endpoint)+"?format=json&query="+ encodeURIComponent(sparql_query);
+			var contact_url = String(search_conf_json.sparql_endpoint)
+			var query_string = "format=json&query="+ encodeURIComponent(sparql_query)
 
 			//reset all doms
 			htmldom.reset_html_structure();
@@ -429,7 +431,8 @@ var search = (function () {
 			$.ajax({
 						dataType: "json",
 						url: query_contact_tp,
-						type: 'GET',
+						type: 'POST',
+						data: query_string,
 						async: async_call,
 						timeout: util.get_obj_key_val(search_conf_json,"timeout.value"),
 						error: function(jqXHR, textStatus, errorThrown) {
