@@ -416,7 +416,7 @@ var search = (function () {
 		function _call_ts(rule_category, rules, rule_index, sparql_query, query_text=null, query_label=null, callbk_fun=null){
 			//use this url to contact the sparql_endpoint triple store
 			//var query_contact_tp = String(search_conf_json.sparql_endpoint)+"?format=json&query="+ encodeURIComponent(sparql_query);
-			var query_contact_tp = String(search_conf_json.sparql_endpoint)
+			var contact_url = String(search_conf_json.sparql_endpoint)
 			var query_string = "format=json&query="+ encodeURIComponent(sparql_query)
 
 			//reset all doms
@@ -430,7 +430,7 @@ var search = (function () {
 			//call the sparql end point and retrieve results in json format
 			$.ajax({
 						dataType: "json",
-						url: query_contact_tp,
+						url: contact_url,
 						type: 'POST',
 						data: query_string,
 						async: async_call,
