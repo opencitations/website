@@ -1,4 +1,4 @@
-var ccc_api = "http://localhost:8080/api/v1/";
+var ccc_api = "https://w3id.org/oc/ccc/api/v1/";
 
 function call_ramose_citations(str_doi) {
   var call_ramose_api_metadata = ccc_api+"citations/";
