@@ -444,7 +444,7 @@ var search_conf = {
                 BIND(COALESCE(?title, "No title available") as ?title).
 
                      OPTIONAL {?iri fabio:hasSubtitle ?subtitle .}
-                     OPTIONAL {?iri prism:publicationDate ?year .}
+                     OPTIONAL {?iri prism:publicationDate ?date . BIND(year(xsd:dateTime(?date)) as ?year) .}
                      OPTIONAL {
                          ?iri datacite:hasIdentifier [
                          datacite:usesIdentifierScheme datacite:doi ;
@@ -523,7 +523,7 @@ var search_conf = {
                  OPTIONAL {?iri dcterms:title ?title . }
                  BIND(COALESCE(?title, "No title available") as ?title).
                  OPTIONAL {?iri fabio:hasSubtitle ?subtitle .}
-                 OPTIONAL {?iri prism:publicationDate ?year .}
+                 OPTIONAL {?iri prism:publicationDate ?date . BIND(year(xsd:dateTime(?date)) as ?year) . }
                  OPTIONAL {
                      ?iri datacite:hasIdentifier [
                      datacite:usesIdentifierScheme datacite:doi ;

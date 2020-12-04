@@ -879,7 +879,7 @@ var browser = (function () {
 						// load new oscar data
 						search.change_search_data(oscar_data[oscar_key].data, check_and_update = false);
 						search.do_sparql_query(oscar_key, true ,[], true, callbk_func_key);
-						var oops = "<div class='no_results'><img src='static/img/poor.png'/></div>"
+						//var oops = "<div class='no_results'><img src='/static/img/poor.png'/></div>"
 			      $('#search_results').append(oops);
 				}else {
 					if (oscar_data[oscar_key]['results']) {

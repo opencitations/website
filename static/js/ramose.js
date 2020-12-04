@@ -139,7 +139,7 @@ function citations_by_year(data) {
     const svg = d3.select('svg');
     const margin = 20;
     const width = 180 - 2 * margin;
-    const height = 200 - 2 * margin;
+    const height = 220 - 2 * margin;
 
     const chart = svg.append('g')
       .attr('transform', `translate(${margin}, 10)`);

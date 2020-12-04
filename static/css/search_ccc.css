@@ -157,7 +157,7 @@ td[field='orcid']:not(:empty)::before {content: "ORCID: "}
 td[field='num_docs']:not(:empty)::before {content: "Publications: "}
 td[field='citations']:not(:empty)::before {content: "Citations: "}
 td[field='mentions']:not(:empty) a::after {content: " citation contexts"}
-td[field='author'] {width: 85%;}
+td[field='author'] {width: 95%;}
 td[field='author'] a {color:#808080;}
 
 /* sentences */
