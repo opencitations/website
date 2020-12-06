@@ -880,7 +880,7 @@ var browser = (function () {
 						search.change_search_data(oscar_data[oscar_key].data, check_and_update = false);
 						search.do_sparql_query(oscar_key, true ,[], true, callbk_func_key);
 						//var oops = "<div class='no_results'><img src='/static/img/poor.png'/></div>"
-			      $('#search_results').append(oops);
+			      //$('#search_results').append(oops);
 				}else {
 					if (oscar_data[oscar_key]['results']) {
 							//in case the table data has not been yet initialized
@@ -1238,7 +1238,8 @@ var b_util = (function () {
 				var str_html = obj.value;
 				if (include_link) {
 					if (obj.hasOwnProperty("uri")) {
-						str_html = "<a href='"+String(obj.uri)+"' target='_blank'>"+obj.value+"</a>";
+						//str_html = "<a href='"+String(obj.uri)+"' target='_blank'>"+obj.value+"</a>";
+						str_html = "<a href='"+String(obj.uri)+"'>"+obj.value+"</a>";
 					}
 				}
 				return str_html;
