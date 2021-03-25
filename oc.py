@@ -269,13 +269,17 @@ class Api:
                     web_logger.mes()
                     return res
                 else:
-                    with StringIO(res) as f:
-                        if content_type == "text/csv":
-                            mes = next(csv.reader(f))[0]
-                        else:
-                            mes = json.dumps(next(csv.DictReader(f)), ensure_ascii=False)
-                    raise web.HTTPError(
-                        str(status_code), {"Content-Type": content_type}, mes)
+                    try:
+                        with StringIO(res) as f:
+                            if content_type == "text/csv":
+                                mes = next(csv.reader(f))[0]
+                            else:
+                                mes = json.dumps(next(csv.DictReader(f)), ensure_ascii=False)
+                        raise web.HTTPError(
+                            str(status_code), {"Content-Type": content_type}, mes)
+                    except:
+                        raise web.HTTPError(
+                            str(status_code), {"Content-Type": content_type}, str(res))
         else:
             raise web.notfound()
 
