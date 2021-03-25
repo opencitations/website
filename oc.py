@@ -21,7 +21,7 @@ from src.wl import WebLogger
 from src.rrh import RewriteRuleHandler
 from src.ldd import LinkedDataDirector
 from src.ved import VirtualEntityDirector
-from src.ramose import APIManager, max_size_csv
+from src.ramose import APIManager
 from src.oci import OCIManager
 from src.intrepid import InTRePIDManager
 import requests
