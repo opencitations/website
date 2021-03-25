@@ -38,24 +38,23 @@ from os import sep , getcwd
 import pprint
 pp = pprint.PrettyPrinter(indent=1)
 
-# Fixing max size for CSV
-def max_size_csv():
-    from sys import maxsize
-    import csv
-    maxInt = maxsize
-    while True:
-        try:
-            csv.field_size_limit(maxInt)
-            break
-        except OverflowError:
-            maxInt = int(maxInt/10)
-max_size_csv()
-
 FIELD_TYPE_RE = "([^\(\s]+)\(([^\)]+)\)"
 PARAM_NAME = "{([^{}\(\)]+)}"
 
 
 class APIManager(object):
+    # Fixing max size for CSV
+    @staticmethod
+    def __max_size_csv():
+        from sys import maxsize
+        import csv
+        maxInt = maxsize
+        while True:
+            try:
+                csv.field_size_limit(maxInt)
+                break
+            except OverflowError:
+                maxInt = int(maxInt/10)
 
     # Hash format: START
     @staticmethod
@@ -776,6 +775,8 @@ The operations that this API implements are:
         In addition, it also defines additional structure, such as the functions to be used for interpreting the
         values returned by a SPARQL query, some operations that can be used for filtering the results, and the
         HTTP methods to call for making the request to the SPARQL endpoint specified in the configuration file."""
+        self.__max_size_csv()  # fixing problem with csv
+
         self.all_conf = OrderedDict()
         self.base_url = []
         for conf_file in conf_files:

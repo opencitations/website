@@ -33,9 +33,6 @@ from os import path
 from io import StringIO
 from urllib.parse import unquote, parse_qs
 
-# Fixing a problem for computing max size of CSV (useful for RAMOSE)
-max_size_csv()
-
 # Load the configuration file
 # with open("conf_local.json") as f:
 with open("conf.json") as f:
