@@ -21,7 +21,7 @@ from src.wl import WebLogger
 from src.rrh import RewriteRuleHandler
 from src.ldd import LinkedDataDirector
 from src.ved import VirtualEntityDirector
-from src.ramose import APIManager
+from src.ramose import APIManager, max_size_csv
 from src.oci import OCIManager
 from src.intrepid import InTRePIDManager
 import requests
@@ -32,6 +32,9 @@ from datetime import datetime
 from os import path
 from io import StringIO
 from urllib.parse import unquote, parse_qs
+
+# Fixing a problem for computing max size of CSV (useful for RAMOSE)
+max_size_csv()
 
 # Load the configuration file
 # with open("conf_local.json") as f:

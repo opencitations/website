@@ -39,15 +39,17 @@ import pprint
 pp = pprint.PrettyPrinter(indent=1)
 
 # Fixing max size for CSV
-from sys import maxsize
-import csv
-maxInt = maxsize
-while True:
-    try:
-        csv.field_size_limit(maxInt)
-        break
-    except OverflowError:
-        maxInt = int(maxInt/10)
+def max_size_csv():
+    from sys import maxsize
+    import csv
+    maxInt = maxsize
+    while True:
+        try:
+            csv.field_size_limit(maxInt)
+            break
+        except OverflowError:
+            maxInt = int(maxInt/10)
+max_size_csv()
 
 FIELD_TYPE_RE = "([^\(\s]+)\(([^\)]+)\)"
 PARAM_NAME = "{([^{}\(\)]+)}"
