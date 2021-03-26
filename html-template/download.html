@@ -76,8 +76,9 @@ $def with (pages, active)
 
             <div class="cover left">
                  <h3>$active.title()</h3>
-                <p>This page contains details of and links to all the data dumps of the <a href="#index">Open Citation Indexes</a> and of the <a href="#occ"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus (OCC)</a>. They are made available online by means of the support of <a href="http://figshare.com">Figshare</a> and of the <a href="https://archive.org/">Internet Archive</a>.</p>
+                <p>This page contains details of and links to all the data dumps of the <a href="#index"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes</a>, the <a href="#ccc"><span class="oc-purple">Open</span> Biomedical <span class="oc-blue">Citations</span> in Context Corpus</a>, and of the <a href="#occ"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus (OCC)</a>. They are made available online by means of the support of <a href="http://figshare.com">Figshare</a> and of the <a href="https://archive.org/">Internet Archive</a>.</p>
                 <p>Each dump of an <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index is composed by four zip archives. Two of these archives contains the actual data and provenance information of the index in N-Triples, while the other two archives contain the same information in CSV.</p>
+                <p>Each dump of the <span class="oc-purple">Open</span> Biomedical <span class="oc-blue">Citations</span> in Context Corpus is composed by one single zip artchive containing all the information about actual data and provenance stored in JSON-LD.</p>
                 <p>Instead, each dump of the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus is composed by several zip archives, each containing either data or provenance information relating to a particular sub-dataset within the OCC. After unzipping an archive, one needs to use <a href="http://dar.linux.free.fr/">Disk ARchive (DAR)</a> - a multi-platform archive tool for managing huge amount of data - to recreate the whole OCC structure.</p>
 
                 <div class="toc">
@@ -89,6 +90,7 @@ $def with (pages, active)
                                 <li><p><a href="#coci">COCI, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of Crossref open DOI-to-DOI references</a></p></li>
                             </ul>
                         </li>
+                        <li><p><a href="#ccc"><span class="oc-purple">Open</span> Biomedical <span class="oc-blue">Citations</span> in Context Corpus</a></p></li>
                         <li><p><a href="#occ"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus</a></p></li>
                     </ul>
                 </div>
@@ -238,6 +240,22 @@ $def with (pages, active)
                          <tr><td>Provenance data (CSV)</td><td><a href="https://doi.org/10.6084/m9.figshare.6741431">ZIP</a></td><td>54 GB (4.5 GB zipped)</td></tr>
                          <tr><td>Provenance data (N-Triple)</td><td><a href="https://doi.org/10.6084/m9.figshare.6741446">ZIP</a></td><td>206 GB (8 GB zipped)</td></tr>
                      </table>
+                </div>
+
+                <a class="anchor" id="ccc"></a>
+                <h4><span class="oc-purple">Open</span> Biomedical <span class="oc-blue">Citations</span> in Context Corpus (CCC)</h4>
+                <h5>Most recent CCC data dump - March 2021 Dump</h5>
+                <h5>20 March 2021 Dump</h5>
+                 <p>Dump created on 2021-03-20. This dump includes information on:</p>
+                 <ul>
+                    <li><p>64,810 citing bibliographic resources;</p></li>
+                    <li><p>7,045,425 citation links.</p></li>
+                 </ul>
+                 <div class="table-responsive">
+                    <table class="table">
+                        <tr><th>Type</th><th>Archive</th></tr>
+                        <tr><td>all entities</td><td><a href="https://doi.org/10.6084/m9.figshare.14252969.v1">data + provenance</a></td></tr>
+                    </table>
                 </div>
 
                 <a class="anchor" id="occ"></a>
