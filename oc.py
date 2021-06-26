@@ -21,7 +21,7 @@ from src.wl import WebLogger
 from src.rrh import RewriteRuleHandler
 from src.ldd import LinkedDataDirector
 from src.ved import VirtualEntityDirector
-from src.ramose import APIManager
+from src.ramose import APIManager, Operation, HTMLDocumentationHandler
 from src.oci import OCIManager
 from src.intrepid import InTRePIDManager
 import requests
@@ -177,12 +177,24 @@ web_logger = WebLogger("opencitations.net", c["log_dir"], [
     {"REMOTE_ADDR": ["130.136.130.1", "130.136.2.47", "127.0.0.1"]}  # comment this line only for test purposes
 )
 
-#coci_api_manager = APIManager(c["api_coci"])
-#croci_api_manager = APIManager(c["api_croci"])
-#index_api_manager = APIManager(c["api_index"])
-#occ_api_manager = APIManager(c["api_occ"])
-#wikidata_api_manager = APIManager(c["api_wikidata"])
-#ccc_api_manager = APIManager(c["api_ccc"])
+coci_api_manager = APIManager(c["api_coci"])
+coci_doc_manager = HTMLDocumentationHandler(coci_api_manager)
+
+croci_api_manager = APIManager(c["api_croci"])
+croci_doc_manager = HTMLDocumentationHandler(croci_api_manager)
+
+index_api_manager = APIManager(c["api_index"])
+index_doc_manager = HTMLDocumentationHandler(index_api_manager)
+
+occ_api_manager = APIManager(c["api_occ"])
+occ_doc_manager = HTMLDocumentationHandler(occ_api_manager)
+
+wikidata_api_manager = APIManager(c["api_wikidata"])
+wikidata_doc_manager = HTMLDocumentationHandler(wikidata_api_manager)
+
+ccc_api_manager = APIManager(c["api_ccc"])
+ccc_doc_manager = HTMLDocumentationHandler(ccc_api_manager)
+
 
 class RawGit:
     def GET(self, u):
@@ -241,51 +253,64 @@ class Api:
 
         if dataset == "":
             man = occ_api_manager
+            doc = occ_doc_manager
         elif dataset == "coci":
             man = coci_api_manager
+            doc = coci_doc_manager
         elif dataset == "croci":
             man = croci_api_manager
+            doc = croci_doc_manager
         elif dataset == "index":
             man = index_api_manager
+            doc = index_doc_manager
         elif dataset == "wikidata":
             man = wikidata_api_manager
+            doc = wikidata_doc_manager
         elif dataset == "ccc":
             man = ccc_api_manager
+            doc = ccc_doc_manager
 
-        if man is not None:
+        if man is None:
+            raise web.notfound()
+        else:
             if re.match("^/api/v[1-9][0-9]*/?$", call):
                 web.header('Access-Control-Allow-Origin', '*')
                 web.header('Access-Control-Allow-Credentials', 'true')
                 web.header('Content-Type', "text/html")
                 web_logger.mes()
-                return man.get_htmldoc()[1]
+                return doc.get_documentation()[1]
             else:
                 content_type = web.ctx.env.get('HTTP_ACCEPT')
                 if content_type is not None and "text/csv" in content_type:
                     content_type = "text/csv"
                 else:
                     content_type = "application/json"
-                status_code, res, c_type = man.exec_op(call + unquote(web.ctx.query), content_type=content_type)
-                if status_code == 200:
-                    web.header('Access-Control-Allow-Origin', '*')
-                    web.header('Access-Control-Allow-Credentials', 'true')
-                    web.header('Content-Type', c_type)
-                    web_logger.mes()
-                    return res
+
+                operation_url = call + unquote(web.ctx.query)
+                op = man.get_op(operation_url)
+                if type(op) is Operation:
+                    status_code, res, c_type = op.exec(content_type=content_type)
+                    if status_code == 200:
+                        web.header('Access-Control-Allow-Origin', '*')
+                        web.header('Access-Control-Allow-Credentials', 'true')
+                        web.header('Content-Type', c_type)
+                        web_logger.mes()
+                        return res
+                    else:
+                        try:
+                            with StringIO(res) as f:
+                                if content_type == "text/csv":
+                                    mes = next(csv.reader(f))[0]
+                                else:
+                                    mes = json.dumps(next(csv.DictReader(f)), ensure_ascii=False)
+                            raise web.HTTPError(
+                                str(status_code), {"Content-Type": content_type}, mes)
+                        except:
+                            raise web.HTTPError(
+                                str(status_code), {"Content-Type": content_type}, str(res))
                 else:
-                    try:
-                        with StringIO(res) as f:
-                            if content_type == "text/csv":
-                                mes = next(csv.reader(f))[0]
-                            else:
-                                mes = json.dumps(next(csv.DictReader(f)), ensure_ascii=False)
-                        raise web.HTTPError(
-                            str(status_code), {"Content-Type": content_type}, mes)
-                    except:
-                        raise web.HTTPError(
-                            str(status_code), {"Content-Type": content_type}, str(res))
-        else:
-            raise web.notfound()
+                    raise web.HTTPError(
+                        "404", {"Content-Type": content_type}, "No API operation found at URL '%s'" % call)
 
 
 class About:
