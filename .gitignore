@@ -3,3 +3,4 @@ conf_local.json
 conf_remote.json
 .DS_*
 log/
+.devcontainer

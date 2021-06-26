@@ -30,6 +30,7 @@ import re
 import csv
 from datetime import datetime
 from os import path
+from os import listdir
 from io import StringIO
 from urllib.parse import unquote, parse_qs
 
@@ -110,7 +111,10 @@ urls = (
     "/(licenses)", "Licenses",
     "(/paper/.+)", "RawGit",
     "/index", "Index",
-    "/robots.txt", "Robots"
+    "/robots.txt", "Robots",
+
+    # Statistics endpoint
+    "/statistics/(.+)", "Statistics",
 )
 
 render = web.template.render(c["html"])
@@ -173,12 +177,12 @@ web_logger = WebLogger("opencitations.net", c["log_dir"], [
     {"REMOTE_ADDR": ["130.136.130.1", "130.136.2.47", "127.0.0.1"]}  # comment this line only for test purposes
 )
 
-coci_api_manager = APIManager(c["api_coci"])
-croci_api_manager = APIManager(c["api_croci"])
-index_api_manager = APIManager(c["api_index"])
-occ_api_manager = APIManager(c["api_occ"])
-wikidata_api_manager = APIManager(c["api_wikidata"])
-ccc_api_manager = APIManager(c["api_ccc"])
+#coci_api_manager = APIManager(c["api_coci"])
+#croci_api_manager = APIManager(c["api_croci"])
+#index_api_manager = APIManager(c["api_index"])
+#occ_api_manager = APIManager(c["api_occ"])
+#wikidata_api_manager = APIManager(c["api_wikidata"])
+#ccc_api_manager = APIManager(c["api_ccc"])
 
 class RawGit:
     def GET(self, u):
@@ -651,6 +655,57 @@ class CrociContentNegotiation(ContentNegotiation):
                                     label_func=lambda u: "oci:%s" % re.findall("^.+/ci/(.+)$", u)[0]
                                     if "/ci/" in u else "CROCI")
 
+class Statistics:
+    def __init__(self):
+        self.__file_regex = re.compile('oc-(\d\d\d\d)-(\d\d).prom')
+    
+    def GET(self, date):
+        web_logger.mes()
+        file_path = ""
+        # checks if any date has been specified, otherwise looks for the most recent statistics
+        if(date != "last-month"):
+            file_name = "oc-" + date + ".prom"
+            if self.__file_regex.match(file_name):
+                file_path = path.join(c["stats_dir"], file_name)
+                if not path.isfile(file_path):
+                    file_path = ''
+            else:
+                raise web.HTTPError(
+                    "400", 
+                    {
+                        "Content-Type": "text/plain"
+                    }, 
+                    "Bad date format the required one is: year-month."
+                )
+        else:
+            max_year = 0
+            max_month = 0
+            for file in listdir(c["stats_dir"]):
+                if self.__file_regex.match(file):
+                    groups = self.__file_regex.search(file).groups()
+                    # checks that the file respects the format in the name
+                    year = int(groups[0])
+                    month = int(groups[1])
+                    if year > max_year or (year == max_year and month > max_month):
+                        max_year = year
+                        max_month = month
+                        file_path = path.join(c["stats_dir"], file)
+        # if the statistics file was found then it returns the content
+        if file_path != "":
+            web.header('Content-Type', "document")
+            f = open(file_path, 'r')
+            content = f.read()
+            f.close()
+            web.ctx.status = '200 OK'
+            return content
+        else:
+            raise web.HTTPError(
+                "404", 
+                {
+                    "Content-Type": "text/plain"
+                }, 
+                "No statistics found."
+            )
 
 if __name__ == "__main__":
     app = web.application(rewrite.get_urls(), globals())
