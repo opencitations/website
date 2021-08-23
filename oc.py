@@ -34,6 +34,9 @@ from os import listdir
 from io import StringIO
 from urllib.parse import unquote, parse_qs
 
+from prometheus_client import Counter, CollectorRegistry, generate_latest, Gauge, Info
+from prometheus_client.parser import text_fd_to_metric_families
+
 # Load the configuration file
 # with open("conf_local.json") as f:
 with open("conf.json") as f:
@@ -683,24 +686,114 @@ class CrociContentNegotiation(ContentNegotiation):
 class Statistics:
     def __init__(self):
         self.__file_regex = re.compile('oc-(\d\d\d\d)-(\d\d).prom')
+        self.__dates_regex = re.compile('(\d+)-(\d+)_(\d+)-(\d+)')
     
     def GET(self, date):
         web_logger.mes()
         file_path = ""
+
         # checks if any date has been specified, otherwise looks for the most recent statistics
         if(date != "last-month"):
-            file_name = "oc-" + date + ".prom"
-            if self.__file_regex.match(file_name):
-                file_path = path.join(c["stats_dir"], file_name)
-                if not path.isfile(file_path):
-                    file_path = ''
+            if self.__dates_regex.match(date):
+                search = self.__dates_regex.search(date)
+                
+                month_from = search.group(2)
+                year_from = search.group(1)
+                month_to = search.group(4)
+                year_to = search.group(3)
+
+                if year_from > year_to or (year_from == year_to and month_from > month_to):
+                    raise web.HTTPError(
+                        "400", 
+                        {
+                            "Content-Type": "text/plain"
+                        }, 
+                        "Bad date provided, the ending date is lower than the beginning date."
+                    )
+                
+                registry = CollectorRegistry()
+
+                # Counter of accesses to different endpoints oc 
+                http_requests = Counter(
+                    'oc_http_requests', 
+                    'Counter for HTTP requests to opencitations endpoints', 
+                    ['endpoint'], 
+                    registry=registry
+                )
+
+                # Aggregate counter of accesses to the different categories of endpoints oc
+                agg_counter = Counter(
+                    'oc_agg_counter', 
+                    'Aggregate HTTP requests counter to opencitations endpoints', 
+                    ['category'], 
+                    registry=registry
+                )
+                i = Info(
+                    'oc_date', 
+                    'Date to which the statistics refers to', 
+                    registry=registry
+                )
+                i.info({'month_from': str(month_from), 'year_from': str(year_from), "month_to": str(month_to), 'year_to': str(year_to)})
+
+                indexed_records = Gauge(
+                    'oc_indexed_records', 
+                    'Indexed records', 
+                    registry=registry
+                )
+                harvested_data_sources = Gauge(
+                    'oc_harvested_data_sources', 
+                    'Harvested data sources', 
+                    registry=registry
+                )
+
+                current_month = int(month_from)
+                current_year = int(year_from)
+                target_month = int(month_to)
+                target_year = int(year_to)
+
+                while(True):
+                    # For each month collects the statistics and adds 
+                    # them to the ones to be returned.
+                    while(True):
+                        current_month_str = str(current_month)
+                        if len(current_month_str) == 1:
+                            current_month_str = '0' + current_month_str
+                        file_path = path.join(c["stats_dir"], "oc-" + str(current_year) + "-" + current_month_str + ".prom")
+                        if path.isfile(file_path):
+                            f = open(file_path, 'r')
+                            families = text_fd_to_metric_families(f)
+                            for family in families:
+                                for sample in family.samples:
+                                    if sample[0] == "agg_counter_total":
+                                        agg_counter.labels(sample[1]).inc(sample[2])
+                                    if sample[0] == "http_requests_total":
+                                        http_requests.labels(sample[1]).inc(sample[2])
+                                    if sample[0] == "indexed_records":
+                                        indexed_records.set(sample[2])
+                                    if sample[0] == "harvested_data_sources":
+                                        harvested_data_sources.set(sample[2])
+
+                        # If we reaches the target year and the month we are visiting is the last one 
+                        # or if we visited the whole year i.e. the last month has just been visited
+                        # exit the months's loop
+                        if (current_year == target_year and current_month >= target_month) or target_month == 12:
+                            break
+                        current_month += 1
+                    
+                    # If we visited all the years than we exit the years's loop
+                    if(current_year == target_year):
+                        break
+                    current_year += 1
+                    current_month = 1
+
+                return generate_latest(registry)
             else:
                 raise web.HTTPError(
                     "400", 
                     {
                         "Content-Type": "text/plain"
                     }, 
-                    "Bad date format the required one is: year-month."
+                    "Bad date format the required one is: year-month_year-month."
                 )
         else:
             max_year = 0
@@ -715,6 +808,7 @@ class Statistics:
                         max_year = year
                         max_month = month
                         file_path = path.join(c["stats_dir"], file)
+                        
         # if the statistics file was found then it returns the content
         if file_path != "":
             web.header('Content-Type', "document")
