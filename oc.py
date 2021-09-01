@@ -198,7 +198,6 @@ wikidata_doc_manager = HTMLDocumentationHandler(wikidata_api_manager)
 ccc_api_manager = APIManager(c["api_ccc"])
 ccc_doc_manager = HTMLDocumentationHandler(ccc_api_manager)
 
-
 class RawGit:
     def GET(self, u):
         web_logger.mes()
@@ -788,13 +787,19 @@ class Statistics:
 
                 return generate_latest(registry)
             else:
-                raise web.HTTPError(
-                    "400", 
-                    {
-                        "Content-Type": "text/plain"
-                    }, 
-                    "Bad date format the required one is: year-month_year-month."
-                )
+                file_name = "oc-" + date + ".prom"
+                if self.__file_regex.match(file_name):
+                    file_path = path.join(c["stats_dir"], file_name)
+                    if not path.isfile(file_path):
+                        file_path = ''
+                else:
+                    raise web.HTTPError(
+                        "400", 
+                        {
+                            "Content-Type": "text/plain"
+                        }, 
+                        "Bad date format the required one is: year-month or year-month_year-month."
+                    )
         else:
             max_year = 0
             max_month = 0
