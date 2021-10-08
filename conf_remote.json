@@ -47,5 +47,6 @@
     "oci_conf": "../oci/oci.json",
     "intrepid_conf": "../intrepid/intrepid.json"
   },
-  "stats_dir": "/srv/web/stats/"
+  "stats_dir": "/srv/web/stats/",
+  "auth_file": "auth.json"
 }

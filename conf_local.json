@@ -47,5 +47,6 @@
     "oci_conf": "../oci/oci.json",
     "intrepid_conf": "../intrepid/intrepid.json"
   },
-  "stats_dir": "../opencitations-log-stats/examples/"
+  "stats_dir": "../opencitations-log-stats/examples/",
+  "auth_file": "auth.json"
 }
