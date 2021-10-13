@@ -852,7 +852,7 @@ class Statistics:
 
                 # Counter of accesses to different endpoints oc 
                 http_requests = Counter(
-                    'oc_http_requests', 
+                    'opencitations_http_requests', 
                     'Counter for HTTP requests to opencitations endpoints', 
                     ['endpoint'], 
                     registry=registry
@@ -860,25 +860,25 @@ class Statistics:
 
                 # Aggregate counter of accesses to the different categories of endpoints oc
                 agg_counter = Counter(
-                    'oc_agg_counter', 
+                    'opencitations_agg_counter', 
                     'Aggregate HTTP requests counter to opencitations endpoints', 
                     ['category'], 
                     registry=registry
                 )
                 i = Info(
-                    'oc_date', 
+                    'opencitations_date', 
                     'Date to which the statistics refers to', 
                     registry=registry
                 )
                 i.info({'month_from': str(month_from), 'year_from': str(year_from), "month_to": str(month_to), 'year_to': str(year_to)})
 
                 indexed_records = Gauge(
-                    'oc_indexed_records', 
+                    'opencitations_indexed_records', 
                     'Indexed records', 
                     registry=registry
                 )
                 harvested_data_sources = Gauge(
-                    'oc_harvested_data_sources', 
+                    'opencitations_harvested_data_sources', 
                     'Harvested data sources', 
                     registry=registry
                 )
@@ -901,13 +901,13 @@ class Statistics:
                             families = text_fd_to_metric_families(f)
                             for family in families:
                                 for sample in family.samples:
-                                    if sample[0] == "agg_counter_total":
+                                    if sample[0] == "opencitations_agg_counter_total":
                                         agg_counter.labels(sample[1]).inc(sample[2])
-                                    if sample[0] == "http_requests_total":
+                                    if sample[0] == "opencitations_http_requests_total":
                                         http_requests.labels(sample[1]).inc(sample[2])
-                                    if sample[0] == "indexed_records":
+                                    if sample[0] == "opencitations_indexed_records":
                                         indexed_records.set(sample[2])
-                                    if sample[0] == "harvested_data_sources":
+                                    if sample[0] == "opencitations_harvested_data_sources":
                                         harvested_data_sources.set(sample[2])
 
                         # If we reaches the target year and the month we are visiting is the last one 
