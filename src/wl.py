@@ -19,7 +19,6 @@ import web
 from datetime import datetime
 from os import sep, path, makedirs
 
-
 class WebLogger(object):
     def __init__(self, name, log_dir, list_of_web_var=[], filter_request={}):
         self.l = logging.getLogger(name)

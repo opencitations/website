@@ -26,13 +26,20 @@ from src.oci import OCIManager
 from src.intrepid import InTRePIDManager
 import requests
 import urllib.parse as urlparse
+import urllib.request as urllib
 import re
 import csv
 from datetime import datetime
 from os import path
 from os import listdir
+from os import urandom
 from io import StringIO
+from hashlib import sha1
 from urllib.parse import unquote, parse_qs
+
+from redis import Redis
+import uuid
+import smtplib
 
 from prometheus_client import Counter, CollectorRegistry, generate_latest, Gauge, Info
 from prometheus_client.parser import text_fd_to_metric_families
@@ -41,6 +48,11 @@ from prometheus_client.parser import text_fd_to_metric_families
 # with open("conf_local.json") as f:
 with open("conf.json") as f:
     c = json.load(f)
+
+with open(c["auth_file"]) as f:
+    c_auth = json.load(f)
+    c_smtp = c_auth["smtp"]
+    c_captcha = c_auth["captcha"]
 
 pages = [
     {"name": "", "label": "Home"},
@@ -118,6 +130,8 @@ urls = (
 
     # Statistics endpoint
     "/statistics/(.+)", "Statistics",
+    "/accesstoken", "AuthCode",
+    "/accesstoken/(.+)", "AuthCodeConfirm",
 )
 
 render = web.template.render(c["html"])
@@ -170,12 +184,13 @@ rewrite = RewriteRuleHandler(
 
 # Set the web logger
 web_logger = WebLogger("opencitations.net", c["log_dir"], [
-    "REMOTE_ADDR",      # The IP address of the visitor
-    "HTTP_USER_AGENT",  # The browser type of the visitor
-    "HTTP_REFERER",     # The URL of the page that called your program
-    "HTTP_HOST",        # The hostname of the page being attempted
-    "REQUEST_URI"       # The interpreted pathname of the requested document
-                        # or CGI (relative to the document root)
+    "REMOTE_ADDR",        # The IP address of the visitor
+    "HTTP_USER_AGENT",    # The browser type of the visitor
+    "HTTP_REFERER",       # The URL of the page that called your program
+    "HTTP_HOST",          # The hostname of the page being attempted
+    "REQUEST_URI",        # The interpreted pathname of the requested document
+                          # or CGI (relative to the document root)
+    "HTTP_AUTHORIZATION", # Access token
     ],
     {"REMOTE_ADDR": ["130.136.130.1", "130.136.2.47", "127.0.0.1"]}  # comment this line only for test purposes
 )
@@ -197,6 +212,127 @@ wikidata_doc_manager = HTMLDocumentationHandler(wikidata_api_manager)
 
 ccc_api_manager = APIManager(c["api_ccc"])
 ccc_doc_manager = HTMLDocumentationHandler(ccc_api_manager)
+
+rconn = Redis(host=c_auth["redis"]["host"], port=c_auth["redis"]["port"], db=c_auth["redis"]["db"])
+app = web.application(rewrite.get_urls(), globals())
+session = web.session.Session(app, web.session.DiskStore("sessions"), initializer={"csrf": None})
+
+def refreshCSRF():
+    session.csrf = sha1(urandom(64)).hexdigest()
+
+def validateAccessToken():
+    auth_code = web.ctx.env.get('HTTP_AUTHORIZATION')
+    if not auth_code is None:
+        val = rconn.get(auth_code)
+        if val is None or val != b'1':
+            raise web.HTTPError(
+                "403", 
+                {
+                   "Content-Type": "text/plain"
+                }, 
+                "The access token provided is not valid."
+            )
+
+def sendEmail(recipient, subject, body):
+    sender = c_smtp["email"]
+    if not isinstance(recipient, list):
+        recipient = [recipient]
+
+    message = """Content-Type: text/html; From: %s\nTo: %s\nSubject: %s\n\n%s
+    """ % ('noreply@opencitations.net', ", ".join(recipient), subject, body)
+    server = smtplib.SMTP(c_smtp["address"], c_smtp["port"])
+    server.ehlo()
+    server.starttls()
+    server.login(sender, c_smtp["password"])
+    server.sendmail('noreply@opencitations.net', recipient, message)
+    server.close()
+
+class AuthCodeConfirm:
+    def GET(self, token):
+        check = rconn.get(token)
+        if check is None or check != b'2':
+            auth_code = None
+        else:
+            rconn.delete(token)
+            rconn.set(token, 1)
+            auth_code = token
+        return render.accesstokenconfirm(pages, active, auth_code, c_auth["messages"]["accesstokenconfirm"])
+
+class AuthCode:
+    def __init__(self):
+        self.__rgx = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+
+    def GET(self):
+        refreshCSRF()
+        web_logger.mes()
+        return render.accesstoken(pages, active, c_captcha["PUBKEY"], None, session.csrf, c_auth["messages"]["accesstoken"])
+
+    def POST(self):
+        data = web.input()
+
+        session_csrf = session.csrf
+        refreshCSRF()
+
+        # Validate email
+        email = data.tokenEmail
+        if not re.fullmatch(self.__rgx, email):
+            return render.accesstoken(pages, active,  c_captcha["PUBKEY"], c_auth["messages"]["accesstoken"]["invalid_email"], session.csrf, c_auth["messages"]["accesstoken"])
+
+        # Validate recaptcha
+        recaptcha = data['g-recaptcha-response']
+        
+        params = urlparse.urlencode({
+            'secret': c_captcha["PRVKEY"],
+            'response': recaptcha,
+        })
+        data_res = urllib.urlopen('https://www.google.com/recaptcha/api/siteverify', params.encode('utf-8')).read()
+        result = json.loads(data_res)
+        success = result.get('success', None)
+        
+        if not success == True:
+            return render.accesstoken(pages, active,  c_captcha["PUBKEY"],  c_auth["messages"]["accesstoken"]["invalid_captcha"], session.csrf, c_auth["messages"]["accesstoken"])
+
+        # CSFR Attack
+        csrf = data.csrf
+        if csrf != session_csrf:
+            return render.accesstoken(pages, active,  c_captcha["PUBKEY"], c_auth["messages"]["accesstoken"]["invalid_form"], session.csrf, c_auth["messages"]["accesstoken"])
+    
+        # Generate temporary token
+        token = str(uuid.uuid4())
+        while not rconn.get(token) is None:
+            token = str(uuid.uuid4())
+        rconn.set(token, 2, ex=3600)
+        email_msg = c_auth["messages"]["email"]
+        email_link = "http://opencitations.net/accesstoken/" + token
+        sendEmail(email, email_msg["title"], """\
+<html>
+  <head></head>
+  <body>
+      <div style="text-align: center">
+      <img width=100 src="https://opencitations.net/static/img/logo.png">
+        <h2><font color="#AA53FD">Access-Token</font> <font color="#3C40E5">Request</font></h2>
+        <br>
+        %s<br>
+        <h3>%s <a href='%s' style="background-color:#AA53FD;color:white;padding:8px;border-radius:3px;">%s</a></h3>
+
+        %s<br><br>
+       </div>
+       %s
+       <br><br>
+       %s %s</body>
+</html>
+""" % (
+            email_msg["description"], 
+            email_msg["token"], 
+            email_link, 
+            email_msg["token_button"],
+            email_msg["ignore"],
+            email_msg["signature"],
+            email_msg["html_message"],
+            email_link
+        ))
+
+        return render.accesstokensuccess(pages, active, c_auth["messages"]["accesstokensuccess"])
 
 class RawGit:
     def GET(self, u):
@@ -251,6 +387,7 @@ class Home:
 
 class Api:
     def GET(self, dataset, call):
+        validateAccessToken()
         man = None
 
         if dataset == "":
@@ -688,6 +825,7 @@ class Statistics:
         self.__dates_regex = re.compile('(\d+)-(\d+)_(\d+)-(\d+)')
     
     def GET(self, date):
+        validateAccessToken()
         web_logger.mes()
         file_path = ""
 
@@ -714,7 +852,7 @@ class Statistics:
 
                 # Counter of accesses to different endpoints oc 
                 http_requests = Counter(
-                    'oc_http_requests', 
+                    'opencitations_http_requests', 
                     'Counter for HTTP requests to opencitations endpoints', 
                     ['endpoint'], 
                     registry=registry
@@ -722,25 +860,25 @@ class Statistics:
 
                 # Aggregate counter of accesses to the different categories of endpoints oc
                 agg_counter = Counter(
-                    'oc_agg_counter', 
+                    'opencitations_agg_counter', 
                     'Aggregate HTTP requests counter to opencitations endpoints', 
                     ['category'], 
                     registry=registry
                 )
                 i = Info(
-                    'oc_date', 
+                    'opencitations_date', 
                     'Date to which the statistics refers to', 
                     registry=registry
                 )
                 i.info({'month_from': str(month_from), 'year_from': str(year_from), "month_to": str(month_to), 'year_to': str(year_to)})
 
                 indexed_records = Gauge(
-                    'oc_indexed_records', 
+                    'opencitations_indexed_records', 
                     'Indexed records', 
                     registry=registry
                 )
                 harvested_data_sources = Gauge(
-                    'oc_harvested_data_sources', 
+                    'opencitations_harvested_data_sources', 
                     'Harvested data sources', 
                     registry=registry
                 )
@@ -763,13 +901,13 @@ class Statistics:
                             families = text_fd_to_metric_families(f)
                             for family in families:
                                 for sample in family.samples:
-                                    if sample[0] == "agg_counter_total":
+                                    if sample[0] == "opencitations_agg_counter_total":
                                         agg_counter.labels(sample[1]).inc(sample[2])
-                                    if sample[0] == "http_requests_total":
+                                    if sample[0] == "opencitations_http_requests_total":
                                         http_requests.labels(sample[1]).inc(sample[2])
-                                    if sample[0] == "indexed_records":
+                                    if sample[0] == "opencitations_indexed_records":
                                         indexed_records.set(sample[2])
-                                    if sample[0] == "harvested_data_sources":
+                                    if sample[0] == "opencitations_harvested_data_sources":
                                         harvested_data_sources.set(sample[2])
 
                         # If we reaches the target year and the month we are visiting is the last one 
@@ -832,5 +970,4 @@ class Statistics:
             )
 
 if __name__ == "__main__":
-    app = web.application(rewrite.get_urls(), globals())
     app.run()
