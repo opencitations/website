@@ -214,7 +214,7 @@ ccc_api_manager = APIManager(c["api_ccc"])
 ccc_doc_manager = HTMLDocumentationHandler(ccc_api_manager)
 
 # rconn = Redis(host=c_auth["redis"]["host"], port=c_auth["redis"]["port"], db=c_auth["redis"]["db"])
-# app = web.application(rewrite.get_urls(), globals())
+app = web.application(rewrite.get_urls(), globals())
 # session = web.session.Session(app, web.session.DiskStore("sessions"), initializer={"csrf": None})
 
 def refreshCSRF():
