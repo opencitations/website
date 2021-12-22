@@ -902,9 +902,9 @@ class Statistics:
                             for family in families:
                                 for sample in family.samples:
                                     if sample[0] == "opencitations_agg_counter_total":
-                                        agg_counter.labels(sample[1]).inc(sample[2])
+                                        agg_counter.labels(**sample[1]).inc(sample[2])
                                     if sample[0] == "opencitations_http_requests_total":
-                                        http_requests.labels(sample[1]).inc(sample[2])
+                                        http_requests.labels(**sample[1]).inc(sample[2])
                                     if sample[0] == "opencitations_indexed_records":
                                         indexed_records.set(sample[2])
                                     if sample[0] == "opencitations_harvested_data_sources":
