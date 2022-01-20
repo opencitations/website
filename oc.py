@@ -913,7 +913,7 @@ class Statistics:
                         # If we reaches the target year and the month we are visiting is the last one 
                         # or if we visited the whole year i.e. the last month has just been visited
                         # exit the months's loop
-                        if (current_year == target_year and current_month >= target_month) or target_month == 12:
+                        if (current_year == target_year and current_month >= target_month) or current_month == 12:
                             break
                         current_month += 1
                     
