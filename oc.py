@@ -45,8 +45,8 @@ from prometheus_client import Counter, CollectorRegistry, generate_latest, Gauge
 from prometheus_client.parser import text_fd_to_metric_families
 
 # Load the configuration file
-# with open("conf_local.json") as f:
-with open("conf.json") as f:
+with open("conf_local_ivanhb.json") as f:
+    #with open("conf.json") as f:
     c = json.load(f)
 
 # with open(c["auth_file"]) as f:
@@ -111,6 +111,7 @@ urls = (
     "/oci(/.+)?", "OCI",
     "/intrepid(/.+)?", "InTRePID",
     "/(download)", "Download",
+    "/(policy)", "Policy",
 
     # OCC SPARQL-related urls
     "/sparql", "SparqlOC",
@@ -190,9 +191,10 @@ web_logger = WebLogger("opencitations.net", c["log_dir"], [
     "HTTP_HOST",          # The hostname of the page being attempted
     "REQUEST_URI",        # The interpreted pathname of the requested document
                           # or CGI (relative to the document root)
-    "HTTP_AUTHORIZATION", # Access token
+    "HTTP_AUTHORIZATION",  # Access token
     ],
-    {"REMOTE_ADDR": ["130.136.130.1", "130.136.2.47", "127.0.0.1"]}  # comment this line only for test purposes
+    # comment this line only for test purposes
+    {"REMOTE_ADDR": ["130.136.130.1", "130.136.2.47", "127.0.0.1"]}
 )
 
 coci_api_manager = APIManager(c["api_coci"])
@@ -217,8 +219,10 @@ ccc_doc_manager = HTMLDocumentationHandler(ccc_api_manager)
 app = web.application(rewrite.get_urls(), globals())
 # session = web.session.Session(app, web.session.DiskStore("sessions"), initializer={"csrf": None})
 
+
 def refreshCSRF():
     session.csrf = sha1(urandom(64)).hexdigest()
+
 
 def validateAccessToken():
     auth_code = web.ctx.env.get('HTTP_AUTHORIZATION')
@@ -226,12 +230,13 @@ def validateAccessToken():
         val = rconn.get(auth_code)
         if val is None or val != b'1':
             raise web.HTTPError(
-                "403", 
+                "403",
                 {
                    "Content-Type": "text/plain"
-                }, 
+                },
                 "The access token provided is not valid."
             )
+
 
 def sendEmail(recipient, subject, body):
     sender = c_smtp["email"]
@@ -247,6 +252,7 @@ def sendEmail(recipient, subject, body):
     server.sendmail('noreply@opencitations.net', recipient, message)
     server.close()
 
+
 class AuthCodeConfirm:
     def GET(self, token):
         check = rconn.get(token)
@@ -257,6 +263,7 @@ class AuthCodeConfirm:
             rconn.set(token, 1)
             auth_code = token
         return render.accesstokenconfirm(pages, active, auth_code, c_auth["messages"]["accesstokenconfirm"])
+
 
 class AuthCode:
     def __init__(self):
@@ -280,15 +287,16 @@ class AuthCode:
 
         # Validate recaptcha
         recaptcha = data['g-recaptcha-response']
-        
+
         params = urlparse.urlencode({
             'secret': c_captcha["PRVKEY"],
             'response': recaptcha,
         })
-        data_res = urllib.urlopen('https://www.google.com/recaptcha/api/siteverify', params.encode('utf-8')).read()
+        data_res = urllib.urlopen(
+            'https://www.google.com/recaptcha/api/siteverify', params.encode('utf-8')).read()
         result = json.loads(data_res)
         success = result.get('success', None)
-        
+
         if not success == True:
             return render.accesstoken(pages, active,  c_captcha["PUBKEY"],  c_auth["messages"]["accesstoken"]["invalid_captcha"], session.csrf, c_auth["messages"]["accesstoken"])
 
@@ -296,7 +304,7 @@ class AuthCode:
         csrf = data.csrf
         if csrf != session_csrf:
             return render.accesstoken(pages, active,  c_captcha["PUBKEY"], c_auth["messages"]["accesstoken"]["invalid_form"], session.csrf, c_auth["messages"]["accesstoken"])
-    
+
         # Generate temporary token
         token = str(uuid.uuid4())
         while not rconn.get(token) is None:
@@ -322,9 +330,9 @@ class AuthCode:
        %s %s</body>
 </html>
 """ % (
-            email_msg["description"], 
-            email_msg["token"], 
-            email_link, 
+            email_msg["description"],
+            email_msg["token"],
+            email_link,
             email_msg["token_button"],
             email_msg["ignore"],
             email_msg["signature"],
@@ -334,10 +342,13 @@ class AuthCode:
 
         return render.accesstokensuccess(pages, active, c_auth["messages"]["accesstokensuccess"])
 
+
 class RawGit:
     def GET(self, u):
         web_logger.mes()
-        raise web.seeother("http://rawgit.com/essepuntato/opencitations/master" + u)
+        raise web.seeother(
+            "http://rawgit.com/essepuntato/opencitations/master" + u)
+
 
 class Robots:
     def GET(self):
@@ -347,7 +358,9 @@ class Robots:
         return "user-agent: %s\n" \
                "disallow: /corpus/\ndisallow: /virtual/\ndisallow: /index/coci/\n\n" \
                "user-agent: %s\n" \
-               "disallow: /" % ("\nuser-agent: ".join(c["robots"]), "\nuser-agent: ".join(c["robots-all"]))
+               "disallow: /" % ("\nuser-agent: ".join(
+                   c["robots"]), "\nuser-agent: ".join(c["robots-all"]))
+
 
 class Redirect:
     def GET(self, u):
@@ -428,7 +441,8 @@ class Api:
                 operation_url = call + unquote(web.ctx.query)
                 op = man.get_op(operation_url)
                 if type(op) is Operation:
-                    status_code, res, c_type = op.exec(content_type=content_type)
+                    status_code, res, c_type = op.exec(
+                        content_type=content_type)
                     if status_code == 200:
                         web.header('Access-Control-Allow-Origin', '*')
                         web.header('Access-Control-Allow-Credentials', 'true')
@@ -441,7 +455,8 @@ class Api:
                                 if content_type == "text/csv":
                                     mes = next(csv.reader(f))[0]
                                 else:
-                                    mes = json.dumps(next(csv.DictReader(f)), ensure_ascii=False)
+                                    mes = json.dumps(
+                                        next(csv.DictReader(f)), ensure_ascii=False)
                             raise web.HTTPError(
                                 str(status_code), {"Content-Type": content_type}, mes)
                         except:
@@ -450,6 +465,12 @@ class Api:
                 else:
                     raise web.HTTPError(
                         "404", {"Content-Type": content_type}, "No API operation found at URL '%s'" % call)
+
+
+class Policy:
+    def GET(self, active):
+        web_logger.mes()
+        return render.policy(pages, active)
 
 
 class About:
@@ -483,25 +504,30 @@ class OCI:
     def GET(self, oci):
         data = web.input()
         if "oci" in data:
-            clean_oci = re.sub("\s+", "", re.sub("^oci:", "", data.oci.strip(), flags=re.IGNORECASE))
+            clean_oci = re.sub("\s+", "", re.sub("^oci:", "",
+                               data.oci.strip(), flags=re.IGNORECASE))
 
             cur_format = ".rdf"
             if "format" in data:
                 cur_format = "." + data.format.strip().lower()
 
-            raise web.seeother(c["oc_base_url"] + "/oci/" + clean_oci + cur_format)
+            raise web.seeother(c["oc_base_url"]
+                               + "/oci/" + clean_oci + cur_format)
 
         elif oci is None or oci.strip() == "":
             web_logger.mes()
             return render.oci(pages, active["oci"])
         else:
             web_logger.mes()
-            clean_oci, ex = re.findall("^([^\.]+)(\.[a-z]+)?$", oci.strip().lower())[0]
-            exs = (".csv", ".json", ".scholix", ".jsonld", ".ttl", ".nt", ".xml")
+            clean_oci, ex = re.findall(
+                "^([^\.]+)(\.[a-z]+)?$", oci.strip().lower())[0]
+            exs = (".csv", ".json", ".scholix",
+                   ".jsonld", ".ttl", ".nt", ".xml")
             if ex in exs:
                 cur_format = ex[1:]
                 om_conf = c["ved_conf"]
-                om = OCIManager("oci:" + clean_oci[1:], om_conf["lookup"], om_conf["oci_conf"])
+                om = OCIManager(
+                    "oci:" + clean_oci[1:], om_conf["lookup"], om_conf["oci_conf"])
                 cit = om.get_citation_data(cur_format)
                 if cit:
                     if cur_format == "csv":
@@ -522,29 +548,36 @@ class OCI:
                     web.header('Content-Type', ct_header)
                     return cit
             else:
-                raise web.seeother(c["oc_base_url"] + c["virtual_local_url"] + "ci" + clean_oci)
+                raise web.seeother(c["oc_base_url"]
+                                   + c["virtual_local_url"] + "ci" + clean_oci)
+
 
 class InTRePID:
     def GET(self, intrepid):
         data = web.input()
         if "intrepid" in data:
-            clean_intrepid = re.sub("\s+", "", re.sub("^intrepid:", "", data.intrepid.strip(), flags=re.IGNORECASE))
+            clean_intrepid = re.sub(
+                "\s+", "", re.sub("^intrepid:", "", data.intrepid.strip(), flags=re.IGNORECASE))
 
             om_conf = c["ved_conf"]
-            im = InTRePIDManager("intrepid:" + clean_intrepid, om_conf["lookup"], om_conf["intrepid_conf"])
+            im = InTRePIDManager("intrepid:" + clean_intrepid,
+                                 om_conf["lookup"], om_conf["intrepid_conf"])
             rp = im.execute_query()
-            raise web.seeother(c["oc_base_url"] + c["ccc_local_url"] + rp.split("/ccc/")[1])
+            raise web.seeother(c["oc_base_url"]
+                               + c["ccc_local_url"] + rp.split("/ccc/")[1])
         elif intrepid is None or intrepid.strip() == "":
             web_logger.mes()
             return render.intrepid(pages, active["intrepid"])
         else:
             web_logger.mes()
-            clean_intrepid, ex = re.findall("^([^\.]+)(\.[a-z]+)?$", intrepid.strip().lower())[0]
+            clean_intrepid, ex = re.findall(
+                "^([^\.]+)(\.[a-z]+)?$", intrepid.strip().lower())[0]
             exs = (".jsonld", ".ttl", ".nt", ".xml")
             if ex in exs:
                 cur_format = ex[1:]
                 om_conf = c["ved_conf"]
-                im = InTRePIDManager("intrepid:" + clean_intrepid, om_conf["lookup"], om_conf["intrepid_conf"])
+                im = InTRePIDManager(
+                    "intrepid:" + clean_intrepid, om_conf["lookup"], om_conf["intrepid_conf"])
                 rp = im.get_rp_data(cur_format)
                 if rp:
                     if cur_format == "jsonld":
@@ -562,9 +595,11 @@ class InTRePID:
                     return rp
             else:
                 om_conf = c["ved_conf"]
-                im = InTRePIDManager("intrepid:" + clean_intrepid[1:], om_conf["lookup"], om_conf["intrepid_conf"])
+                im = InTRePIDManager(
+                    "intrepid:" + clean_intrepid[1:], om_conf["lookup"], om_conf["intrepid_conf"])
                 rp = im.execute_query()
-                raise web.seeother(c["oc_base_url"] + c["ccc_local_url"] + rp.split("/ccc/")[1])
+                raise web.seeother(c["oc_base_url"]
+                                   + c["ccc_local_url"] + rp.split("/ccc/")[1])
 
 
 class Index:
@@ -572,15 +607,18 @@ class Index:
         web_logger.mes()
         return render.index(pages, active["index"])
 
+
 class CCC:
     def GET(self):
         web_logger.mes()
         return render.ccc(pages, active["ccc"])
 
+
 class Coci:
     def GET(self):
         web_logger.mes()
         return render.coci(pages, active["coci"])
+
 
 class Croci:
     def GET(self):
@@ -613,9 +651,11 @@ class SearchOC(Search):
     def __init__(self):
         Search.__init__(self, render.search)
 
+
 class SearchCCC(Search):
     def __init__(self):
         Search.__init__(self, render.search_ccc)
+
 
 class Browser:
     def __init__(self, render_page):
@@ -630,13 +670,16 @@ class BrowserIndex(Browser):
     def __init__(self):
         Browser.__init__(self, render.browser_index)
 
+
 class BrowserOC(Browser):
     def __init__(self):
         Browser.__init__(self, render.browser)
 
+
 class BrowserCCC(Browser):
     def __init__(self):
         Browser.__init__(self, render.browser_ccc)
+
 
 class Model:
     def GET(self, active):
@@ -731,17 +774,20 @@ class Sparql:
 
 class SparqlOC(Sparql):
     def __init__(self):
-        Sparql.__init__(self, c["sparql_endpoint"], "Corpus", c["oc_base_url"]+"/sparql")
+        Sparql.__init__(self, c["sparql_endpoint"],
+                        "Corpus", c["oc_base_url"]+"/sparql")
 
 
 class SparqlIndex(Sparql):
     def __init__(self):
-        Sparql.__init__(self, c["sparql_endpoint_index"], "Indexes", c["oc_base_url"]+"/index/sparql")
+        Sparql.__init__(self, c["sparql_endpoint_index"],
+                        "Indexes", c["oc_base_url"]+"/index/sparql")
 
 
 class SparqlCCC(Sparql):
     def __init__(self):
-        Sparql.__init__(self, c["sparql_endpoint_ccc"], "CCC", c["oc_base_url"]+"/ccc/sparql")
+        Sparql.__init__(self, c["sparql_endpoint_ccc"],
+                        "CCC", c["oc_base_url"]+"/ccc/sparql")
 
 
 class Virtual:
@@ -807,23 +853,27 @@ class CociContentNegotiation(ContentNegotiation):
         ContentNegotiation.__init__(self, c["index_base_url"], c["coci_local_url"],
                                     context_path=c["ocdm_json_context_path"],
                                     from_triplestore=c["sparql_endpoint_index"],
-                                    label_func=lambda u: "oci:%s" % re.findall("^.+/ci/(.+)$", u)[0]
+                                    label_func=lambda u: "oci:%s" % re.findall(
+                                        "^.+/ci/(.+)$", u)[0]
                                     if "/ci/" in u else "provenance agent 1" if "/pa/1" in u
                                     else "COCI")
+
 
 class CrociContentNegotiation(ContentNegotiation):
     def __init__(self):
         ContentNegotiation.__init__(self, c["index_base_url"], c["croci_local_url"],
                                     context_path=c["ocdm_json_context_path"],
                                     from_triplestore=c["sparql_endpoint_index"],
-                                    label_func=lambda u: "oci:%s" % re.findall("^.+/ci/(.+)$", u)[0]
+                                    label_func=lambda u: "oci:%s" % re.findall(
+                                        "^.+/ci/(.+)$", u)[0]
                                     if "/ci/" in u else "CROCI")
+
 
 class Statistics:
     def __init__(self):
         self.__file_regex = re.compile('oc-(\d\d\d\d)-(\d\d).prom')
         self.__dates_regex = re.compile('(\d+)-(\d+)_(\d+)-(\d+)')
-    
+
     def GET(self, date):
         validateAccessToken()
         web_logger.mes()
@@ -833,7 +883,7 @@ class Statistics:
         if(date != "last-month"):
             if self.__dates_regex.match(date):
                 search = self.__dates_regex.search(date)
-                
+
                 month_from = search.group(2)
                 year_from = search.group(1)
                 month_to = search.group(4)
@@ -841,45 +891,46 @@ class Statistics:
 
                 if year_from > year_to or (year_from == year_to and month_from > month_to):
                     raise web.HTTPError(
-                        "400", 
+                        "400",
                         {
                             "Content-Type": "text/plain"
-                        }, 
+                        },
                         "Bad date provided, the ending date is lower than the beginning date."
                     )
-                
+
                 registry = CollectorRegistry()
 
-                # Counter of accesses to different endpoints oc 
+                # Counter of accesses to different endpoints oc
                 http_requests = Counter(
-                    'opencitations_http_requests', 
-                    'Counter for HTTP requests to opencitations endpoints', 
-                    ['endpoint'], 
+                    'opencitations_http_requests',
+                    'Counter for HTTP requests to opencitations endpoints',
+                    ['endpoint'],
                     registry=registry
                 )
 
                 # Aggregate counter of accesses to the different categories of endpoints oc
                 agg_counter = Counter(
-                    'opencitations_agg_counter', 
-                    'Aggregate HTTP requests counter to opencitations endpoints', 
-                    ['category'], 
+                    'opencitations_agg_counter',
+                    'Aggregate HTTP requests counter to opencitations endpoints',
+                    ['category'],
                     registry=registry
                 )
                 i = Info(
-                    'opencitations_date', 
-                    'Date to which the statistics refers to', 
+                    'opencitations_date',
+                    'Date to which the statistics refers to',
                     registry=registry
                 )
-                i.info({'month_from': str(month_from), 'year_from': str(year_from), "month_to": str(month_to), 'year_to': str(year_to)})
+                i.info({'month_from': str(month_from), 'year_from': str(
+                    year_from), "month_to": str(month_to), 'year_to': str(year_to)})
 
                 indexed_records = Gauge(
-                    'opencitations_indexed_records', 
-                    'Indexed records', 
+                    'opencitations_indexed_records',
+                    'Indexed records',
                     registry=registry
                 )
                 harvested_data_sources = Gauge(
-                    'opencitations_harvested_data_sources', 
-                    'Harvested data sources', 
+                    'opencitations_harvested_data_sources',
+                    'Harvested data sources',
                     registry=registry
                 )
 
@@ -889,34 +940,37 @@ class Statistics:
                 target_year = int(year_to)
 
                 while(True):
-                    # For each month collects the statistics and adds 
+                    # For each month collects the statistics and adds
                     # them to the ones to be returned.
                     while(True):
                         current_month_str = str(current_month)
                         if len(current_month_str) == 1:
                             current_month_str = '0' + current_month_str
-                        file_path = path.join(c["stats_dir"], "oc-" + str(current_year) + "-" + current_month_str + ".prom")
+                        file_path = path.join(
+                            c["stats_dir"], "oc-" + str(current_year) + "-" + current_month_str + ".prom")
                         if path.isfile(file_path):
                             f = open(file_path, 'r')
                             families = text_fd_to_metric_families(f)
                             for family in families:
                                 for sample in family.samples:
                                     if sample[0] == "opencitations_agg_counter_total":
-                                        agg_counter.labels(**sample[1]).inc(sample[2])
+                                        agg_counter.labels(
+                                            **sample[1]).inc(sample[2])
                                     if sample[0] == "opencitations_http_requests_total":
-                                        http_requests.labels(**sample[1]).inc(sample[2])
+                                        http_requests.labels(
+                                            **sample[1]).inc(sample[2])
                                     if sample[0] == "opencitations_indexed_records":
                                         indexed_records.set(sample[2])
                                     if sample[0] == "opencitations_harvested_data_sources":
                                         harvested_data_sources.set(sample[2])
 
-                        # If we reaches the target year and the month we are visiting is the last one 
+                        # If we reaches the target year and the month we are visiting is the last one
                         # or if we visited the whole year i.e. the last month has just been visited
                         # exit the months's loop
                         if (current_year == target_year and current_month >= target_month) or current_month == 12:
                             break
                         current_month += 1
-                    
+
                     # If we visited all the years than we exit the years's loop
                     if(current_year == target_year):
                         break
@@ -932,10 +986,10 @@ class Statistics:
                         file_path = ''
                 else:
                     raise web.HTTPError(
-                        "400", 
+                        "400",
                         {
                             "Content-Type": "text/plain"
-                        }, 
+                        },
                         "Bad date format the required one is: year-month or year-month_year-month."
                     )
         else:
@@ -951,7 +1005,7 @@ class Statistics:
                         max_year = year
                         max_month = month
                         file_path = path.join(c["stats_dir"], file)
-                        
+
         # if the statistics file was found then it returns the content
         if file_path != "":
             web.header('Content-Type', "document")
@@ -962,12 +1016,13 @@ class Statistics:
             return content
         else:
             raise web.HTTPError(
-                "404", 
+                "404",
                 {
                     "Content-Type": "text/plain"
-                }, 
+                },
                 "No statistics found."
             )
+
 
 if __name__ == "__main__":
     app.run()
