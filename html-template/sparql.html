@@ -114,6 +114,8 @@ $def with (pages, active, sp_title, sparql_endpoint)
                 </div>
             </div>
             <p>
+                <a class="policy oc-purple" href="/policy">Privacy Policies</a>
+                <span class="separator"></span>
                 <a class="social oc-purple" href="mailto:contact@opencitations.net"><i class="fa fa-envelope" aria-hidden="true"></i></a>
                 <a class="social oc-purple" href="http://www.twitter.com/opencitations"><i class="fa fa-twitter" aria-hidden="true"></i></a>
                 <a class="social oc-blue" href="http://github.com/opencitations"><i class="fa fa-github" aria-hidden="true"></i></a>
@@ -150,5 +152,10 @@ $def with (pages, active, sp_title, sparql_endpoint)
           yasqe.setValue(sparql_value);
           yasqe.options.sparql.callbacks.complete = yasr.setResponse;
         </script>
+
+        <!-- Cookies handler
+        ================================================== -->
+        <script src="/static/js/cookies.js"></script>
+
     </body>
 </html>

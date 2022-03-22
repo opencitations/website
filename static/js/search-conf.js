@@ -14,7 +14,10 @@ var search_conf = {
     {"prefix":"pro","iri":"http://purl.org/spar/pro/"},
     {"prefix":"oco","iri":"https://w3id.org/oc/ontology/"},
     {"prefix":"rdf","iri":"http://www.w3.org/1999/02/22-rdf-syntax-ns#"},
-    {"prefix":"prism","iri":"http://prismstandard.org/namespaces/basic/2.0/"}
+    {"prefix":"prism","iri":"http://prismstandard.org/namespaces/basic/2.0/"},
+    {"prefix":"hint","iri":"http://www.bigdata.com/queryHints#"},
+    {"prefix":"foaf","iri":"http://xmlns.com/foaf/0.1/"},
+    {"prefix":"rdfs","iri":"http://www.w3.org/2000/01/rdf-schema#"}
   ],
 
 "rules":  [
@@ -149,10 +152,10 @@ var search_conf = {
               "?lit_au bds:relevance ?score_au .",
               "?lit_au bds:minRelevance '0.2' .",
               "?lit_au bds:maxRank '300' .",
-
-              "?myra foaf:familyName ?lit_au .",
-              "?q_role pro:isHeldBy ?myra .",
-              "?iri pro:isDocumentContextFor ?q_role .",
+              "?iri ?p ?lit_au .",
+              //"?myra foaf:familyName ?lit_au .",
+              //"?q_role pro:isHeldBy ?myra .",
+              //"?iri pro:isDocumentContextFor ?q_role .",
               "}"
       ]
     },
@@ -285,10 +288,10 @@ var search_conf = {
           "spinner": true,
           "title":"Searching the OpenCitations Corpus ...",
           "subtitle":"Be patient - this search might take several seconds!",
-          "abort":{"title":"Abort Search","href_link":"search.html"}
+          "abort":{"title":"Abort Search","href_link":"search"}
         },
 "timeout":{
-  "value": 9000,
+  "value": 10000,
   "link": "search.html"
 }
 
