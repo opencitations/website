@@ -111,6 +111,8 @@ $def with (pages, active, auth_code, accesstokenconfirm)
                 </div>
             </div>
             <p>
+                <a class="policy oc-purple" href="/policy">Privacy Policies</a>
+                <span class="separator"></span>
                 <a class="social oc-purple" href="mailto:contact@opencitations.net"><i class="fa fa-envelope" aria-hidden="true"></i></a>
                 <a class="social oc-purple" href="http://www.twitter.com/opencitations"><i class="fa fa-twitter" aria-hidden="true"></i></a>
                 <a class="social oc-blue" href="http://github.com/opencitations"><i class="fa fa-github" aria-hidden="true"></i></a>
@@ -128,7 +130,7 @@ $def with (pages, active, auth_code, accesstokenconfirm)
         <script src="/static/js/ie10-viewport-bug-workaround.js"><![CDATA[ ]]></script>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
         <script>
-            function validateForm() {	
+            function validateForm() {
                 var recaptcha = document.forms["accessTokenForm"]["g-recaptcha-response"].value;
                 if (recaptcha == "") {
                     alert("Please fill reCAPTCHA");
@@ -138,4 +140,3 @@ $def with (pages, active, auth_code, accesstokenconfirm)
         </script>
     </body>
 </html>
-

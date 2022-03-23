@@ -1,7 +1,10 @@
 __*/
-conf_local.json
+conf_*
 conf_remote.json
 .DS_*
 log/
 .devcontainer
 auth.json
+api/
+Dockerfile
+requirements.txt
