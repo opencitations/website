@@ -45,13 +45,14 @@ from prometheus_client import Counter, CollectorRegistry, generate_latest, Gauge
 from prometheus_client.parser import text_fd_to_metric_families
 
 # Load the configuration file
-with open("conf.json") as f:
+with open("conf_local_ivanhb.json") as f:
     c = json.load(f)
 
-# with open(c["auth_file"]) as f:
-#    c_auth = json.load(f)
-#    c_smtp = c_auth["smtp"]
-#    c_captcha = c_auth["captcha"]
+# Authentication
+with open(c["auth_file"]) as f:
+    c_auth = json.load(f)
+    c_smtp = c_auth["smtp"]
+    c_captcha = c_auth["captcha"]
 
 pages = [
     {"name": "", "label": "Home"},
@@ -214,9 +215,12 @@ wikidata_doc_manager = HTMLDocumentationHandler(wikidata_api_manager)
 ccc_api_manager = APIManager(c["api_ccc"])
 ccc_doc_manager = HTMLDocumentationHandler(ccc_api_manager)
 
-# rconn = Redis(host=c_auth["redis"]["host"], port=c_auth["redis"]["port"], db=c_auth["redis"]["db"])
+# Authentication
+rconn = Redis(host=c_auth["redis"]["host"],
+              port=c_auth["redis"]["port"], db=c_auth["redis"]["db"])
 app = web.application(rewrite.get_urls(), globals())
-# session = web.session.Session(app, web.session.DiskStore("sessions"), initializer={"csrf": None})
+session = web.session.Session(app, web.session.DiskStore(
+    "sessions"), initializer={"csrf": None})
 
 
 def refreshCSRF():

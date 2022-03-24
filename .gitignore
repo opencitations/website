@@ -1,10 +1,12 @@
 __*/
+log/
+sessions/
+api/
 conf_*
 conf_remote.json
 .DS_*
-log/
 .devcontainer
 auth.json
-api/
 Dockerfile
 requirements.txt
+__local*
