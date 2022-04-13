@@ -2,6 +2,7 @@ __*/
 log/
 sessions/
 api/
+opencitations-log-stats/
 conf_*
 conf_remote.json
 .DS_*
