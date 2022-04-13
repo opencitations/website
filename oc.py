@@ -1007,6 +1007,8 @@ class Statistics:
 
         # if the statistics file was found then it returns the content
         if file_path != "":
+            web.header('Access-Control-Allow-Origin', '*')
+            web.header('Access-Control-Allow-Credentials', 'true')
             web.header('Content-Type', "document")
             f = open(file_path, 'r')
             content = f.read()

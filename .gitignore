@@ -1,4 +1,7 @@
 __*/
+__local*
+sessions/
+opencitations-log-stats/
 conf_*
 conf_remote.json
 .DS_*
