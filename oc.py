@@ -878,6 +878,10 @@ class Statistics:
         web_logger.mes()
         file_path = ""
 
+        # Allow origin
+        web.header('Access-Control-Allow-Origin', '*')
+        web.header('Access-Control-Allow-Credentials', 'true')
+
         # checks if any date has been specified, otherwise looks for the most recent statistics
         if(date != "last-month"):
             if self.__dates_regex.match(date):
@@ -1007,8 +1011,6 @@ class Statistics:
 
         # if the statistics file was found then it returns the content
         if file_path != "":
-            web.header('Access-Control-Allow-Origin', '*')
-            web.header('Access-Control-Allow-Credentials', 'true')
             web.header('Content-Type', "document")
             f = open(file_path, 'r')
             content = f.read()

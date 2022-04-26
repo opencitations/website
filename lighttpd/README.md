@@ -1,7 +1,7 @@
 After installing the lighttpd http server on the server, follow the following steps:
 
 1. install `flup` via pip (necessary for running lighttpd)
-1. copy the lighttpd.conf file in /etc/lighttpd;
+1. copy the lighttpd.conf file in /etc/lighttpd; in case your OS is debian11 then copy (and rename it as lighttpd.conf) the file etc/lighttpd_debian11.conf
 1. copy the conf-available/10-fastcgi.conf in /etc/lightpd/conf-available;
 1. enable the fastcgi by calling `lighttpd-enable-mod fastcgi`;
 1. make executable (permission 755) all the directories that are accessed by the web.py application used, and readable the files they contain that are used by the same application;
