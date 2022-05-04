@@ -136,7 +136,7 @@ urls = (
 
 render = web.template.render(c["html"])
 
-#set auto relod of html template
+#set auto reload of html template
 web.config["TEMPLATES_AUTO_RELOAD"] = True
 
 rewrite = RewriteRuleHandler(
