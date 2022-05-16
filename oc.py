@@ -307,7 +307,7 @@ class AuthCode:
         # CSFR Attack
         csrf = data.csrf
         if csrf != session_csrf:
-            return render.accesstoken(pages, active,  c_captcha["PUBKEY"], c_auth["messages"]["accesstoken"]["invalid_form"], session.csrf, c_auth["messages"]["accesstoken"])
+            return render.accesstoken(pages, active,  c_captcha["PUBKEY"], c_auth["messages"]["accesstoken"]["invalid_form"]+str("___")+str(csrf), session.csrf, c_auth["messages"]["accesstoken"])
 
         # Generate temporary token
         token = str(uuid.uuid4())
