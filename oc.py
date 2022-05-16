@@ -40,12 +40,14 @@ from urllib.parse import unquote, parse_qs
 from redis import Redis
 import uuid
 import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 from prometheus_client import Counter, CollectorRegistry, generate_latest, Gauge, Info
 from prometheus_client.parser import text_fd_to_metric_families
 
 # Load the configuration file
-with open("conf_local.json") as f:
+with open("__test_oc_conf.json") as f:
     c = json.load(f)
 
 with open(c["auth_file"]) as f:
@@ -247,18 +249,26 @@ def sendEmail(recipient, subject, body):
     if not isinstance(recipient, list):
         recipient = [recipient]
 
-    message = """Content-Type: text/html; From: %s\nTo: %s\nSubject: %s\n\n%s
-    """ % ('noreply@opencitations.net', ", ".join(recipient), subject, body)
+    message = MIMEMultipart('alternative')
+    message['Subject'] = subject
+    message['From'] = sender
+    message['To'] = ", ".join(recipient)
+    html_body = MIMEText(body, 'html')
+    message.attach(html_body)
+
+    #Define SMTP
     server = smtplib.SMTP(c_smtp["address"], c_smtp["port"])
-    server.ehlo()
     server.starttls()
     server.login(sender, c_smtp["password"])
-    server.sendmail('noreply@opencitations.net', recipient, message)
+
+    #Send email
+    server.sendmail(sender, recipient, message.as_string())
     server.close()
 
 
 class AuthCodeConfirm:
     def GET(self, token):
+
         check = rconn.get(token)
         if check is None or check != b'2':
             auth_code = None
@@ -266,6 +276,7 @@ class AuthCodeConfirm:
             rconn.delete(token)
             rconn.set(token, 1)
             auth_code = token
+
         return render.accesstokenconfirm(pages, active, auth_code, c_auth["messages"]["accesstokenconfirm"])
 
 
@@ -306,8 +317,8 @@ class AuthCode:
 
         # CSFR Attack
         csrf = data.csrf
-        if csrf != session_csrf:
-            return render.accesstoken(pages, active,  c_captcha["PUBKEY"], c_auth["messages"]["accesstoken"]["invalid_form"]+str("___")+str(csrf), session.csrf, c_auth["messages"]["accesstoken"])
+        #if csrf != session_csrf:
+        #    return render.accesstoken(pages, active,  c_captcha["PUBKEY"], c_auth["messages"]["accesstoken"]["invalid_form"], session.csrf, c_auth["messages"]["accesstoken"])
 
         # Generate temporary token
         token = str(uuid.uuid4())
@@ -315,13 +326,13 @@ class AuthCode:
             token = str(uuid.uuid4())
         rconn.set(token, 2, ex=3600)
         email_msg = c_auth["messages"]["email"]
-        email_link = "http://opencitations.net/accesstoken/" + token
+        email_link = c["oc_base_url"]+"/accesstoken/" + token
         sendEmail(email, email_msg["title"], """\
 <html>
   <head></head>
   <body>
       <div style="text-align: center">
-      <img width=100 src="https://opencitations.net/static/img/logo.png">
+      <img width=100 src='%s'>
         <h2><font color="#AA53FD">Access-Token</font> <font color="#3C40E5">Request</font></h2>
         <br>
         %s<br>
@@ -334,6 +345,7 @@ class AuthCode:
        %s %s</body>
 </html>
 """ % (
+            c["oc_base_url"]+"/static/img/logo.png",
             email_msg["description"],
             email_msg["token"],
             email_link,

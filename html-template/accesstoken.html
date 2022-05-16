@@ -86,26 +86,31 @@ $def with (pages, active, pubkey, message, csfr, accesstoken)
                     <input type="hidden" name="csrf" value="$csfr" />
                 </form>
                 $if not message is None:
-                    <p>$message</p>
+                    <p class="text-warning">$message</p>
 
                 <div class="left">
+                  <br>
+                  <p><strong class="text-left">Before accessing our services, we encourage you to get the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token.</strong></p>
 
-                    <p>Since its creation in 2010, OpenCitations has always granted free access to its services to all users all over the world, with no registration or sign-up. <a href="http://opencitations.net/querying">Programmatic access</a> to OpenCitations data can be obtained either via <a href="https://opencitations.net/index/sparql">SPARQL endpoints</a> or via <a href="https://opencitations.net/index/api/v1">REST APIs</a>. In addition, OpenCitations data can be <a href="http://opencitations.net/download">downloaded from dumps</a> - available in CSV, Scholix, and RDF - made periodically and <a href="https://figshare.com/authors/OpenCitations_Project/3068259">stored on Figshare</a>, so as to support large-scale analyses using the whole content of the data sets.</p>
+                  <p>
+                  <strong>What is the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> access token? </strong><br>
+                  The <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> access token is an opaque string that anonymously identifies a unique user of the <span class="oc-purple">Open</span><span class="oc-blue">Citations’</span> APIs. Users can use the access token when calling the APIs of <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> by passing it as a value for the key access-token in the header of any API call.
+                  </p>
 
-                    <p>One of OpenCitations’ priorities is (and will always be) to keep its data globally open and available at zero cost and without restriction for third-party analysis and re-use. As a matter of sustainability, OpenCitations relies on the support from the scholarly community, which partly includes the institutions that access and use OpenCitations data. So far, OpenCitations didn’t have a proper system to monitor the use of its own services, and the only evidence of the impact in different academic fields and countries were our <a href="https://opencitations.net/about">members and donors</a> coming from all over the world, our collaborations with <a href="https://opencitations.wordpress.com/2022/03/08/opencitations-and-ec-funding-openaire-nexus-and-risis2/">international projects</a> and the interactions on our social platforms (<a href="https://twitter.com/opencitations">Twitter</a> and <a href="https://www.linkedin.com/company/opencitations">LinkedIn</a>).</p>
+                  <p>
+                  <strong>How to get the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token?</strong><br>
+                  Getting the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token is thus easy. It only requires the insertion of your email address before accessing <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> services. <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> assigns an access token only if authorized to do so by each user, who can request a token by inserting his/her email address into the form and clicking “Get token”. After the submission of such a request, each user will receive a personal access token by email. <br>
+                  <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> will not store the email address or any personal information, so the users’ privacy will be totally safeguarded.
+                  </p>
 
-                    <p>This is why we’re now happy to announce the creation of the OpenCitations Access Token system to access the OpenCitations services.</p>
+                  <p>
+                  <strong>Why get the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token?</strong><br>
+                  Use of an <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token is not compulsory; however, it will help <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> incredibly, by enabling us to monitor the number of the unique users accessing our data and services. Obtaining a token when using <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> will take the user only a few seconds and needs to happen only once.  Thereafter, it will permit <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> to have clear anonymized evidence of the number of institutions and researchers that use our services (either occasionally or regularly), and thus will provide evidence of the real relevance of <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> in the research environment.
+                  </p>
 
-                    <p>The OpenCitations access token is an opaque string that identifies the users of the OpenCitations’ APIs. OpenCitations assigns an access token only if authorized by the users, whom can request it by inserting their email address on the above form and clicking on “Get token”. After the submission of such request, users will receive their assigned access token by email. Users can then use the access token when calling the APIs of OpenCitations by passing it as a value for the key access-token in the header of any API call. See the following examples of how this operation is done.</p>
-
-                    <p>Getting the OpenCitations Access Token is easy, it only requires inserting the email address before accessing OpenCitations services. OpenCitations will not store any personal information besides the email address, so the users’ privacy will be totally safeguarded.</p>
-
-                    <p>The token is not compulsory; however, it will incredibly help OpenCitations in monitoring the number of the single users accessing the services. Getting the token when using OpenCitations will take the user only a few seconds, but it will permit us to have clear evidence of the amount of the single institutions and researchers that use our services (either occasionally or regularly), and thus of the real resonance and relevance of OpenCitations in the research environment.</p>
-
-                    <p>OpenCitations exists thanks and for the people that every day use its data for research purposes, and this is why having a precise idea of how many researchers and institutions are accessing our services is essential information in order to present the uniqueness and value of OpenCitations to new communities and stakeholders, and thus making it possible to enlarge the already enthusiastic and diversified group of people supporting and using our Open Science Infrastructure.</p>
-
-                    <p>Getting the OpenCitations Access Token does not cost anything to you, but it could help OpenCitations a lot. Thank you!</p>
-
+                  <p><strong>
+                  Getting the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token is voluntary, easy, and does not cost anything to you. However, it could help <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> a lot. Thank you!
+                </strong></p>
 
                 </div>
 
