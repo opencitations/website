@@ -75,8 +75,13 @@ figure {
     text-align: center;
 }
 
-.mt-more {
-    margin-top: 3%;
+.mt-container {
+    width: 100%;
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+.mt-item {
+  padding: 10px;
 }
 
 dd > blockquote {

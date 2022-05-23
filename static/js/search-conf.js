@@ -1,6 +1,5 @@
 var search_conf = {
-//"sparql_endpoint": "http://localhost:8080/sparql",
-"sparql_endpoint": "https://w3id.org/oc/sparql",
+"sparql_endpoint": "https://opencitations.net/sparql",
 "prefixes": [
     {"prefix":"cito","iri":"http://purl.org/spar/cito/"},
     {"prefix":"dcterms","iri":"http://purl.org/dc/terms/"},
