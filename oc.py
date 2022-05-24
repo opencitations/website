@@ -783,7 +783,6 @@ class Sparql:
             return render.sparql(pages, active, self.sparql_endpoint_title, self.yasqe_sparql_endpoint)
         if re.search("updates?", query_string, re.IGNORECASE) is None:
             if "query" in parsed_query:
-                print("QUERY STRING", query_string, content_type)
                 return self.__contact_tp(query_string, is_post, content_type)
             else:
                 raise web.redirect("/sparql")
@@ -891,7 +890,6 @@ class CrociContentNegotiation(ContentNegotiation):
 
 class StatisticsIndex:
     def GET(self, active):
-        print(active)
         web_logger.mes()
         return render.statistics(pages, active)
 
