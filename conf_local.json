@@ -1,12 +1,12 @@
 {
   "html": "html-template",
   "occ_base_path": "../test/data/corpus/",
-  "oc_base_url": "http://localhost:8000",
+  "oc_base_url": "http://0.0.0.0:8080",
   "index_base_url": "https://w3id.org/oc",
   "tmp_dir": "/Users/six/Desktop/",
   "json_context_path": "../corpus/context.json",
   "ocdm_json_context_path": "../ccc/context.json",
-  "sparql_endpoint": "http://localhost:3001/blazegraph/sparql",
+  "sparql_endpoint": "http://localhost:3000/blazegraph/sparql",
   "sparql_endpoint_index": "http://localhost:3002/blazegraph/sparql",
   "sparql_endpoint_ccc": "http://localhost:9999/blazegraph/sparql",
   "corpus_local_url": "/corpus/",
@@ -48,5 +48,5 @@
     "intrepid_conf": "../intrepid/intrepid.json"
   },
   "stats_dir": "../opencitations-log-stats/examples/",
-  "auth_file": "__local_auth_ivanhb.json"
+  "auth_file": "__test_oc_auth.json"
 }

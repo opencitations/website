@@ -64,6 +64,7 @@ pages = [
     {"name": "querying", "label": "Querying Data"},
     {"name": "tools", "label": "Tools"},
     {"name": "download", "label": "Download"},
+    {"name": "statistics", "label": "Statistics"},
     {"name": "publications", "label": "Publications"}
 ]
 
@@ -130,8 +131,11 @@ urls = (
     "/index", "Index",
     "/robots.txt", "Robots",
 
-    # Statistics endpoint
+    # Statistics
+    "/(statistics)", "StatisticsIndex",
     "/statistics/(.+)", "Statistics",
+
+    # Token
     "/accesstoken", "AuthCode",
     "/accesstoken/(.+)", "AuthCodeConfirm",
 )
@@ -735,13 +739,12 @@ class Sparql:
 
     def GET(self):
         content_type = web.ctx.env.get('CONTENT_TYPE')
-        return self.__run_query_string(active["sparql"], web.ctx.env.get("QUERY_STRING"), content_type)
+        return self.__run_query_string(active["sparql"], web.ctx.env.get("QUERY_STRING"))
 
     def POST(self):
         content_type = web.ctx.env.get('CONTENT_TYPE')
 
         cur_data = web.data().decode("utf-8")
-
         if "application/x-www-form-urlencoded" in content_type:
             return self.__run_query_string(active["sparql"], cur_data, True, content_type)
         elif "application/sparql-query" in content_type:
@@ -780,6 +783,7 @@ class Sparql:
             return render.sparql(pages, active, self.sparql_endpoint_title, self.yasqe_sparql_endpoint)
         if re.search("updates?", query_string, re.IGNORECASE) is None:
             if "query" in parsed_query:
+                print("QUERY STRING", query_string, content_type)
                 return self.__contact_tp(query_string, is_post, content_type)
             else:
                 raise web.redirect("/sparql")
@@ -883,6 +887,13 @@ class CrociContentNegotiation(ContentNegotiation):
                                     label_func=lambda u: "oci:%s" % re.findall(
                                         "^.+/ci/(.+)$", u)[0]
                                     if "/ci/" in u else "CROCI")
+
+
+class StatisticsIndex:
+    def GET(self, active):
+        print(active)
+        web_logger.mes()
+        return render.statistics(pages, active)
 
 
 class Statistics:
