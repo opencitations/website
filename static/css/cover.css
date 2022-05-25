@@ -197,6 +197,12 @@ a.anchor {
 .g-recaptcha{
   display: inline-block;
 }
+#auth_code_val{
+  border: solid 1px lightgray;
+  color:#9931FC;
+  padding:5Px;
+  border-radius: 5px;
+}
 
 /*when the resolution is bigger than min-width*/
 @media (min-width: 1201px) {
