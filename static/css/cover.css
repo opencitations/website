@@ -191,6 +191,13 @@ a.anchor {
     visibility: hidden;
 }
 
+.token-form div{
+    text-align: center;
+}
+.g-recaptcha{
+  display: inline-block;
+}
+
 /*when the resolution is bigger than min-width*/
 @media (min-width: 1201px) {
 
