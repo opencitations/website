@@ -200,8 +200,17 @@ a.anchor {
 #auth_code_val{
   border: solid 1px lightgray;
   color:#9931FC;
-  padding:5Px;
+  padding: 5px;
   border-radius: 5px;
+  display: inner-block;
+}
+#auth_copy_btn{
+  font-size: pt;
+  vertical-align:unset;
+  color: black;
+}
+#auth_copy_btn:hover{
+    text-decoration: underline;
 }
 
 /*when the resolution is bigger than min-width*/
