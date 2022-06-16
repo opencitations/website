@@ -128,7 +128,7 @@ urls = (
     "/index", "Index",
     "/robots.txt", "Robots",
 
-    # Statistics endpoint
+    # Statistics
     "/statistics/(.+)", "Statistics",
     "/accesstoken", "AuthCode",
     "/accesstoken/(.+)", "AuthCodeConfirm",

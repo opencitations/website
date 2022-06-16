@@ -140,8 +140,8 @@ var search_conf = {
       "name":"author_text",
       "label": "Having an author (last name)",
       "placeholder": "Free-text e.g. Shotton",
-      "advanced": true,
-      "freetext": true,
+      "advanced": false,
+      "freetext": false,
       "category": "document",
       "regex":"[-'a-zA-Z ]+$",
       "query": [
