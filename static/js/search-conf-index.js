@@ -21,7 +21,7 @@ var search_conf = {
       "placeholder": "DOI e.g. 10.1016/J.WEBSEM.2012.08.001",
       "advanced": true,
       "freetext": false,
-      "heuristics": [['lower_case','decodeURIStr'],['lower_case','encodeDOIURL']],
+      "heuristics": [['lower_case','decodeURIStr']],
       "category": "citation",
       "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
       "query": [
@@ -35,8 +35,8 @@ var search_conf = {
       "label": "Citations of a specific document",
       "placeholder": "DOI e.g. 10.1016/J.WEBSEM.2012.08.001",
       "advanced": true,
-      "freetext": false,
-      "heuristics": [['lower_case','decodeURIStr'],['lower_case','encodeDOIURL']],
+      "freetext": true,
+      "heuristics": [['lower_case','decodeURIStr']],
       "category": "citation",
       "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
       "query": [
@@ -123,12 +123,12 @@ var search_conf = {
             "spinner": true,
             "title":"Searching in the OpenCitations Indexes ...",
             "subtitle":"Be patient - this search might take several seconds!",
-            "abort":{"title":"Abort Search","href_link":"search"}
+            "abort":{"title":"Abort Search","href_link":"/index/search"}
           },
 
    "timeout":{
             "value": 9000,
-            "link": "search.html"
+            "link": "/index/search"
           }
 
   }
