@@ -64,7 +64,6 @@ pages = [
     {"name": "querying", "label": "Querying Data"},
     {"name": "tools", "label": "Tools"},
     {"name": "download", "label": "Download"},
-    {"name": "statistics", "label": "Statistics"},
     {"name": "publications", "label": "Publications"}
 ]
 

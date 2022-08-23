@@ -1,9 +1,14 @@
 
 .graph_cont {
-  padding-bottom: 5vh;
-  width: 95%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 100%;
   display: inline-block;
 
+}
+
+.graph_param{
+  font-size: 1em;
 }
 
 

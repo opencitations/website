@@ -74,106 +74,6 @@ $def with (pages, active)
         <![endif]-->
     </head>
     <body>
-        <div id="loading" style="display: none;">
-          <img src="static/img/loading.gif" style="margin-top: 40vh;" alt="-" width="100" height="100">
-        </div>
-
-        <div class="container" id="page_cont">
-          <div class="text-center mt-5">
-
-            <h1>Data Visualizations</h1>
-            <p class="lead">Visualizations of data about the amount of OpenCitations indexed records and the usage of
-              OpenCitations services.</p>
-
-            <h2 id="indexed_records">Indexed Records</h2>
-            <p>This line chart represents the monthly growth of the amount of <b>records indexed in OpenCitations</b>. <a
-                href="#Invio_1">Scroll down</a> to customize the settings and update the visualization.</p>
-
-
-            <div class="graph_cont">
-              <canvas id="myChart"></canvas>
-            </div>
-
-            <!--http://kidsysco.github.io/jquery-ui-month-picker/-->
-            <div class="graph_cont">
-
-              <div class="div_sx" id="from_to_div_1">
-                <div class="div_sx">
-                  From: <input id="Start_1" class='Default' type="text" />
-                </div>
-                <div class="div_dx">
-                  To: <input id="End_1" class='Default' type="text" />
-                </div>
-              </div>
-
-              <div class="div_dx" id="interval_div_1">
-                <div id="int_container_1">
-                  <label for="Intervallo">Interval:</label>
-                  <select name="Intervallo_1" id="Intervallo_1" required>
-                    <option value="1">1-month</option>
-                    <option value="2" selected="selected">2-month</option>
-                    <option value="3">3-month</option>
-                  </select>
-                </div>
-
-              </div>
-            </div>
-
-            <button id="Invio_1" , class="btn">Update Visualizations</button>
-
-
-
-
-
-            <h2 id="used_services">Usage of Services</h2>
-
-            <p>This bar chart shows a monthly report of the <b>usage of OpenCitations services</b>.
-              In particular, the two datasets (i.e., "API" and "Datasets") represent the users' requests to the Application
-              Programming Interfaces
-              (<a href="https://opencitations.net/index/coci/api/v1">COCI</a>, <a
-                href="https://opencitations.net/index/croci/api/v1">CROCI</a>,
-              <a href="https://opencitations.net/api/v1">OCC</a>, <a href="https://opencitations.net/ccc/api/v1">CCC</a>) and
-              the Datasets consultations
-              (<a href="https://opencitations.net/index/search">Indexes</a>, <a
-                href="https://opencitations.net/index/search">OCC</a>, <a href="https://opencitations.net/ccc/search">CCC</a>)
-              . <a href="#Invio">Scroll down</a> to customize the settings and update the visualization.
-            </p>
-
-            <div id="container" class="graph_cont">
-              <canvas id="myChart2"></canvas>
-            </div>
-
-
-            <!--http://kidsysco.github.io/jquery-ui-month-picker/-->
-            <div class="graph_cont">
-
-              <div class="div_sx" id="from_to_div">
-                <div class="div_sx">
-                  From: <input id="Start" class='Default' type="text" />
-                </div>
-                <div class="div_dx">
-                  To: <input id="End" class='Default' type="text" />
-                </div>
-              </div>
-
-              <div class="div_dx" id="interval_div">
-                <div id="int_container">
-                  <label for="Intervallo">Interval:</label>
-                  <select name="Intervallo" id="Intervallo" required>
-                    <option value="1" selected="selected">1-month</option>
-                    <option value="2">2-month</option>
-                    <option value="3">3-month</option>
-                  </select>
-                </div>
-
-              </div>
-            </div>
-
-            <button id="Invio" , class="btn">Update Visualizations</button>
-
-          </div>
-        </div>
-
 
         <div class="cover-container">
           <div class="masthead clearfix">
@@ -220,8 +120,87 @@ $def with (pages, active)
 
           </div>
 
-            <div class="cover left">
-            </div>
+
+              <div id="loading" style="display: none;">
+                <img src="static/img/loading.gif" style="margin-top: 40vh;" alt="-" width="150" height="150">
+              </div>
+
+              <div class="cover left" id="page_cont">
+
+                  <h3 id="indexed_records">Statistics regarding the indexed Records</h3>
+                  <p>The number of <b><a href="/index">records indexed</a> and covered by OpenCitations</b> throughout the time</p>
+
+                  <!--http://kidsysco.github.io/jquery-ui-month-picker/-->
+                  <div class="graph_cont">
+                    <div class="graph_param" id="line_selector">
+
+                    <div class="div_sx" id="from_to_div_1">
+                      <div class="div_sx">
+                        From: <input id="Start_1" class='Default' type="text" />
+                      </div>
+                      <div class="div_dx">
+                        To: <input id="End_1" class='Default' type="text" />
+                      </div>
+                    </div>
+
+                    <div class="div_dx" id="interval_div_1">
+                      <div id="int_container_1">
+                        <label for="Intervallo">Interval:</label>
+                        <select name="Intervallo_1" id="Intervallo_1" required>
+                          <option value="1">1-month</option>
+                          <option value="2" selected="selected">2-month</option>
+                          <option value="3">3-month</option>
+                        </select>
+                      </div>
+
+                    </div>
+                  </div>
+                    <div>
+                    <canvas id="myChart"></canvas>
+                  </div>
+                    <button id="Invio_1" , class="btn">Update Visualizations</button>
+                  </div>
+
+
+
+                  <h3 id="used_services">Statistics regarding the usage of the services</h3>
+                  <p>The number of <b>API requests</b> made (using the <a href="/querying">OpenCitations API service</a>), and the number of other <b>consultations made to the datasets</b> maintained by OpenCitations using any other <a href="/querying">service provided by OpenCitations</a> (e.g., web-based search interfaces)</p>
+
+                  <!--http://kidsysco.github.io/jquery-ui-month-picker/-->
+                  <div class="graph_cont">
+                    <div class="graph_param" id="bar_selector">
+
+                    <div class="div_sx" id="from_to_div">
+                      <div class="div_sx">
+                        From: <input id="Start" class='Default' type="text" />
+                      </div>
+                      <div class="div_dx">
+                        To: <input id="End" class='Default' type="text" />
+                      </div>
+                    </div>
+
+                    <div class="div_dx" id="interval_div">
+                      <div id="int_container">
+                        <label for="Intervallo">Interval:</label>
+                        <select name="Intervallo" id="Intervallo" required>
+                          <option value="1" selected="selected">1-month</option>
+                          <option value="2">2-month</option>
+                          <option value="3">3-month</option>
+                        </select>
+                      </div>
+
+                    </div>
+                  </div>
+                    <div id="container">
+                    <canvas id="myChart2"></canvas>
+                  </div>
+                    <button id="Invio" , class="btn">Update Visualizations</button>
+                  </div>
+
+
+
+                </div>
+
         </div>
 
 
@@ -280,9 +259,14 @@ $def with (pages, active)
         <script>
             document.getElementById("loading").style = "display: block; width: 100vw; height: 100vh; position: fixed; top:0; left:0; display: flex;justify-content: center;";
             document.getElementById("page_cont").style = "display: none;";
-            document.getElementsByTagName("footer")[0].style = "display: none;"
-        </script>
 
+            //comment these two lines if you do not want auto generation of the chart
+            document.getElementById("Invio").style = "display: none;";
+            document.getElementById("Invio_1").style = "display: none;";
+
+            document.getElementsByTagName("footer")[0].style = "display: none;"
+
+        </script>
         <!-- Cookies handler
         ================================================== -->
         <script src="/static/js/cookies.js"></script>

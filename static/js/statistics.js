@@ -41,7 +41,7 @@ $(window).load(function () {
       console.log(error);
     })
     .then(function () {
-      // sottrai 12 mesi dall'ultima data
+      // -12 months from last date
       // reference: modificato da https://bobbyhadz.com/blog/javascript-date-subtract-months#:~:text=To%20subtract%20months%20from%20a,the%20value%20for%20the%20date.
       function subtractMonths(numOfMonths, date) {
         ybf_date = new Date(date)
@@ -373,14 +373,14 @@ $(window).load(function () {
       let cur_data_month = new Date();
       let ultima_data_array = $("#End").val().split("/")
       let ultima_data = ultima_data_array[0] + "/01/" + ultima_data_array[1]
-      console.log("ultima_data", ultima_data)
+      //console.log("ultima_data", ultima_data)
       let latest_data_month = new Date(ultima_data);
-      console.log("latest_data_month", latest_data_month)
+      //console.log("latest_data_month", latest_data_month)
 
       let elapsed_record_months = elapsedMonths(init_data_month, cur_data_month);
-      console.log("latest_data_month", latest_data_month)
+      //console.log("latest_data_month", latest_data_month)
       let latest_cur_elapsed_record_months = elapsedMonths(latest_data_month, cur_data_month);
-      console.log("latest_cur_elapsed_record_months", latest_cur_elapsed_record_months)
+      //console.log("latest_cur_elapsed_record_months", latest_cur_elapsed_record_months)
 
 
       // default-value variables
@@ -388,7 +388,7 @@ $(window).load(function () {
       let split_array_end = $("#End").val().split("/")
 
       let start = split_array_start[1] + "-" + split_array_start[0];
-      console.log("start", start)
+      //console.log("start", start)
       let end = split_array_end[1] + "-" + split_array_end[0];
       let StartDate = new Date(split_array_start[0] + "/01/" + split_array_start[1]);
       let EndDate = new Date(split_array_end[0] + "/01/" + split_array_end[1]);
@@ -408,8 +408,10 @@ $(window).load(function () {
           year = selectedDate.getFullYear();
           month = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
           let date_for_query = year + "-" + month;
-          console.log(date_for_query);
+          //console.log(date_for_query);
           start = date_for_query;
+          //comment if you do not want auto generation of the chart
+          $('#Invio').click();
         }
       });
 
@@ -422,8 +424,10 @@ $(window).load(function () {
           year_1 = selectedDate.getFullYear();
           month_1 = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
           let date_for_query_1 = year_1 + "-" + month_1;
-          console.log(date_for_query_1);
+          //console.log(date_for_query_1);
           start_1 = date_for_query_1;
+          //comment if you do not want auto generation of the chart
+          $('#Invio_1').click();
         }
       });
 
@@ -435,9 +439,10 @@ $(window).load(function () {
           year = selectedDate.getFullYear();
           month = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
           let date_for_query = year + "-" + month;
-          console.log(date_for_query);
+          //console.log(date_for_query);
           end = date_for_query;
-
+          //comment if you do not want auto generation of the chart
+          $('#Invio').click();
         }
       });
 
@@ -449,21 +454,24 @@ $(window).load(function () {
           year_1 = selectedDate.getFullYear();
           month_1 = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
           let date_for_query_1 = year_1 + "-" + month_1;
-          console.log(date_for_query_1);
+          //console.log(date_for_query_1);
           end_1 = date_for_query_1;
-
+          //comment if you do not want auto generation of the chart
+          $('#Invio_1').click();
         }
       });
 
 
       $('#Intervallo').on('change', function () {
         Interval = ($(this).val());
-        console.log(Interval);
+        //comment if you do not want auto generation of the chart
+        $('#Invio').click();
       });
 
       $('#Intervallo_1').on('change', function () {
         Interval_1 = ($(this).val());
-        console.log(Interval_1);
+        //comment if you do not want auto generation of the chart
+        $('#Invio_1').click();
       });
 
       // Data visualizations update and error-handling
@@ -487,7 +495,7 @@ $(window).load(function () {
             window.alert("Start Date must precede End Date (Bar Chart)")
             throw "Start Date must precede End Date (Bar Chart)"
           } else {
-            console.log(StartDate, EndDate)
+            //console.log(StartDate, EndDate)
 
             // Month list extraction: http://jsfiddle.net/McCroskey42/1tp1hw8w/419/
             var start_Date = moment(start);
@@ -682,7 +690,7 @@ $(window).load(function () {
             window.alert("Start Date must precede End Date (Line Chart)")
             throw "Start Date must precede End Date (Line Chart)"
           } else {
-            console.log(StartDate_1, EndDate_1)
+            //console.log(StartDate_1, EndDate_1)
 
             // Month list extraction: http://jsfiddle.net/McCroskey42/1tp1hw8w/419/
             var start_Date_1 = moment(start_1);
@@ -844,7 +852,6 @@ $(window).load(function () {
     });
 
 });
-
 
 function done() {
     document.getElementById("loading").style = "display: none;";
