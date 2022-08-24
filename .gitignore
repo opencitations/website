@@ -12,3 +12,4 @@ auth.json
 api/
 Dockerfile
 requirements.txt
+demo/
