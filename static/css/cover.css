@@ -199,18 +199,24 @@ a.anchor {
 }
 #auth_code_val{
   border: solid 1px lightgray;
-  color:#9931FC;
+  color: gray;
   padding: 5px;
   border-radius: 5px;
   display: inner-block;
 }
 #auth_copy_btn{
-  font-size: pt;
+  font-size: 11pt;
   vertical-align:unset;
-  color: black;
+  color: gray;
+  padding: 2pt;
+  padding-left: 4pt;
+  padding-right: 4pt;
+  margin-left: 3pt;
+  border: solid 0.1pt grey;
 }
 #auth_copy_btn:hover{
-    text-decoration: underline;
+    background: grey;
+    color: white;
 }
 
 /*when the resolution is bigger than min-width*/
