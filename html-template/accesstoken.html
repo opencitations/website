@@ -94,10 +94,10 @@ $def with (pages, active, pubkey, message, csfr, accesstoken)
                 <div class="left">
                   <br>
                   <p><strong class="text-left">Before accessing our services, we encourage you to get the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token.</strong></p>
-
+                  <br>
                   <p>
                   <strong>What is the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> access token? </strong><br>
-                  The <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> access token is an opaque string that anonymously identifies a unique user of the <span class="oc-purple">Open</span><span class="oc-blue">Citations’</span> APIs. Users can use the access token when calling the APIs of <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> by passing it as a value for the key access-token in the header of any API call.
+                  The <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> access token is an opaque string that anonymously identifies a unique user of the <a href="/querying"><span class="oc-purple">Open</span><span class="oc-blue">Citations’</span> APIs</a>. Users can use the access token when calling the APIs of <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> by passing it as a value for the key access-token in the header of any API call.
                   </p>
 
                   <p>
@@ -107,13 +107,19 @@ $def with (pages, active, pubkey, message, csfr, accesstoken)
                   </p>
 
                   <p>
+                  <strong>How to use the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token?</strong><br>
+                  If you are going to use the <a href="/querying"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> REST APIs</a> within an application/code you need to specify the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token in the "authorization" header of your REST API call. Here is a usage example in Python:
+                  <pre><code>from requests import get<br><br>API_CALL = "https://opencitations.net/api/v1/metadata/10.1108/jd-12-2013-0166"<br>HTTP_HEADERS = {"authorization": "YOUR-OPENCITATIONS-ACCESS-TOKEN"}<br><br>get(API_CALL, headers=HTTP_HEADERS)</code></pre>
+                  </p>
+
+                  <p>
                   <strong>Why get the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token?</strong><br>
                   Use of an <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token is not compulsory; however, it will help <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> incredibly, by enabling us to monitor the number of the unique users accessing our data and services. Obtaining a token when using <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> will take the user only a few seconds and needs to happen only once.  Thereafter, it will permit <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> to have clear anonymized evidence of the number of institutions and researchers that use our services (either occasionally or regularly), and thus will provide evidence of the real relevance of <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> in the research environment.
                   </p>
-
+                  <br>
                   <p><strong>
                   Getting the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token is voluntary, easy, and does not cost anything to you. However, it could help <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> a lot. Thank you!
-                </strong></p>
+                  </strong></p>
 
                 </div>
 
