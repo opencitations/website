@@ -312,7 +312,7 @@ class AuthCode:
         })
         data_res = urllib.urlopen(
             'https://www.google.com/recaptcha/api/siteverify', params.encode('utf-8')).read()
-        result = json.loads(data_res)
+        result = json.loads(data_res.decode('utf-8'))
         success = result.get('success', None)
 
         if not success == True:
