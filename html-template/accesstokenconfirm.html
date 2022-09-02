@@ -22,6 +22,9 @@ $def with (pages, active, auth_code, accesstokenconfirm)
         <!-- Custom styles for this template -->
         <link href="/static/css/cover.css" rel="stylesheet" />
 
+        <!-- styles of this page-->
+        <link href="/static/css/authtoken.css" rel="stylesheet" />
+
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
             <script src="/static/js/html5shiv.min.js"><![CDATA[ ]]></script>
@@ -74,12 +77,44 @@ $def with (pages, active, auth_code, accesstokenconfirm)
 
           </div>
 
-            <div class="cover left">
+            <div class="cover">
                 <h3><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token</h3>
                 $if not auth_code is None:
-                    <p>$accesstokenconfirm["success"] $auth_code</p>
+                    <p class="text-success"><strong>$accesstokenconfirm["success"] <span id="auth_code_val"> $auth_code </span><span><button id="auth_copy_btn" onclick="copy()" class="btn btn-secondary">Copy</button></span></strong></p>
                 $else:
-                    <p>$accesstokenconfirm["failure"]</p>
+                    <p class="text-danger"><strong>$accesstokenconfirm["failure"]</strong></p>
+
+                    <div class="left">
+                      <br>
+                      <p><strong class="text-left">Before accessing our services, we encourage you to get the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token.</strong></p>
+                      <br>
+                      <p>
+                      <strong>What is the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> access token? </strong><br>
+                      The <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> access token is an opaque string that anonymously identifies a unique user of the <a href="/querying"><span class="oc-purple">Open</span><span class="oc-blue">Citations’</span> APIs</a>. Users can use the access token when calling the APIs of <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> by passing it as a value for the key access-token in the header of any API call.
+                      </p>
+
+                      <p>
+                      <strong>How to get the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token?</strong><br>
+                      Getting the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token is thus easy. It only requires the insertion of your email address before accessing <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> services. <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> assigns an access token only if authorized to do so by each user, who can request a token by inserting his/her email address into the form and clicking “Get token”. After the submission of such a request, each user will receive a personal access token by email. <br>
+                      <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> will not store the email address or any personal information, so the users’ privacy will be totally safeguarded.
+                      </p>
+
+                      <p>
+                      <strong>How to use the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token?</strong><br>
+                      If you are going to use the <a href="/querying"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> REST APIs</a> within an application/code you need to specify the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token in the "authorization" header of your REST API call. Here is a usage example in Python:
+                      <pre><code>from requests import get<br><br>API_CALL = "https://opencitations.net/api/v1/metadata/10.1108/jd-12-2013-0166"<br>HTTP_HEADERS = {"authorization": "YOUR-OPENCITATIONS-ACCESS-TOKEN"}<br><br>get(API_CALL, headers=HTTP_HEADERS)</code></pre>
+                      </p>
+
+                      <p>
+                      <strong>Why get the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token?</strong><br>
+                      Use of an <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token is not compulsory; however, it will help <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> incredibly, by enabling us to monitor the number of the unique users accessing our data and services. Obtaining a token when using <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> will take the user only a few seconds and needs to happen only once.  Thereafter, it will permit <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> to have clear anonymized evidence of the number of institutions and researchers that use our services (either occasionally or regularly), and thus will provide evidence of the real relevance of <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> in the research environment.
+                      </p>
+                      <br>
+                      <p><strong>
+                      Getting the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Access Token is voluntary, easy, and does not cost anything to you. However, it could help <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> a lot. Thank you!
+                      </strong></p>
+
+                    </div>
             </div>
         </div>
 
@@ -137,6 +172,12 @@ $def with (pages, active, auth_code, accesstokenconfirm)
                     return false;
                 }
             }
+        </script>
+        <script>
+          function copy() {
+                var text_to_copy = document.getElementById("auth_code_val");
+                navigator.clipboard.writeText(text_to_copy.innerText);
+          }
         </script>
     </body>
 </html>

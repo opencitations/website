@@ -1,0 +1,38 @@
+
+#auth_code_val{
+  border: solid 1px lightgray;
+  color: gray;
+  padding: 5px;
+  border-radius: 5px;
+  display: inner-block;
+}
+
+#auth_copy_btn{
+  font-size: 11pt;
+  vertical-align:unset;
+  color: gray;
+  padding: 2pt;
+  padding-left: 4pt;
+  padding-right: 4pt;
+  margin-left: 3pt;
+  border: solid 0.1pt grey;
+}
+
+#auth_copy_btn:hover{
+    background: grey;
+    color: white;
+}
+
+
+/*when the resolution is less than max-width*/
+@media (max-width: 1200px) {
+      #auth_code_val{
+        display: block;
+      }
+      #auth_copy_btn{
+        display: block;
+        width:100%;
+        margin-left: 0px;
+        margin-top: 5px;
+      }
+}

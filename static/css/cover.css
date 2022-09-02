@@ -93,6 +93,15 @@ dd > blockquote {
   font-size:20px;
 }
 
+pre code {
+  font-family: monospace !important;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-family: monospace !important;
+  overflow: scroll;
+  line-height: 1.2em;
+}
+
 /*
  * Base structure
  */
@@ -189,6 +198,13 @@ a.anchor {
     position: relative;
     top: -105px;
     visibility: hidden;
+}
+
+.token-form div{
+    text-align: center;
+}
+.g-recaptcha{
+  display: inline-block;
 }
 
 /*when the resolution is bigger than min-width*/

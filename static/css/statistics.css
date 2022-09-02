@@ -1,0 +1,322 @@
+
+.graph_cont {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  display: inline-block;
+
+}
+
+.graph_param{
+  font-size: 1em;
+}
+
+
+div .dtp-picker,
+div .dtp-actual-num,
+div .dtp-actual-day {
+  display: none
+}
+
+.dtp>.dtp-content>.dtp-date-view>header.dtp-header {
+  height: 40px;
+  background-color: #0080d0;
+}
+
+.dtp .p10>a {
+  color: #0080d0;
+}
+
+.dtp div.dtp-actual-year {
+  color: #BAE3FF
+}
+
+.dtp div.dtp-date,
+.dtp div.dtp-time {
+  background-color: #03a9f4
+}
+
+.dtp div.dtp-actual-month {
+  margin-bottom: 10px;
+}
+
+.ui-datepicker-calendar {
+  display: none;
+}
+
+.date-picker {
+  text-align: center;
+}
+
+.icon {
+  vertical-align: bottom;
+  margin-top: 2px;
+  margin-bottom: 3px;
+  cursor: pointer;
+}
+
+.icon:active {
+  opacity: .5;
+}
+
+.ui-button-text {
+  padding: .4em .6em;
+  line-height: 0.8;
+}
+
+.month-year-input {
+  width: 60px;
+  margin-right: 2px;
+}
+
+.month-picker {
+  display: inline-block;
+  position: absolute;
+  z-index: 9999
+}
+
+.month-picker table {
+  border-collapse: separate;
+  border-spacing: 2px 2px
+}
+
+.month-picker td {
+  padding: 0
+}
+
+.month-picker .ui-button-text {
+  padding: .4em 0
+}
+
+.month-picker-header {
+  margin: 3px 3px 0
+}
+
+.month-picker-year-table {
+  width: 100%;
+  -ms-user-select: none;
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none
+}
+
+.month-picker-year-table a {
+  border: 1px solid transparent
+}
+
+.month-picker-year-table .ui-button {
+  font-size: 1.1em;
+  width: 1.5em;
+  height: 1.5em;
+  cursor: default;
+  margin: 0
+}
+
+.month-picker-year-table .month-picker-title {
+  text-align: center
+}
+
+.month-picker-year-table .month-picker-title .ui-button {
+  font-size: 1em;
+  padding: .1em 0;
+  width: 100%;
+  font-weight: 700
+}
+
+.month-picker-year-table .ui-button-text {
+  padding: 0
+}
+
+.month-picker-month-table td {
+  height: 35px;
+  text-align: center
+}
+
+.month-picker-month-table .ui-button {
+  width: 4.2em;
+  margin: .2em
+}
+
+.month-picker-open-button {
+  height: 20px;
+  width: 20px;
+  vertical-align: bottom
+}
+
+.month-picker-invalid-message {
+  display: none;
+  background-color: #ff0
+}
+
+.month-picker-disabled {
+  background-color: #e1e1e1
+}
+
+
+
+#IconDemo {
+  font-size: small;
+  background-color: #e5c7ca;
+}
+
+
+
+.jcalendar-fullsize {
+  display: inline-block;
+  max-inline-size: inherit;
+}
+
+
+#MonthPicker_IconDemo,
+#ui-datepicker-div,
+.jcalendar-content {
+  font-size: small;
+  display: inline-block;
+  max-width: inherit;
+
+}
+
+.jcalendar-backdrop {
+  display: inline-block;
+  width: 100%;
+}
+
+.jcalendar-container {
+  display: inline-block;
+  width: 100%;
+
+}
+
+.month-year-input {
+  height: 1.5em;
+  font-size: small;
+}
+
+select#Intervallo,
+select#Intervallo_1 {
+  height: 1.5em;
+}
+
+.small_button {
+  margin: 3em;
+}
+
+ul {
+  text-align: left;
+}
+
+h6 {
+  color: #6f42c1;
+}
+
+.show_output {
+  background-color: #e5c7ca;
+}
+
+
+::selection {
+  background: #8778e8;
+  color: whitesmoke;
+}
+
+::-moz-selection {
+  background: #8778e8;
+  color: whitesmoke;
+}
+
+
+.month-picker.ui-widget.ui-widget-content.ui-corner-all {
+  font-size: 80%;
+}
+
+
+#Invio,
+#Invio_1 {
+  margin: 1em;
+  background: #3C41E5;
+  box-sizing: border-box;
+  align-self: center;
+  border-radius: 0%;
+  font-size: medium;
+  padding: 2px 4px;
+  text-align: center;
+  color: aliceblue;
+  cursor: pointer;
+}
+
+#Invio:hover,
+#Invio_1:hover {
+  transition: ease-in 0.5s;
+  box-shadow: inset 300px 0 0 0 #ab54fd;
+  cursor: pointer;
+  color: aliceblue;
+  border-color: #ab54fd;
+
+}
+
+select {
+  font-size: small;
+}
+
+
+.div_sx {
+  float: left;
+}
+
+.div_dx {
+  float: right;
+}
+
+@media only screen and (max-width: 450px) {
+
+  #interval_div.div_dx,
+  #interval_div_1.div_dx {
+    font-size: small;
+    width: 30%;
+    margin: 0.5em 1em;
+    float: right;
+  }
+
+
+
+
+  #from_to_div.div_sx,
+  #from_to_div_1.div_sx {
+    font-size: small;
+    display: inline-block;
+    width: 50%;
+    margin: 0.5em, 0em;
+  }
+
+  #from_to_div.div_sx input,
+  #from_to_div_1.div_sx input {
+    font-size: x-small;
+    max-width: 45px;
+
+  }
+
+  #from_to_div.div_sx .div_sx,
+  #from_to_div_1.div_sx .div_sx {
+    float: right;
+    margin: 0.2em;
+  }
+
+  #from_to_div.div_sx .div_dx,
+  #from_to_div_1.div_sx .div_dx {
+    float: right;
+    margin: 0.2em;
+
+  }
+
+  #int_container,
+  #int_container_1 {
+    max-width: fit-content;
+    text-align: left;
+  }
+
+  #int_container select,
+  #int_container_1 select {
+    max-width: 80px;
+  }
+}
