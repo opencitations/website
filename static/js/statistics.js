@@ -1,10 +1,11 @@
 $(window).load(function () {
   let last_date;
   let lastDate;
+  const baseurl = "https://opencitations.net"
 
   // Default data visualizations: from the year before the last available month to the last available month
 
-  axios.get('https://opencitations.net/statistics/last-month')
+  axios.get(baseurl+'/statistics/last-month')
     .then(function (response) {
       // handle success
       metricsStr = response.data;
@@ -76,7 +77,7 @@ $(window).load(function () {
         let timeValues = [];
 
         while (dateEnd > dateStart || dateStart.format('M') === dateEnd.format('M')) {
-          timeValues.push("https://opencitations.net/statistics/" + dateStart.format('YYYY-MM'));
+          timeValues.push(baseurl+"/statistics/" + dateStart.format('YYYY-MM'));
           dateStart.add(1, 'month');
         }
         return timeValues;
@@ -515,10 +516,10 @@ $(window).load(function () {
             var end_Date = moment(end);
             var result = [];
             while (start_Date.isBefore(end_Date)) {
-              result.push("https://opencitations.net/statistics/" + start_Date.format("YYYY-MM"));
+              result.push(baseurl+"/statistics/" + start_Date.format("YYYY-MM"));
               start_Date.add(1, 'month');
             }
-            result.push("https://opencitations.net/statistics/" + end_Date.format("YYYY-MM"))
+            result.push(baseurl+"/statistics/" + end_Date.format("YYYY-MM"))
           }
 
 
@@ -716,10 +717,10 @@ $(window).load(function () {
             var end_Date_1 = moment(end_1);
             var result_1 = [];
             while (start_Date_1.isBefore(end_Date_1)) {
-              result_1.push("https://opencitations.net/statistics/" + start_Date_1.format("YYYY-MM"));
+              result_1.push(baseurl+"/statistics/" + start_Date_1.format("YYYY-MM"));
               start_Date_1.add(1, 'month');
             }
-            result_1.push("https://opencitations.net/statistics/" + end_Date_1.format("YYYY-MM"))
+            result_1.push(baseurl+"/statistics/" + end_Date_1.format("YYYY-MM"))
           }
 
 
