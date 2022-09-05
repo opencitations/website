@@ -239,7 +239,7 @@ def validateAccessToken():
         val = rconn.get(auth_code)
         if val is None or val != b'1':
             raise web.HTTPError(
-                "403",
+                "403 ",
                 {
                    "Content-Type": "text/plain"
                 },
@@ -271,7 +271,6 @@ def sendEmail(recipient, subject, body):
 
 class AuthCodeConfirm:
     def GET(self, token):
-
         check = rconn.get(token)
         if check is None or check != b'2':
             auth_code = None
@@ -279,7 +278,6 @@ class AuthCodeConfirm:
             rconn.delete(token)
             rconn.set(token, 1)
             auth_code = token
-
         return render.accesstokenconfirm(pages, active, auth_code, c_auth["messages"]["accesstokenconfirm"])
 
 
@@ -477,13 +475,13 @@ class Api:
                                     mes = json.dumps(
                                         next(csv.DictReader(f)), ensure_ascii=False)
                             raise web.HTTPError(
-                                str(status_code), {"Content-Type": content_type}, mes)
+                                str(status_code)+" ", {"Content-Type": content_type}, mes)
                         except:
                             raise web.HTTPError(
-                                str(status_code), {"Content-Type": content_type}, str(res))
+                                str(status_code)+" ", {"Content-Type": content_type}, str(res))
                 else:
                     raise web.HTTPError(
-                        "404", {"Content-Type": content_type}, "No API operation found at URL '%s'" % call)
+                        "404 ", {"Content-Type": content_type}, "No API operation found at URL '%s'" % call)
 
 
 class Policy:
@@ -738,12 +736,13 @@ class Sparql:
 
     def GET(self):
         content_type = web.ctx.env.get('CONTENT_TYPE')
-        return self.__run_query_string(active["sparql"], web.ctx.env.get("QUERY_STRING"))
+        return self.__run_query_string(active["sparql"], web.ctx.env.get("QUERY_STRING"), content_type)
 
     def POST(self):
         content_type = web.ctx.env.get('CONTENT_TYPE')
 
         cur_data = web.data().decode("utf-8")
+
         if "application/x-www-form-urlencoded" in content_type:
             return self.__run_query_string(active["sparql"], cur_data, True, content_type)
         elif "application/sparql-query" in content_type:
@@ -772,7 +771,7 @@ class Sparql:
             return req.text
         else:
             raise web.HTTPError(
-                str(req.status_code), {"Content-Type": req.headers["content-type"]}, req.text)
+                str(req.status_code)+" ", {"Content-Type": req.headers["content-type"]}, req.text)
 
     def __run_query_string(self, active, query_string, is_post=False,
                            content_type="application/x-www-form-urlencoded"):
@@ -787,7 +786,7 @@ class Sparql:
                 raise web.redirect("/sparql")
         else:
             raise web.HTTPError(
-                "403", {"Content-Type": "text/plain"}, "SPARQL Update queries are not permitted.")
+                "403 ", {"Content-Type": "text/plain"}, "SPARQL Update queries are not permitted.")
 
 
 class SparqlOC(Sparql):
@@ -919,7 +918,7 @@ class Statistics:
 
                 if year_from > year_to or (year_from == year_to and month_from > month_to):
                     raise web.HTTPError(
-                        "400",
+                        "400 ",
                         {
                             "Content-Type": "text/plain"
                         },
@@ -1014,7 +1013,7 @@ class Statistics:
                         file_path = ''
                 else:
                     raise web.HTTPError(
-                        "400",
+                        "400 ",
                         {
                             "Content-Type": "text/plain"
                         },
@@ -1044,7 +1043,7 @@ class Statistics:
             return content
         else:
             raise web.HTTPError(
-                "404",
+                "404 ",
                 {
                     "Content-Type": "text/plain"
                 },
