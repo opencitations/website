@@ -905,7 +905,8 @@ class Statistics:
         self.__dates_regex = re.compile('(\d+)-(\d+)_(\d+)-(\d+)')
 
     def OPTIONS(self, date):
-        org_ref = web.ctx.env.get('HTTP_REFERER')
+        # remember to remove the slash at the end
+        org_ref = web.ctx.env.get('HTTP_REFERER')[:-1]
         web.header('Access-Control-Allow-Origin', org_ref)
         web.header('Access-Control-Allow-Credentials', 'true')
         web.header('Access-Control-Allow-Methods', '*')
@@ -917,8 +918,10 @@ class Statistics:
         file_path = ""
 
         # Allow origin
+        # remember to remove the slash at the end
+        org_ref = web.ctx.env.get('HTTP_REFERER')[:-1]
         web.header('Access-Control-Allow-Origin',
-                   web.ctx.env.get('HTTP_REFERER'))
+                   web.ctx.env.get('HTTP_REFERER')[:-1])
         web.header('Access-Control-Allow-Credentials', 'true')
         web.header('Access-Control-Allow-Methods', '*')
         web.header('Access-Control-Allow-Headers', 'Authorization')
