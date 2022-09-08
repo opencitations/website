@@ -416,6 +416,15 @@ class Home:
 
 
 class Api:
+
+    def OPTIONS(self, date):
+        # remember to remove the slash at the end
+        org_ref = web.ctx.env.get('HTTP_REFERER')[:-1]
+        web.header('Access-Control-Allow-Origin', org_ref)
+        web.header('Access-Control-Allow-Credentials', 'true')
+        web.header('Access-Control-Allow-Methods', '*')
+        web.header('Access-Control-Allow-Headers', 'Authorization')
+
     def GET(self, dataset, call):
         validateAccessToken()
         man = None
@@ -443,8 +452,9 @@ class Api:
             raise web.notfound()
         else:
             if re.match("^/api/v[1-9][0-9]*/?$", call):
-                web.header('Access-Control-Allow-Origin',
-                           web.ctx.env.get('HTTP_REFERER'))
+                # remember to remove the slash at the end
+                org_ref = web.ctx.env.get('HTTP_REFERER')[:-1]
+                web.header('Access-Control-Allow-Origin', org_ref)
                 web.header('Access-Control-Allow-Credentials', 'true')
                 web.header('Content-Type', "text/html")
                 web.header('Access-Control-Allow-Methods', '*')
@@ -464,8 +474,9 @@ class Api:
                     status_code, res, c_type = op.exec(
                         content_type=content_type)
                     if status_code == 200:
-                        web.header('Access-Control-Allow-Origin',
-                                   web.ctx.env.get('HTTP_REFERER'))
+                        # remember to remove the slash at the end
+                        org_ref = web.ctx.env.get('HTTP_REFERER')[:-1]
+                        web.header('Access-Control-Allow-Origin', org_ref)
                         web.header('Access-Control-Allow-Credentials', 'true')
                         web.header('Content-Type', c_type)
                         web.header('Access-Control-Allow-Methods', '*')
