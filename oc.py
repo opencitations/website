@@ -769,12 +769,9 @@ class Sparql:
                                headers={'content-type': content_type, "accept": accept})
 
         if req.status_code == 200:
-            web.header('Access-Control-Allow-Origin',
-                       web.ctx.env.get('HTTP_REFERER'))
+            web.header('Access-Control-Allow-Origin', '*')
             web.header('Access-Control-Allow-Credentials', 'true')
             web.header('Content-Type', req.headers["content-type"])
-            web.header('Access-Control-Allow-Methods', '*')
-            web.header('Access-Control-Allow-Headers', 'Authorization')
             web_logger.mes()
             req.encoding = "utf-8"
 
@@ -906,6 +903,13 @@ class Statistics:
     def __init__(self):
         self.__file_regex = re.compile('oc-(\d\d\d\d)-(\d\d).prom')
         self.__dates_regex = re.compile('(\d+)-(\d+)_(\d+)-(\d+)')
+
+    def OPTIONS(self, date):
+        org_ref = web.ctx.env.get('HTTP_REFERER')
+        web.header('Access-Control-Allow-Origin', org_ref)
+        web.header('Access-Control-Allow-Credentials', 'true')
+        web.header('Access-Control-Allow-Methods', '*')
+        web.header('Access-Control-Allow-Headers', 'Authorization')
 
     def GET(self, date):
         validateAccessToken()
