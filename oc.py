@@ -443,9 +443,12 @@ class Api:
             raise web.notfound()
         else:
             if re.match("^/api/v[1-9][0-9]*/?$", call):
-                web.header('Access-Control-Allow-Origin', '*')
+                web.header('Access-Control-Allow-Origin',
+                           web.ctx.env.get('HTTP_REFERER'))
                 web.header('Access-Control-Allow-Credentials', 'true')
                 web.header('Content-Type', "text/html")
+                web.header('Access-Control-Allow-Methods', '*')
+                web.header('Access-Control-Allow-Headers', 'Authorization')
                 web_logger.mes()
                 return doc.get_documentation()[1]
             else:
@@ -461,9 +464,13 @@ class Api:
                     status_code, res, c_type = op.exec(
                         content_type=content_type)
                     if status_code == 200:
-                        web.header('Access-Control-Allow-Origin', '*')
+                        web.header('Access-Control-Allow-Origin',
+                                   web.ctx.env.get('HTTP_REFERER'))
                         web.header('Access-Control-Allow-Credentials', 'true')
                         web.header('Content-Type', c_type)
+                        web.header('Access-Control-Allow-Methods', '*')
+                        web.header('Access-Control-Allow-Headers',
+                                   'Authorization')
                         web_logger.mes()
                         return res
                     else:
@@ -762,9 +769,12 @@ class Sparql:
                                headers={'content-type': content_type, "accept": accept})
 
         if req.status_code == 200:
-            web.header('Access-Control-Allow-Origin', '*')
+            web.header('Access-Control-Allow-Origin',
+                       web.ctx.env.get('HTTP_REFERER'))
             web.header('Access-Control-Allow-Credentials', 'true')
             web.header('Content-Type', req.headers["content-type"])
+            web.header('Access-Control-Allow-Methods', '*')
+            web.header('Access-Control-Allow-Headers', 'Authorization')
             web_logger.mes()
             req.encoding = "utf-8"
 
@@ -903,8 +913,11 @@ class Statistics:
         file_path = ""
 
         # Allow origin
-        web.header('Access-Control-Allow-Origin', '*')
+        web.header('Access-Control-Allow-Origin',
+                   web.ctx.env.get('HTTP_REFERER'))
         web.header('Access-Control-Allow-Credentials', 'true')
+        web.header('Access-Control-Allow-Methods', '*')
+        web.header('Access-Control-Allow-Headers', 'Authorization')
 
         # checks if any date has been specified, otherwise looks for the most recent statistics
         if(date != "last-month"):
