@@ -417,7 +417,7 @@ class Home:
 
 class Api:
 
-    def OPTIONS(self, date):
+    def OPTIONS(self, dataset, call):
         # remember to remove the slash at the end
         org_ref = web.ctx.env.get('HTTP_REFERER')[:-1]
         web.header('Access-Control-Allow-Origin', org_ref)
