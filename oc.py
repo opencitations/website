@@ -920,8 +920,11 @@ class Statistics:
 
     def OPTIONS(self, date):
         # remember to remove the slash at the end
-        # org_ref = web.ctx.env.get('HTTP_REFERER')[:-1]
-        web.header('Access-Control-Allow-Origin', "*")
+        org_ref = web.ctx.env.get('HTTP_REFERER')
+        if org_ref is not None:
+            org_ref = org_ref[:-1]
+
+        web.header('Access-Control-Allow-Origin', org_ref)
         web.header('Access-Control-Allow-Credentials', 'true')
         web.header('Access-Control-Allow-Methods', '*')
         web.header('Access-Control-Allow-Headers', 'Authorization')
@@ -933,8 +936,12 @@ class Statistics:
 
         # Allow origin
         # remember to remove the slash at the end
-        # org_ref = web.ctx.env.get('HTTP_REFERER')[:-1]
-        web.header('Access-Control-Allow-Origin', "*")
+        # remember to remove the slash at the end
+        org_ref = web.ctx.env.get('HTTP_REFERER')
+        if org_ref is not None:
+            org_ref = org_ref[:-1]
+
+        web.header('Access-Control-Allow-Origin', org_ref)
         web.header('Access-Control-Allow-Credentials', 'true')
         web.header('Access-Control-Allow-Methods', '*')
         web.header('Access-Control-Allow-Headers', 'Authorization')
