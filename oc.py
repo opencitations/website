@@ -419,9 +419,13 @@ class Api:
 
     def OPTIONS(self, dataset, call):
         # remember to remove the slash at the end
-        # org_ref = web.ctx.env.get('HTTP_REFERER')[:-1]
-        #web.header('Access-Control-Allow-Origin', org_ref)
-        web.header('Access-Control-Allow-Origin', '*')
+        org_ref = web.ctx.env.get('HTTP_REFERER')
+        if org_ref is not None:
+            org_ref = org_ref[:-1]
+        else:
+            org_ref = "*"
+
+        web.header('Access-Control-Allow-Origin', org_ref)
         web.header('Access-Control-Allow-Credentials', 'true')
         web.header('Access-Control-Allow-Methods', '*')
         web.header('Access-Control-Allow-Headers', 'Authorization')
@@ -454,9 +458,13 @@ class Api:
         else:
             if re.match("^/api/v[1-9][0-9]*/?$", call):
                 # remember to remove the slash at the end
-                #org_ref = web.ctx.env.get('HTTP_REFERER')[:-1]
-                #web.header('Access-Control-Allow-Origin', org_ref)
-                web.header('Access-Control-Allow-Origin', '*')
+                org_ref = web.ctx.env.get('HTTP_REFERER')
+                if org_ref is not None:
+                    org_ref = org_ref[:-1]
+                else:
+                    org_ref = "*"
+
+                web.header('Access-Control-Allow-Origin', org_ref)
                 web.header('Access-Control-Allow-Credentials', 'true')
                 web.header('Content-Type', "text/html")
                 web.header('Access-Control-Allow-Methods', '*')
@@ -477,9 +485,13 @@ class Api:
                         content_type=content_type)
                     if status_code == 200:
                         # remember to remove the slash at the end
-                        #org_ref = web.ctx.env.get('HTTP_REFERER')[:-1]
-                        #web.header('Access-Control-Allow-Origin', org_ref)
-                        web.header('Access-Control-Allow-Origin', '*')
+                        org_ref = web.ctx.env.get('HTTP_REFERER')
+                        if org_ref is not None:
+                            org_ref = org_ref[:-1]
+                        else:
+                            org_ref = "*"
+
+                        web.header('Access-Control-Allow-Origin', org_ref)
                         web.header('Access-Control-Allow-Credentials', 'true')
                         web.header('Content-Type', c_type)
                         web.header('Access-Control-Allow-Methods', '*')
@@ -923,6 +935,8 @@ class Statistics:
         org_ref = web.ctx.env.get('HTTP_REFERER')
         if org_ref is not None:
             org_ref = org_ref[:-1]
+        else:
+            org_ref = "*"
 
         web.header('Access-Control-Allow-Origin', org_ref)
         web.header('Access-Control-Allow-Credentials', 'true')
@@ -940,6 +954,8 @@ class Statistics:
         org_ref = web.ctx.env.get('HTTP_REFERER')
         if org_ref is not None:
             org_ref = org_ref[:-1]
+        else:
+            org_ref = "*"
 
         web.header('Access-Control-Allow-Origin', org_ref)
         web.header('Access-Control-Allow-Credentials', 'true')
