@@ -934,7 +934,8 @@ class Statistics:
         # remember to remove the slash at the end
         org_ref = web.ctx.env.get('HTTP_REFERER')
         if org_ref is not None:
-            org_ref = org_ref[:-1]
+            if org_ref.endswith("/"):
+                org_ref = org_ref[:-1]
         else:
             org_ref = "*"
 
@@ -953,7 +954,8 @@ class Statistics:
         # remember to remove the slash at the end
         org_ref = web.ctx.env.get('HTTP_REFERER')
         if org_ref is not None:
-            org_ref = org_ref[:-1]
+            if org_ref.endswith("/"):
+                org_ref = org_ref[:-1]
         else:
             org_ref = "*"
 
