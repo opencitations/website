@@ -80,11 +80,11 @@ $def with (pages, active)
                 <blockquote><p>Ivan Heibi, Silvio Peroni, David Shotton (2019). Software review: COCI, the OpenCitations Index of Crossref open DOI-to-DOI citations. <a href="https://link.springer.com/journal/11192">Scientometrics</a>, 121 (2): 1213-1228. <a href="https://doi.org/10.1007/s11192-019-03217-6">https://doi.org/10.1007/s11192-019-03217-6</a></p></blockquote>
                 <p>Currently, COCI contains:</p>
                 <ul>
-                    <li><p>1,392,036,836 citations;</p></li>
-                    <li><p>76,072,928 bibliographic resources.</p></li>
+                    <li><p>1,392,036,835 citations;</p></li>
+                    <li><p>76,072,926 bibliographic resources.</p></li>
                 </ul>
 
-                <p>COCI was first created and released on <a href="https://opencitations.wordpress.com/2018/07/12/the-crossref-open-citation-index-coci/">4 June 2018</a>.</p>
+                <p>COCI was first created and released on <a href="https://opencitations.hypotheses.org/889">4 June 2018</a>.</p>
                 <p>Most recent update of COCI: <strong>31 October 2022</strong>, based on open references to works with DOIs within the Crossref dump dated October 2022.</p>
 
                 <h4>Citation URLs</h4>
@@ -92,7 +92,7 @@ $def with (pages, active)
 
                 <h4>Open Citation Identifiers</h4>
                 <p>Each Open Citation Identifier <code>[[OCI]]</code> has a simple structure: the lower-case letters "oci" followed by a colon, followed by two numbers separated by a dash (e.g. <a href="https://w3id.org/oc/index/coci/ci/02001010806360107050663080702026306630509-02001010806360107050663080702026305630301">https://w3id.org/oc/index/coci/ci/02001010806360107050663080702026306630509-02001010806360107050663080702026305630301</a>), in which the first number identifies the citing work and the second number identifies the cited work.</p>
-                <p>For citations in which the citing and cited works are identified by DOIs, which includes all the COCI citations, the OCI is created in the following manner, as explained more fully <a href="https://opencitations.wordpress.com/2018/03/12/citations-as-first-class-data-entities-open-citation-identifiers/">here</a>. Each case-insensitive DOI is first normalized to lower case letters. Then, after omitting the initial <q>doi:10.</q> prefix, the alphanumeric string of the DOI is converted reversibly to a pure numerical string using the simple two-numeral lookup table for numerals, lower case letters and other characters presented at <a href="https://github.com/opencitations/oci/blob/master/lookup.csv">https://github.com/opencitations/oci/blob/master/lookup.csv</a>. Finally, each converted numeral is prefixes by a <q>020</q>, which indicates that <a href="https://crossref.org">Crossref</a> is the supplier of the original metadata of the citation (as indicated at <a href="/oci">http://opencitations.net/oci</a>).</p>
+                <p>For citations in which the citing and cited works are identified by DOIs, which includes all the COCI citations, the OCI is created in the following manner, as explained more fully <a href="https://opencitations.hypotheses.org/816">here</a>. Each case-insensitive DOI is first normalized to lower case letters. Then, after omitting the initial <q>doi:10.</q> prefix, the alphanumeric string of the DOI is converted reversibly to a pure numerical string using the simple two-numeral lookup table for numerals, lower case letters and other characters presented at <a href="https://github.com/opencitations/oci/blob/master/lookup.csv">https://github.com/opencitations/oci/blob/master/lookup.csv</a>. Finally, each converted numeral is prefixes by a <q>020</q>, which indicates that <a href="https://crossref.org">Crossref</a> is the supplier of the original metadata of the citation (as indicated at <a href="/oci">http://opencitations.net/oci</a>).</p>
                 <p>OCIs can be resolved using the <a href="/oci"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> OCI Resolution Service</a>.</p>
 
                 <h4>Access to COCI data</h4>
@@ -139,7 +139,7 @@ $def with (pages, active)
                 <a class="social oc-purple" href="mailto:contact@opencitations.net"><i class="fa fa-envelope" aria-hidden="true"></i></a>
                 <a class="social oc-purple" href="http://www.twitter.com/opencitations"><i class="fa fa-twitter" aria-hidden="true"></i></a>
                 <a class="social oc-blue" href="http://github.com/opencitations"><i class="fa fa-github" aria-hidden="true"></i></a>
-                <a class="social oc-blue" href="https://opencitations.wordpress.com/"><i class="fa fa-wordpress" aria-hidden="true"></i></a>
+                <a class="social oc-blue" href="https://opencitations.hypotheses.org/"><i class="fa fa-newspaper-o" aria-hidden="true"></i></a>
             </p>
         </footer>
 
