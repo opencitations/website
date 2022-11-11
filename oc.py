@@ -47,7 +47,7 @@ from prometheus_client import Counter, CollectorRegistry, generate_latest, Gauge
 from prometheus_client.parser import text_fd_to_metric_families
 
 # Load the configuration file
-with open("conf_local.json") as f:
+with open("__test_oc_conf.json") as f:
     c = json.load(f)
 
 with open(c["auth_file"]) as f:
@@ -83,10 +83,12 @@ active = {
 urls = (
     # Generic URLs
     "/", "Home",
+    "/(meta)(/api/.+)", "Api",
     "/(wikidata)(/api/.+)", "Api",
     "/(index)(/api/.+)", "Api",
     "/index/([^/]+)(/api/.+)", "Api",
     "/index/sparql", "SparqlIndex",
+    "/meta/sparql", "SparqlMeta",
     "/index/search", "SearchIndex",
     "/index/browser/(.+)", "BrowserIndex",
     "/index/coci", "Coci",
@@ -203,6 +205,9 @@ web_logger = WebLogger("opencitations.net", c["log_dir"], [
     # comment this line only for test purposes
     {"REMOTE_ADDR": ["130.136.130.1", "130.136.2.47", "127.0.0.1"]}
 )
+
+meta_api_manager = APIManager(c["api_meta"])
+meta_doc_manager = HTMLDocumentationHandler(meta_api_manager)
 
 coci_api_manager = APIManager(c["api_coci"])
 coci_doc_manager = HTMLDocumentationHandler(coci_api_manager)
@@ -451,6 +456,9 @@ class Api:
         elif dataset == "ccc":
             man = ccc_api_manager
             doc = ccc_doc_manager
+        elif dataset == "meta":
+            man = meta_api_manager
+            doc = meta_doc_manager
 
         if man is None:
             raise web.notfound()
@@ -694,6 +702,12 @@ class Search:
 class SearchIndex(Search):
     def __init__(self):
         Search.__init__(self, render.search_index)
+
+
+class SparqlMeta(Sparql):
+    def __init__(self):
+        Sparql.__init__(self, c["sparql_endpoint_meta"],
+                        "OC-Meta", c["oc_base_url"]+"/meta/sparql")
 
 
 class SearchOC(Search):
