@@ -703,13 +703,6 @@ class SearchIndex(Search):
     def __init__(self):
         Search.__init__(self, render.search_index)
 
-
-class SparqlMeta(Sparql):
-    def __init__(self):
-        Sparql.__init__(self, c["sparql_endpoint_meta"],
-                        "OC-Meta", c["oc_base_url"]+"/meta/sparql")
-
-
 class SearchOC(Search):
     def __init__(self):
         Search.__init__(self, render.search)
@@ -846,6 +839,10 @@ class SparqlIndex(Sparql):
         Sparql.__init__(self, c["sparql_endpoint_index"],
                         "Indexes", c["oc_base_url"]+"/index/sparql")
 
+class SparqlMeta(Sparql):
+    def __init__(self):
+        Sparql.__init__(self, c["sparql_endpoint_meta"],
+                        "OC-Meta", c["oc_base_url"]+"/meta/sparql")
 
 class SparqlCCC(Sparql):
     def __init__(self):
