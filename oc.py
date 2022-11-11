@@ -47,7 +47,7 @@ from prometheus_client import Counter, CollectorRegistry, generate_latest, Gauge
 from prometheus_client.parser import text_fd_to_metric_families
 
 # Load the configuration file
-with open("__test_oc_conf.json") as f:
+with open("conf_local.json") as f:
     c = json.load(f)
 
 with open(c["auth_file"]) as f:
@@ -416,6 +416,19 @@ class Home:
 
 
 class Api:
+
+    def OPTIONS(self, dataset, call):
+        # remember to remove the slash at the end
+        org_ref = web.ctx.env.get('HTTP_REFERER')
+        if org_ref is not None:
+            org_ref = org_ref[:-1]
+        else:
+            org_ref = "*"
+        web.header('Access-Control-Allow-Origin', org_ref)
+        web.header('Access-Control-Allow-Credentials', 'true')
+        web.header('Access-Control-Allow-Methods', '*')
+        web.header('Access-Control-Allow-Headers', 'Authorization')
+
     def GET(self, dataset, call):
         validateAccessToken()
         man = None
@@ -443,9 +456,18 @@ class Api:
             raise web.notfound()
         else:
             if re.match("^/api/v[1-9][0-9]*/?$", call):
-                web.header('Access-Control-Allow-Origin', '*')
+                # remember to remove the slash at the end
+                org_ref = web.ctx.env.get('HTTP_REFERER')
+                if org_ref is not None:
+                    org_ref = org_ref[:-1]
+                else:
+                    org_ref = "*"
+
+                web.header('Access-Control-Allow-Origin', org_ref)
                 web.header('Access-Control-Allow-Credentials', 'true')
                 web.header('Content-Type', "text/html")
+                web.header('Access-Control-Allow-Methods', '*')
+                web.header('Access-Control-Allow-Headers', 'Authorization')
                 web_logger.mes()
                 return doc.get_documentation()[1]
             else:
@@ -461,9 +483,19 @@ class Api:
                     status_code, res, c_type = op.exec(
                         content_type=content_type)
                     if status_code == 200:
-                        web.header('Access-Control-Allow-Origin', '*')
+                        # remember to remove the slash at the end
+                        org_ref = web.ctx.env.get('HTTP_REFERER')
+                        if org_ref is not None:
+                            org_ref = org_ref[:-1]
+                        else:
+                            org_ref = "*"
+
+                        web.header('Access-Control-Allow-Origin', org_ref)
                         web.header('Access-Control-Allow-Credentials', 'true')
                         web.header('Content-Type', c_type)
+                        web.header('Access-Control-Allow-Methods', '*')
+                        web.header('Access-Control-Allow-Headers',
+                                   'Authorization')
                         web_logger.mes()
                         return res
                     else:
@@ -897,14 +929,38 @@ class Statistics:
         self.__file_regex = re.compile('oc-(\d\d\d\d)-(\d\d).prom')
         self.__dates_regex = re.compile('(\d+)-(\d+)_(\d+)-(\d+)')
 
+    def OPTIONS(self, date):
+        # remember to remove the slash at the end
+        org_ref = web.ctx.env.get('HTTP_REFERER')
+        if org_ref is not None:
+            if org_ref.endswith("/"):
+                org_ref = org_ref[:-1]
+        else:
+            org_ref = "*"
+        web.header('Access-Control-Allow-Origin', org_ref)
+        web.header('Access-Control-Allow-Credentials', 'true')
+        web.header('Access-Control-Allow-Methods', '*')
+        web.header('Access-Control-Allow-Headers', 'Authorization')
+
     def GET(self, date):
         validateAccessToken()
         web_logger.mes()
         file_path = ""
 
         # Allow origin
-        web.header('Access-Control-Allow-Origin', '*')
+        # remember to remove the slash at the end
+        # remember to remove the slash at the end
+        org_ref = web.ctx.env.get('HTTP_REFERER')
+        if org_ref is not None:
+            if org_ref.endswith("/"):
+                org_ref = org_ref[:-1]
+        else:
+            org_ref = "*"
+
+        web.header('Access-Control-Allow-Origin', org_ref)
         web.header('Access-Control-Allow-Credentials', 'true')
+        web.header('Access-Control-Allow-Methods', '*')
+        web.header('Access-Control-Allow-Headers', 'Authorization')
 
         # checks if any date has been specified, otherwise looks for the most recent statistics
         if(date != "last-month"):

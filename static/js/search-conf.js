@@ -1,5 +1,4 @@
 var search_conf = {
-//"sparql_endpoint": "http://localhost:8080/sparql",
 "sparql_endpoint": "https://opencitations.net/sparql",
 "prefixes": [
     {"prefix":"cito","iri":"http://purl.org/spar/cito/"},
@@ -89,7 +88,7 @@ var search_conf = {
       "name":"author_lname",
       "label": "With a specific last name",
       "placeholder": "Free-text e.g. Peroni",
-      "advanced": true,
+      //"advanced": true,
       "heuristics": [["lower_case","capitalize_1st_letter"]],
       "category": "author",
       "regex":"[-'a-zA-Z ]+$",
@@ -103,7 +102,7 @@ var search_conf = {
       "name":"author_fname",
       "label": "With a specific first name",
       "placeholder": "Free-text e.g. Silvio",
-      "advanced": true,
+      //"advanced": true,
       "heuristics": [["lower_case","capitalize_1st_letter"]],
       "category": "author",
       "regex":"[-'a-zA-Z ]+$",
@@ -141,8 +140,8 @@ var search_conf = {
       "name":"author_text",
       "label": "Having an author (last name)",
       "placeholder": "Free-text e.g. Shotton",
-      "advanced": true,
-      "freetext": true,
+      "advanced": false,
+      "freetext": false,
       "category": "document",
       "regex":"[-'a-zA-Z ]+$",
       "query": [

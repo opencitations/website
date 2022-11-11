@@ -119,7 +119,8 @@ $def with (pages, active, sp_title, sparql_endpoint)
                 <a class="social oc-purple" href="mailto:contact@opencitations.net"><i class="fa fa-envelope" aria-hidden="true"></i></a>
                 <a class="social oc-purple" href="http://www.twitter.com/opencitations"><i class="fa fa-twitter" aria-hidden="true"></i></a>
                 <a class="social oc-blue" href="http://github.com/opencitations"><i class="fa fa-github" aria-hidden="true"></i></a>
-                <a class="social oc-blue" href="https://opencitations.wordpress.com/"><i class="fa fa-wordpress" aria-hidden="true"></i></a>
+                <a class="social oc-blue" href="https://www.linkedin.com/company/opencitations/"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
+                <a class="social oc-blue" href="https://opencitations.hypotheses.org/"><i class="fa fa-newspaper-o" aria-hidden="true"></i></a>
             </p>
         </footer>
 
@@ -139,7 +140,7 @@ $def with (pages, active, sp_title, sparql_endpoint)
         <script>
           yasqe.options.sparql.endpoint = "$sparql_endpoint";
           var sparql_value = "";
-          if ("$sp_title" == "Index") {
+          if ("$sp_title" == "Indexes") {
             sparql_value = "PREFIX cito:<http://purl.org/spar/cito/>\n\nSELECT DISTINCT ?citing_entity ?cited_entity ?creation_date ?timespan WHERE {\n\tGRAPH <https://w3id.org/oc/index/coci/> {\n\t\t?citation a cito:Citation ;\n\t\t\tcito:hasCitingEntity ?citing_entity ;\n\t\t\tcito:hasCitationCreationDate ?creation_date ;\n\t\t\tcito:hasCitationTimeSpan ?timespan ;\n\t\t\tcito:hasCitedEntity ?cited_entity\n\t}\n} LIMIT 10";
           } else if ("$sp_title" == "CCC"){
             sparql_value = "PREFIX cito: <http://purl.org/spar/cito/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX datacite: <http://purl.org/spar/datacite/>\nPREFIX literal: <http://www.essepuntato.it/2010/06/literalreification/>\nPREFIX biro: <http://purl.org/spar/biro/>\nPREFIX frbr: <http://purl.org/vocab/frbr/core#>\nPREFIX c4o: <http://purl.org/spar/c4o/>\nSELECT ?cited ?cited_ref ?title ?url WHERE {\n\t<https://w3id.org/oc/ccc/br/070444> cito:cites ?cited .\n\tOPTIONAL { \n\t\t<https://w3id.org/oc/ccc/br/070444> frbr:part ?ref .\n\t\t?ref biro:references ?cited ;\n\t\t\tc4o:hasContent ?cited_ref \n\t}\n\tOPTIONAL { ?cited dcterms:title ?title }\n\tOPTIONAL {\n\t\t?cited datacite:hasIdentifier [\n\t\t\tdatacite:usesIdentifierScheme datacite:url ;\n\t\t\tliteral:hasLiteralValue ?url\n\t\t]\n\t}\n}";
@@ -148,7 +149,7 @@ $def with (pages, active, sp_title, sparql_endpoint)
           }
 
           //link both together
-          console.log(sparql_value);
+          //console.log(sparql_value);
           yasqe.setValue(sparql_value);
           yasqe.options.sparql.callbacks.complete = yasr.setResponse;
         </script>

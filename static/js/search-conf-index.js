@@ -21,7 +21,7 @@ var search_conf = {
       "placeholder": "DOI e.g. 10.1016/J.WEBSEM.2012.08.001",
       "advanced": true,
       "freetext": false,
-      "heuristics": [['lower_case','decodeURIStr']],
+      "heuristics": [['lower_case','encodeDOIURL']],
       "category": "citation",
       "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
       "query": [
@@ -36,7 +36,7 @@ var search_conf = {
       "placeholder": "DOI e.g. 10.1016/J.WEBSEM.2012.08.001",
       "advanced": true,
       "freetext": true,
-      "heuristics": [['lower_case','decodeURIStr']],
+      "heuristics": [['lower_case','encodeDOIURL']],
       "category": "citation",
       "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
       "query": [

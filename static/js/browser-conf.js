@@ -205,29 +205,29 @@ var browser_conf = {
                 //{"classes":["5px"]}
                 //{"fields": ["FREE-TEXT","in_cits_docs","FREE-TEXT"], "values": ["\xa0\xa0\xa0 by ",null," different documents"], "classes": ["metric-entry","imp-value","metric-entry"]}
             ],
-            "oscar_conf": {
-                "progress_loader":{
-                          "visible": false,
-                          "spinner": false,
-                          "title":"Loading the list of Documents ...",
-                          //"subtitle":"Be patient - this might take several seconds!"
-                          //"abort":{"title":"Abort", "href_link":""}
-                        }
-            },
-            "oscar": [
-              {
-                "query_text": "author_iri",
-                "rule": "author_works",
-                "label":"Author's documents",
-                "config_mod" : [
-      							{"key":"categories.[[name,document]].fields.[[title,Publisher]]" ,"value":"REMOVE_ENTRY"},
-      							{"key":"page_limit_def" ,"value":20},
-      							{"key":"categories.[[name,document]].fields.[[title,Year]].sort.default" ,"value":{"order": "desc"}},
-                    {"key":"progress_loader.visible" ,"value":false},
-                    {"key":"timeout.text" ,"value":""}
-      					]
-              }
-            ]
+            // "oscar_conf": {
+            //     "progress_loader":{
+            //               "visible": false,
+            //               "spinner": false,
+            //               "title":"Loading the list of Documents ...",
+            //               //"subtitle":"Be patient - this might take several seconds!"
+            //               //"abort":{"title":"Abort", "href_link":""}
+            //             }
+            // },
+            // "oscar": [
+            //   {
+            //     "query_text": "author_iri",
+            //     "rule": "author_works",
+            //     "label":"Author's documents",
+            //     "config_mod" : [
+      			// 				{"key":"categories.[[name,document]].fields.[[title,Publisher]]" ,"value":"REMOVE_ENTRY"},
+      			// 				{"key":"page_limit_def" ,"value":20},
+      			// 				{"key":"categories.[[name,document]].fields.[[title,Year]].sort.default" ,"value":{"order": "desc"}},
+            //         {"key":"progress_loader.visible" ,"value":false},
+            //         {"key":"timeout.text" ,"value":""}
+      			// 		]
+            //   }
+            // ]
           }
         }
       }
