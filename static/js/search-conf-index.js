@@ -17,7 +17,7 @@ var search_conf = {
 "rules":  [
     {
       "name":"citingdoi",
-      "label": "References of a specific document",
+      "label": "References of a specific document (DOI)",
       "placeholder": "DOI e.g. 10.1016/J.WEBSEM.2012.08.001",
       "advanced": true,
       "freetext": false,
@@ -32,7 +32,7 @@ var search_conf = {
     },
     {
       "name":"citeddoi",
-      "label": "Citations of a specific document",
+      "label": "Citations of a specific document (DOI)",
       "placeholder": "DOI e.g. 10.1016/J.WEBSEM.2012.08.001",
       "advanced": true,
       "freetext": true,
@@ -47,7 +47,7 @@ var search_conf = {
     },
     {
       "name":"oci",
-      "label": "Having a specific Open Citation Identifier (OCI)",
+      "label": "Data of a specific citation (OCI)",
       "placeholder": "OCI e.g: 0200101...-0200101...",
       "advanced": true,
       "freetext": false,
@@ -95,8 +95,8 @@ var search_conf = {
         {"value": "ext_data.citing_doi_citation.reference", "title": "Citing reference", "column_width":"19%", "type": "text"},
         {"value":"cited_doi", "value_map": ["decodeURIStr"], "title": "Cited DOI", "column_width":"12%", "type": "text", "sort":{"value": "cited_doi", "type":"text"}, "link":{"field":"cited_doi_iri","prefix":""}},
         {"value": "ext_data.cited_doi_citation.reference", "title": "Cited reference", "column_width":"19%", "type": "text"},
-        {"value":"creationdate", "title": "Creation", "column_width":"8%", "type": "text", "sort":{"value": "creationdate", "type":"text"},"filter":{"type_sort": "int", "min": 10000, "sort": "sum", "order": "desc"}},
-        {"value":"timespan", "value_map":["timespan_in_days"], "title": "Timespan (days)", "column_width":"13%", "type": "text", "sort":{"value": "timespan", "type":"int"}, "filter":{"type_sort": "int", "min": 10000, "sort": "value", "order": "desc"}}
+        {"value":"creationdate", "value_map":["creation_year"], "title": "Creation", "column_width":"8%", "type": "text", "sort":{"value": "creationdate", "type":"text"},"filter":{"type_sort": "int", "min": 10000, "sort": "sum", "order": "desc"}},
+        {"value":"timespan", "value_map":["timespan_in_months"], "title": "Timespan (months)", "column_width":"13%", "type": "text", "sort":{"value": "timespan", "type":"int"}, "filter":{"type_sort": "int", "min": 10000, "sort": "value", "order": "desc"}}
       ],
       "ext_data": {
         //"citing_doi_citation": {"name": call_crossref, "param": {"fields":["citing_doi"]}, "async": true},
@@ -104,9 +104,7 @@ var search_conf = {
         "cited_doi_citation": {"name": "call_crossref_4citation", "param": {"fields":["cited_doi"]}, "async": true}
       },
       "extra_elems":[
-        {"elem_type": "a","elem_value": "Back to search" ,"elem_class": "btn btn-primary left" ,"elem_innerhtml": "Back to search", "others": {"href": "/index/search"}},
-        {"elem_type": "br","elem_value": "" ,"elem_class": "" ,"elem_innerhtml": ""},
-        {"elem_type": "br","elem_value": "" ,"elem_class": "" ,"elem_innerhtml": ""},
+        {"elem_type": "a","elem_value": "Back to search" ,"elem_class": "btn btn-primary left" ,"elem_innerhtml": "Go to the search interface", "others": {"href": "/index/search"}}
       ]
     }
   ],
@@ -199,7 +197,11 @@ var heuristics = (function () {
 
         return new_str;
       }
-      function timespan_in_days(str) {
+      function creation_year(str) {
+        return str.substring(0, 4);
+      }
+
+      function _timespan_parts(str) {
         var new_str = "";
         var years = 0;
         var months = 0;
@@ -227,8 +229,19 @@ var heuristics = (function () {
           }
         }
 
-        return String(years * 365 + months * 30 + days);
+        return {"years":years,"months":months,"days":days};
+
       }
+
+      function timespan_in_days(str) {
+        var tparts = _timespan_parts(str);
+        return String(tparts.years * 365 + tparts.months * 30 + tparts.days);
+      }
+      function timespan_in_months(str) {
+        var tparts = _timespan_parts(str);
+        return String(tparts.years * 12 + tparts.months);
+      }
+
       function short_version(str, max_chars = 20) {
         var new_str = "";
         for (var i = 0; i < max_chars; i++) {
@@ -249,7 +262,9 @@ var heuristics = (function () {
         encodeURIStr: encodeURIStr,
         encodeDOIURL: encodeDOIURL,
         short_version: short_version,
+        creation_year: creation_year,
         timespan_in_days: timespan_in_days,
+        timespan_in_months: timespan_in_months,
         timespan_translate: timespan_translate
        }
 })();

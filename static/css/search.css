@@ -11,9 +11,15 @@
 /* ========================= */
 
 #search{
-  padding-top: 5%;
+  /* padding-top: 5%; */
   width:100%;
-  height:auto; overflow:auto
+  height:auto;
+  overflow:auto
+}
+
+#search_extra{
+  margin: 10px;
+  min-height: 50px;
 }
 
 #search_header{
@@ -49,7 +55,20 @@
 
 /* ===================== (0) Fixed search skeleton*/
 
+ul.search-elem{
+  list-style-type: none;
+  padding: 0px;
+}
 
+ul.search-elem li em {
+    font-style: normal;
+    font-weight: 500;
+    border-left: solid 2px #9931FC;
+    padding: 5px;
+}
+ul.search-elem li{
+  margin: 10px 10px;
+}
 
 /* (1) The table of results */
 /* ======================== */

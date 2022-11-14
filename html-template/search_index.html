@@ -75,19 +75,20 @@ $def with (pages, active, query_string)
 
             </div>
 
-            <div class="cover left">
+            <div class="cover">
 
-              <h3><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes Search Interface</h3>
-              <p style="text-align:left;">This interface let you perform queries on all the <b><a href="/index">indexes</a></b>.
-              Here we list some query examples:</p>
-              <ul>
-                  <li>Retrieve the citation data for all the references to other works appearing in the bibliographic entity identified by the input DOI: <a href="/index/search?text=10.1186%2F1756-8722-6-59&rule=citingdoi">10.1186/1756-8722-6-59</a> </li>
-                  <li>Retrieve the citation data for all the references appearing in other works to the bibliographic entity identified by the input DOI: <a href="/index/search?text=10.1186%2F1756-8722-5-31&rule=citeddoi">10.1186/1756-8722-5-31</a> </li>
-                  <li>Retrieve the citation data for the citation identified by the input Open Citation Identifier (OCI): <a href="/index/search?text=02001010806360107050663080702026306630509-02001010806360107050663080702026305630301&rule=oci">02001010806360107050663080702026306630509-020010...</a> </li>
-              </ul>
+              <div class="left">
+                <h3><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes Search Interface</h3>
+                <p style="text-align:left;">Here you can perform queries on all the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> <a href="/index">indexes</a>.
+                Such as:</p>
+                <ul class="search-elem">
+                <li><em>REFERENCES:</em> get the references of a document with DOI: <a href="/index/search?text=10.1186%2F1756-8722-6-59&rule=citingdoi">10.1186/1756-8722-6-59</a> </li>
+                <li><em>CITATIONS:</em> get the citations of a document with DOI: <a href="/index/search?text=10.1186%2F1756-8722-5-31&rule=citeddoi">10.1186/1756-8722-5-31</a> </li>
+                <li><em>A CITATION:</em> get the data of a citation with OCI: <a href="/index/search?text=02001010806360107050663080702026306630509-02001010806360107050663080702026305630301&rule=oci">02001010806360107050663080702026306630509-02001010806360107050663080702026305630301</a> </li>
+                </ul>
+              </div>
+              <div class="__oscar__" data-type="advanced" data-view="rows_per_page export_results sort_results" data-filter="limit_results filter_fields"></div>              
             </div>
-
-            <div class="__oscar__" data-type="advanced" data-view="rows_per_page export_results sort_results" data-filter="limit_results filter_fields"></div>
 
         </div>
 
