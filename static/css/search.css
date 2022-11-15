@@ -3,6 +3,7 @@
 
 :root {
   --main-bg-color: #9931FC;
+  --main-bg-color-opacque: rgba(154, 49, 252,0.7);
   --hover_color: #2D22DE;
   --alert_color: #990000;
 }
@@ -239,18 +240,20 @@ select.custom::-ms-expand {
   margin-bottom:4%;
 }
 
-.btn-primary {
+.__oscar__ .btn-primary {
     background: #ffffff;
     color: var(--main-bg-color);
     border-color: var(--main-bg-color);
+    transition: 0.5s;
 }
 
-.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+.__oscar__ .btn-primary:hover, .__oscar__ .btn-primary:focus, .__oscar__ .btn-primary:active, .__oscar__ .btn-primary.active, .open > .dropdown-toggle.btn-primary {
     background: var(--main-bg-color);
+    border-color: var(--main-bg-color);
     color: #ffffff;
 }
 
-.btn-primary:active, .btn-primary.active {
+.__oscar__ .btn-primary:active, .__oscar__ .btn-primary.active {
     background: var(--main-bg-color);
     box-shadow: none;
     border-color: var(--main-bg-color);
@@ -267,6 +270,7 @@ select.custom::-ms-expand {
 .filter-values-tab{
   table-layout: fixed;
   display:table;
+  margin-bottom: 5px;
 }
 .filter-values-tab>tbody>tr>td{
   border-top: none;
@@ -299,6 +303,29 @@ td ar + ar {
 .filter_innervalues{
   overflow-y: scroll;
   max-height: 300px;
+  padding-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+/* width */
+.filter_innervalues::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+.filter_innervalues::-webkit-scrollbar-track {
+  background: none;
+}
+
+/* Handle */
+.filter_innervalues::-webkit-scrollbar-thumb {
+  background: var(--main-bg-color-opacque);
+}
+
+/* Handle on hover */
+.filter_innervalues::-webkit-scrollbar-thumb:hover {
+  background: var(--main-bg-color-opacque);
 }
 
 /* ========================== (3) The search filter section */
@@ -465,11 +492,12 @@ a.search-a:hover {
 
 .slider {
     -webkit-appearance: none;
-    width: 85%;
+    width: 95%!important;
     height: 25px;
     background: #f2f2f2;
     border-style:solid;
-    border-width: 1px;
+    border-width: 0.5px;
+    border-radius: 5px;
     border-color: var(--main-bg-color);
     outline: none;
     opacity: 0.5;
@@ -484,8 +512,9 @@ a.search-a:hover {
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 5px;
+    width: 15px;
     height: 25px;
+  border-radius: 5px;
     background: var(--main-bg-color);
     cursor: pointer;
 }
@@ -502,6 +531,7 @@ input[type=range]::-moz-range-track {
 }
 
 .slider-footer{
+  width: 95%;
 }
 /* ========================== Slider class */
 

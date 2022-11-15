@@ -104,7 +104,7 @@ var search_conf = {
         "cited_doi_citation": {"name": "call_crossref_4citation", "param": {"fields":["cited_doi"]}, "async": true}
       },
       "extra_elems":[
-        {"elem_type": "a","elem_value": "Back to search" ,"elem_class": "btn btn-primary left" ,"elem_innerhtml": "Go to the search interface", "others": {"href": "/index/search"}}
+        {"elem_type": "a","elem_value": "Back to search" ,"elem_class": "btn btn-primary left" ,"elem_innerhtml": "Show the search interface", "others": {"href": "/index/search"}}
       ]
     }
   ],
