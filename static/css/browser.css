@@ -3,6 +3,23 @@ body {
   padding-right: 5%;
   padding-left: 5%;
   text-align: center;
+  background-color: #edf0f2;
+}
+
+a{
+    color: black;
+    text-decoration: none!important;
+    background-image: -webkit-gradient(linear,left top, left bottom,color-stop(50%, transparent),color-stop(0, rgba(154, 49, 252,.5)));
+    background-image: linear-gradient(180deg,transparent 50%,rgba(154, 49, 252,.5) 0);
+    background-position-y: 5px;
+    background-position-x: 0px;
+    background-repeat: no-repeat;
+    transition: 0.3s!important;
+}
+
+a:hover{
+  color: black!important;
+  background-position-y: 9px!important;
 }
 
 .site-wrapper-inner {
@@ -30,23 +47,32 @@ body.lucinda-cover{
 }
 
 #browser_header{
-  border-color: #f2f2f2;
-  border-width: 10px;
+  border-color: black;
+  border-width: 1px;
   border-style: solid;
-  padding-bottom: 5px;
+  padding-bottom: 10px;
   border-left:none;
   border-top:none;
   border-right:none;
 }
+#browser_header .cites-container{
+  padding-left: 10px;
+  padding-right: 10px;
+  color: gray;
+  font-size: 120%;
+}
 
 .browser-metrics{
-  background-color: rgba(243, 230, 255,0.17);
+  background-color: white;
   display:inline;
   float:right;
-  width: 28%;
+  width: 25%;
   min-height: 200px;
-  border-left: solid;
-  border-color: #f2f2f2;
+  border: solid 0.5px;
+  border-color: black;
+  border-radius: 10px;
+  margin: 2%;
+  padding: 10px;
 }
 
 #browser_view div{
@@ -80,8 +106,8 @@ body.lucinda-cover{
 #browser_view_switch > .active > a,
 #browser_view_switch > .active > a:hover,
 #browser_view_switch > .active > a:focus {
-  color: #336699;
-  border-bottom-color: #336699 ;
+
+
 }
 
 
@@ -99,6 +125,7 @@ body.lucinda-cover{
 .browser-header-tab tr td {
   border-top: none !important;
   font-size: 125%;
+  padding-bottom: 10px;
 }
 .browser-header-tab tr th {
   font-size: 230%;
@@ -114,8 +141,11 @@ body.lucinda-cover{
   width: 100%;
   border: none !important;
 }
+.browser-details-tab tr{
+}
 .browser-details-tab tr td {
   font-size: 120%;
+  padding-bottom: 5px;
 }
 .browser-details-tab tr th {
   font-size: 140%;
@@ -143,8 +173,8 @@ body.lucinda-cover{
 
 /*customize dynamic elems added*/
 .imp-value{
-  color: #336699;
-  font-size: 145%;
+  /* color: #336699; */
+  font-size: 135%;
 }
 
 .metric-entry{
@@ -156,7 +186,19 @@ body.lucinda-cover{
 }
 
 .metrics-title{
-  font-size: 145%;
+  font-size: 165%;
+}
+
+.subtitle-title{
+  color: gray;
+  font-size: 110%;
+  margin-right: 10px;
+}
+.title-entry{
+  color: gray;
+  font-size: 110%;
+  padding-bottom: 20px;
+  margin-right: 10px;
 }
 
 #oscar_nav {

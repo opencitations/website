@@ -1,5 +1,5 @@
 var browser_conf = {
-  "sparql_endpoint": "https://w3id.org/oc/index/sparql",
+  "sparql_endpoint": "https://opencitations.net/index/sparql",
 
   "prefixes": [
       {"prefix":"cito","iri":"http://purl.org/spar/cito/"},
@@ -36,13 +36,16 @@ var browser_conf = {
 
                     OPTIONAL{
       		               ?iri a cito:JournalSelfCitation .
-      		               BIND('True' as ?isJSelfCitation).
+      		               BIND('True' as ?c_isJSelfCitation).
       		          }
 
                     OPTIONAL{
       		               ?iri a cito:AuthorSelfCitation .
-      		               BIND('True' as ?isASelfCitation).
+      		               BIND('True' as ?c_isASelfCitation).
       		          }
+
+                    BIND(COALESCE(?c_isJSelfCitation, "False") AS ?isJSelfCitation) .
+                    BIND(COALESCE(?c_isASelfCitation, "False") AS ?isASelfCitation) .
                   }
                 }
           `],
@@ -62,10 +65,10 @@ var browser_conf = {
                   {"func": [timespan_translate]}
               ],
               "isJSelfCitation":[
-                  {"func": [make_it_empty]}
+                  {"func": [replace_bool]}
               ],
               "isASelfCitation":[
-                  {"func": [make_it_empty]}
+                  {"func": [replace_bool]}
               ]
           },
 
@@ -82,15 +85,15 @@ var browser_conf = {
             },*/
             "header": [
                 {"classes":["40px"]},
-                {"fields": ["citing_doi","FREE-TEXT","cited_doi"], "values":[null," cites ", null], "classes":["header-title text-success","metric-entry text-capitalize","header-title text-info"]},
+                {"fields": ["citing_doi","FREE-TEXT","cited_doi"], "values":[null," cites ", null], "classes":["header-title","cites-container","header-title"]},
 
                 {"classes":["10px"]},
 
                 {
                   "fields": ["FREE-TEXT", "EXT-VAL"],
-                  "values": ["Citing entity: ", "Loading ..."],
+                  "values": ["Citing entity reference: ", "Loading ..."],
                   "id":[null,"citing_val"],
-                  "classes": ["subtitle","subtitle text-success"],
+                  "classes": ["subtitle-title","subtitle text-success"],
                   "param":[null,{'data_param': {'format':'ONE-VAL'}}],
                   'respects':[[],[not_undefined,not_unknown]]
                 },
@@ -99,27 +102,28 @@ var browser_conf = {
 
                 {
                   "fields": ["FREE-TEXT", "EXT-VAL"],
-                  "values": ["Cited entity: ", "Loading ..."],
+                  "values": ["Cited entity reference: ", "Loading ..."],
                   "id":[null,"cited_val"],
-                  "classes": ["subtitle","subtitle text-info"],
+                  "classes": ["subtitle-title","subtitle text-info"],
                   "param":[null,{'data_param': {'format':'ONE-VAL'}}],
                   'respects':[[],[not_undefined,not_unknown]]
                 }
             ],
             "details": [
               {"classes":["20px"]},
-              {"fields": ["FREE-TEXT","short_iri"], "values":["OCI : ", null] },
-              {"fields": ["FREE-TEXT","creationdate"], "values":["Creation date: ", null] },
+              {"fields": ["FREE-TEXT","short_iri"], "values":["OCI: ", null], "classes": ["title-entry",""] },
+              {"fields": ["FREE-TEXT","creationdate"], "values":["Creation date: ", null], "classes": ["title-entry",""] },
               //{"fields": ["FREE-TEXT","short_type"], "values":["Document type: ",null], "concat_style":{"short_type": "last"} }
             ],
             "metrics": [
-              {"classes":["30px"]},
-              {"fields": ["FREE-TEXT"], "values": ["Metrics"], "classes": ["metrics-title"]},
-              {"classes":["15px"]},
-              {"fields": ["FREE-TEXT","timespan","FREE-TEXT"], "values": ["The timespan is ",null,""], "classes": ["metric-entry","imp-value",""]},
-              {"classes":["5px"]},
-              {"fields": ["FREE-TEXT","isJSelfCitation"], "values":["Is a Journal Self Citation",null], "respects":[[],[not_unknown]], "classes": ["imp-value"]},
-              {"fields": ["FREE-TEXT","isASelfCitation"], "values":["Is an Author Self Citation",null], "respects":[[],[not_unknown]], "classes": ["imp-value"]}
+              {"classes":["10px"]},
+              {"fields": ["FREE-TEXT"], "values": ["<i class='glyphicon glyphicon-stats'></i> Metrics"], "classes": ["metrics-title"]},
+              {"classes":["20px"]},
+              {"fields": ["FREE-TEXT","timespan"], "values": ["The timespan is ",null], "classes": ["metric-entry","imp-value"]},
+              {"classes":["12px"]},
+              {"fields": ["isJSelfCitation","FREE-TEXT"], "values":[null,"a Journal self citation"], "classes": ["imp-value","metric-entry"]},
+              {"classes":["6px"]},
+              {"fields": ["isASelfCitation","FREE-TEXT"], "values":[null,"an Author self citation"], "classes": ["imp-value","metric-entry"]}
             ],
             "graphics": {
               "citations_in_time":{
@@ -252,10 +256,10 @@ var browser_conf = {
                   {"func": [timespan_translate]}
               ],
               "isJSelfCitation":[
-                  {"func": [make_it_empty]}
+                  {"func": [replace_bool]}
               ],
               "isASelfCitation":[
-                  {"func": [make_it_empty]}
+                  {"func": [replace_bool]}
               ]
           },
 
@@ -497,10 +501,11 @@ function not_empty(val){
   return (val != '')
 }
 
-function make_it_empty(val){
+function replace_bool(val){
   if (val == 'True') {
-    return '';
+    return 'Is ';
   }
+  return 'Not ';
 }
 
 function title_transform(val) {
