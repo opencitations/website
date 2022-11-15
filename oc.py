@@ -351,7 +351,7 @@ class AuthCode:
        %s %s</body>
 </html>
 """ % (
-            c["oc_base_url"]+"/static/img/logo.png",
+            "https://raw.githubusercontent.com/opencitations/logo/master/logo-transparent.png",
             email_msg["description"],
             email_msg["token"],
             email_link,
