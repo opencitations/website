@@ -8,7 +8,7 @@ $def with (pages, active)
 
 
         <link rel="icon" href="/static/favicon.ico" />
-        <title>OpenCitations - Datasets</title>
+        <title>OpenCitations - OpenCitations Meta</title>
 
         <!-- Bootstrap core CSS -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
@@ -75,31 +75,21 @@ $def with (pages, active)
           </div>
 
             <div class="cover left">
-                <h3>Datasets</h3>
-                <p><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> provides three main datasets.
-                <!--You can check the statistics of the <a href="/statistics#indexed_records">OpenCitations datasets coverage throughout the time.</a>--></p>
+                <h3><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta</h3>
+                <p>The <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta (OC-Meta) is [... TODO ...]</p>
+
+                <p>[... TODO ...]</p>
+
+                <h4>Access to OC-Meta data</h4>
+                <p>All the data in META:</p>
                 <ul>
-                    <li>
-                        <p><strong><a href="/index"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes</a>.</strong> The Indexes contain information about the citations themselves, in which the citations, instead of being considered as simple links, are treated as <a href="https://opencitations.hypotheses.org/816">first-class data entities</a> in their own right. This permits each Index to endow each citation with descriptive properties, such as the date on which the citation was created, its timespan (i.e.the interval between the publication date of the cited entity and the publication date of the citing entity), and its type (e.g. whether or not it is a self-citation). These Indexes do not store metadata about the citing and cited bibliographic entities internally. Rather, these entities are identified in the Indexes by their unique identifiers (e.g. DOIs), enabling bibliographic information to be retrieved on-the-fly upon request by means of the external APIs (see the operation “metadata” at
-                          <a href="https://w3id.org/oc/index/api/v1">https://w3id.org/oc/index/api/v1</a> for additional information). The Indexes currently available are:</p>
-                        <ul>
-                            <li><p><a href="/index/coci">COCI, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of Crossref open DOI-to-DOI citations</a>;</p></li>
-                            <li><p><a href="/index/doci">DOCI, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of DataCite open DOI-to-DOI citations</a>;</p></li>
-                            <li><p><a href="/index/noci">NOCI, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of the National Library of Medicine open PMID-to-PMID citations</a>;</p></li>
-                            <li><p><a href="/index/croci">CROCI, the Crowdsourced Open Citations Index</a>.</p></li>
-                        </ul>
-                    </li>
-                    <li><p><strong><a href="/meta"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta (OC-Meta)</a>.</strong> The OC-Meta [... TODO ...].</p></li>
-                    <li><p><strong><a href="/corpus"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus (OCC)</a>.</strong> The OCC is a database of open downloadable bibliographic and citation data recorded in RDF and released under a Creative Commons CC0 public domain waiver. The current content of the OCC has been mainly derived from biomedical articles within the <a href="https://www.ncbi.nlm.nih.gov/pmc/tools/openftlist/">Open Access Subset of PubMed Central</a>, harvested using the <a href="https://europepmc.org/RestfulWebService">Europe PubMed Central REST API</a>.</p></li>
-                    <li><p><strong><a href="/ccc"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> in Context Corpus (CCC)</a>.</strong>
-                      The CCC is a RDF dataset including bibliographic and citation data mined from the full-text of articles,
-                      such as in-text references (e.g. (Daquino et al. 2020)), structural elements (sentences, paragraphs, footnotes, captions, tables, and sections), rhetorical elements (e.g. section "Methods"), and the sequential number of the structural elements including in-text reference pointers (e.g. sentence 5, paragraph 2, section 1 "Introduction").
-                      Like OCC, CCC has been mainly derived from biomedical articles
-                      within the <a href="https://www.ncbi.nlm.nih.gov/pmc/tools/openftlist/">Open Access Subset of PubMed Central</a>,
-                      harvested using the <a href="https://europepmc.org/RestfulWebService">Europe PubMed Central REST API</a>.
-                      CCC is released under a Creative Commons CC0 public domain waiver. </p></li>
+                    <li><p>can be queried by means of the <a href="/meta/sparql"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta SPARQL endpoint</a>;</p></li>
+                    <li><p>can be retrieved by using the <a href="/meta/api/v1">META REST API</a>;</p></li>
+                    <li><p>can be searched by using the <a href="/meta/search"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta Search Interface</a>;</p></li>
+                    <li><p>are available as <a href="/download#meta">dumps</a> on <a href="https://figshare.com">Figshare</a> in CSV, N-Triples and Scholix.</p></li>
                 </ul>
-            </div>
+
+          </div>
         </div>
 
         <footer>

@@ -70,7 +70,10 @@ pages = [
 active = {
     "corpus": "datasets",
     "index": "datasets",
+    "meta": "datasets",
     "coci": "datasets",
+    "doci": "datasets",
+    "noci": "datasets",
     "croci": "datasets",
     "ccc": "datasets",
     "oci": "tools",
@@ -92,9 +95,12 @@ urls = (
     "/index/search", "SearchIndex",
     "/index/browser/(.+)", "BrowserIndex",
     "/index/coci", "Coci",
+    "/index/doci", "Doci",
+    "/index/noci", "Noci",
     "/index/croci", "Croci",
     "/index/coci/(.*)", "CociContentNegotiation",
     "/index/croci/(ci/.*)?", "CrociContentNegotiation",
+    "/meta", "Meta",
 
     # CCC related urls
     "/(ccc)(/api/.+)", "Api",
@@ -671,10 +677,28 @@ class CCC:
         return render.ccc(pages, active["ccc"])
 
 
+class Meta:
+    def GET(self):
+        web_logger.mes()
+        return render.meta(pages, active["meta"])
+
+
 class Coci:
     def GET(self):
         web_logger.mes()
         return render.coci(pages, active["coci"])
+
+
+class Doci:
+    def GET(self):
+        web_logger.mes()
+        return render.doci(pages, active["doci"])
+
+
+class Noci:
+    def GET(self):
+        web_logger.mes()
+        return render.noci(pages, active["noci"])
 
 
 class Croci:
