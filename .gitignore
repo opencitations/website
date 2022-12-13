@@ -13,3 +13,4 @@ api/
 Dockerfile
 requirements.txt
 demo/
+.mypy_cache

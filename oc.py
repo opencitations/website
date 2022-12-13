@@ -71,6 +71,7 @@ active = {
     "corpus": "datasets",
     "index": "datasets",
     "coci": "datasets",
+    "doci": "datasets",
     "croci": "datasets",
     "ccc": "datasets",
     "oci": "tools",
@@ -90,6 +91,7 @@ urls = (
     "/index/search", "SearchIndex",
     "/index/browser/(.+)", "BrowserIndex",
     "/index/coci", "Coci",
+    "/index/doci", "Doci",
     "/index/croci", "Croci",
     "/index/coci/(.*)", "CociContentNegotiation",
     "/index/croci/(ci/.*)?", "CrociContentNegotiation",
@@ -204,8 +206,14 @@ web_logger = WebLogger("opencitations.net", c["log_dir"], [
     {"REMOTE_ADDR": ["130.136.130.1", "130.136.2.47", "127.0.0.1"]}
 )
 
+doci_api_manager = APIManager(c["api_doci"])
+doci_doc_manager = HTMLDocumentationHandler(doci_api_manager)
+
 coci_api_manager = APIManager(c["api_coci"])
 coci_doc_manager = HTMLDocumentationHandler(coci_api_manager)
+
+#coci_api_manager_v2 = APIManager(c["api_coci_v2"])
+#coci_doc_manager_v2 = HTMLDocumentationHandler(coci_api_manager_v2)
 
 croci_api_manager = APIManager(c["api_croci"])
 croci_doc_manager = HTMLDocumentationHandler(croci_api_manager)
@@ -440,6 +448,12 @@ class Api:
         elif dataset == "coci":
             man = coci_api_manager
             doc = coci_doc_manager
+            #if "v2" in call:
+            #    man = coci_api_manager_v2
+            #    doc = coci_doc_manager_v2
+        elif dataset == "doci":
+            man = doci_api_manager
+            doc = doci_doc_manager
         elif dataset == "croci":
             man = croci_api_manager
             doc = croci_doc_manager
@@ -668,6 +682,12 @@ class Coci:
     def GET(self):
         web_logger.mes()
         return render.coci(pages, active["coci"])
+
+
+class Doci:
+    def GET(self):
+        web_logger.mes()
+        return render.doci(pages, active["doci"])
 
 
 class Croci:
