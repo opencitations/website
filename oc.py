@@ -94,6 +94,7 @@ urls = (
     "/index/doci", "Doci",
     "/index/croci", "Croci",
     "/index/coci/(.*)", "CociContentNegotiation",
+    "/index/doci/(.*)", "DociContentNegotiation",
     "/index/croci/(ci/.*)?", "CrociContentNegotiation",
 
     # CCC related urls
@@ -927,6 +928,17 @@ class CociContentNegotiation(ContentNegotiation):
                                         "^.+/ci/(.+)$", u)[0]
                                     if "/ci/" in u else "provenance agent 1" if "/pa/1" in u
                                     else "COCI")
+
+
+class DociContentNegotiation(ContentNegotiation):
+    def __init__(self):
+        ContentNegotiation.__init__(self, c["index_base_url"], c["doci_local_url"],
+                                    context_path=c["ocdm_json_context_path"],
+                                    from_triplestore=c["sparql_endpoint_index"],
+                                    label_func=lambda u: "oci:%s" % re.findall(
+                                        "^.+/ci/(.+)$", u)[0]
+                                    if "/ci/" in u else "provenance agent 1" if "/pa/1" in u
+                                    else "DOCI")
 
 
 class CrociContentNegotiation(ContentNegotiation):
