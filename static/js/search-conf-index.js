@@ -1,5 +1,5 @@
 var search_conf = {
-"sparql_endpoint": "https://opencitations.net/index/sparql",
+"sparql_endpoint": "http://127.0.0.1:3001/blazegraph/sparql",
 "prefixes": [
     {"prefix":"cito","iri":"http://purl.org/spar/cito/"},
     {"prefix":"dcterms","iri":"http://purl.org/dc/terms/"},
@@ -26,7 +26,8 @@ var search_conf = {
       "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
       "query": [
             "{",
-            "?iri cito:hasCitingEntity <http://dx.doi.org/[[VAR]]> .",
+            "VALUES ?citing_iri {<https://doi.org/[[VAR]]> <http://dx.doi.org/[[VAR]]>} .",
+            "?iri cito:hasCitingEntity citing_iri .",
             "}"
       ]
     },
@@ -41,7 +42,8 @@ var search_conf = {
       "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
       "query": [
             "{",
-            "?iri cito:hasCitedEntity <http://dx.doi.org/[[VAR]]> .",
+            "VALUES ?cited_iri {<https://doi.org/[[VAR]]> <http://dx.doi.org/[[VAR]]>} .",
+            "?iri cito:hasCitedEntity ?cited_iri .",
             "}"
       ]
     },
@@ -55,7 +57,7 @@ var search_conf = {
       "regex":"(\\d{1,}-\\d{1,})",
       "query": [`
         {
-          VALUES ?iri { <https://w3id.org/oc/index/coci/ci/[[VAR]]> <https://w3id.org/oc/index/croci/ci/[[VAR]]> }
+          VALUES ?iri { <https://w3id.org/oc/index/coci/ci/[[VAR]]> <https://w3id.org/oc/index/doci/ci/[[VAR]]> <https://w3id.org/oc/index/croci/ci/[[VAR]]> }
         }
         `
       ]
@@ -68,35 +70,36 @@ var search_conf = {
       "label": "Citation",
       "macro_query": [
         `
-            SELECT DISTINCT ?iri ?browser ?short_iri ?citing_doi ?citing_doi_iri ?cited_doi ?cited_doi_iri ?creationdate ?timespan
+            SELECT DISTINCT ?iri ?source ?browser ?short_iri ?citing_doi ?citing_doi_iri ?cited_doi ?cited_doi_iri ?creationdate ?timespan
                         WHERE  {
                         [[RULE]]
-                        hint:Prior hint:runFirst true .
+                        GRAPH ?g {
 
-                        #Consider citing/cited DOI a must field
-                        BIND(STRAFTER(STR(?iri), '/ci/') as ?short_iri) .
-                        ?iri cito:hasCitingEntity ?citing_doi_iri .
-                        BIND(REPLACE(STR(?citing_doi_iri), 'http://dx.doi.org/', '', 'i') as ?citing_doi) .
-                        ?iri cito:hasCitedEntity ?cited_doi_iri .
-                        BIND(REPLACE(STR(?cited_doi_iri), 'http://dx.doi.org/', '', 'i') as ?cited_doi) .
+                            BIND(STRAFTER(STR(?iri), '/ci/') as ?short_iri) .
+                            ?iri cito:hasCitingEntity ?citing_doi_iri .
+                            BIND(STRAFTER(str(?citing_doi_iri), ".org/") AS ?citing_doi)
+                            ?iri cito:hasCitedEntity ?cited_doi_iri .
+                            BIND(STRAFTER(str(?cited_doi_iri), ".org/") AS ?cited_doi)
 
-                        #we consider as optional only the creation date and the timespan of the citation
-                        OPTIONAL {
-                            ?iri cito:hasCitationCreationDate ?creationdate .
-                            ?iri cito:hasCitationTimeSpan ?timespan .
-                          }
-                        BIND(REPLACE(STR(?iri), '/index/', '/index/browser/', 'i') as ?browser) .
+                            OPTIONAL {
+                                ?iri cito:hasCitationCreationDate ?creationdate .
+                                ?iri cito:hasCitationTimeSpan ?timespan .
+                              }
+                            BIND(REPLACE(STR(?iri), '/index/', '/index/browser/', 'i') as ?browser) .
+                            BIND(STRAFTER(str(?g), "/index/") AS ?source)
+                        }
             }
             `
       ],
       "fields": [
         {"iskey": true, "value":"short_iri", "value_map": [], "limit_length": 20, "title": "OCI","column_width":"10%", "type": "text", "sort":{"value": "short_iri", "type":"text"}, "link":{"field":"browser","prefix":""}},
+        {"value":"source", "value_map": [],"title": "Sourcce", "column_width":"5%", "type": "text", "sort":{"value": "source", "type":"text"}},
         {"value":"citing_doi", "value_map": ["decodeURIStr"],"title": "Citing DOI", "column_width":"12%", "type": "text", "sort":{"value": "citing_doi", "type":"text"}, "link":{"field":"citing_doi_iri","prefix":""}},
         {"value": "ext_data.citing_doi_citation.reference", "title": "Citing reference", "column_width":"19%", "type": "text"},
         {"value":"cited_doi", "value_map": ["decodeURIStr"], "title": "Cited DOI", "column_width":"12%", "type": "text", "sort":{"value": "cited_doi", "type":"text"}, "link":{"field":"cited_doi_iri","prefix":""}},
         {"value": "ext_data.cited_doi_citation.reference", "title": "Cited reference", "column_width":"19%", "type": "text"},
         {"value":"creationdate", "value_map":["creation_year"], "title": "Creation", "column_width":"8%", "type": "text", "sort":{"value": "creationdate", "type":"text"},"filter":{"type_sort": "int", "min": 10000, "sort": "sum", "order": "desc"}},
-        {"value":"timespan", "value_map":["timespan_in_months"], "title": "Timespan (months)", "column_width":"13%", "type": "text", "sort":{"value": "timespan", "type":"int"}, "filter":{"type_sort": "int", "min": 10000, "sort": "value", "order": "desc"}}
+        {"value":"timespan", "value_map":["timespan_in_months"], "title": "Timespan (months)", "column_width":"8%", "type": "text", "sort":{"value": "timespan", "type":"int"}, "filter":{"type_sort": "int", "min": 10000, "sort": "value", "order": "desc"}}
       ],
       "ext_data": {
         //"citing_doi_citation": {"name": call_crossref, "param": {"fields":["citing_doi"]}, "async": true},
