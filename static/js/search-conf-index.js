@@ -1,5 +1,5 @@
 var search_conf = {
-"sparql_endpoint": "http://127.0.0.1:3001/blazegraph/sparql",
+"sparql_endpoint": "https://test.opencitations.net/index/sparql",
 "prefixes": [
     {"prefix":"cito","iri":"http://purl.org/spar/cito/"},
     {"prefix":"dcterms","iri":"http://purl.org/dc/terms/"},
