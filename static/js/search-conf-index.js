@@ -92,14 +92,14 @@ var search_conf = {
             `
       ],
       "fields": [
-        {"iskey": true, "value":"short_iri", "value_map": [], "limit_length": 20, "title": "OCI","column_width":"8%", "type": "text", "sort":{"value": "short_iri", "type":"text"}, "link":{"field":"browser","prefix":""}},
-        {"value":"source", "value_map": [],"title": "Source", "column_width":"10%", "type": "text", "sort":{"value": "source", "type":"text"}},
+        {"value":"source", "value_map": ["map_source"],"title": "Source", "column_width":"10%", "type": "text", "sort":{"value": "source", "type":"text"}},
         {"value":"citing_doi", "value_map": ["decodeURIStr"],"title": "Citing", "column_width":"12%", "type": "text", "sort":{"value": "citing_doi", "type":"text"}, "link":{"field":"citing_doi_iri","prefix":""}},
         {"value": "ext_data.citing_doi_citation.reference", "title": "Citing\nreference", "column_width":"18%", "type": "text"},
         {"value":"cited_doi", "value_map": ["decodeURIStr"], "title": "Cited", "column_width":"12%", "type": "text", "sort":{"value": "cited_doi", "type":"text"}, "link":{"field":"cited_doi_iri","prefix":""}},
         {"value": "ext_data.cited_doi_citation.reference", "title": "Cited\nreference", "column_width":"18%", "type": "text"},
         {"value":"creationdate", "value_map":["creation_year"], "title": "Creation", "column_width":"10%", "type": "text", "sort":{"value": "creationdate", "type":"text"},"filter":{"type_sort": "int", "min": 10000, "sort": "sum", "order": "desc"}},
-        {"value":"timespan", "value_map":["timespan_in_months"], "title": "Timespan\n(months)", "column_width":"12%", "type": "text", "sort":{"value": "timespan", "type":"int"}, "filter":{"type_sort": "int", "min": 10000, "sort": "value", "order": "desc"}}
+        {"value":"timespan", "value_map":["timespan_in_months"], "title": "Timespan\n(months)", "column_width":"12%", "type": "text", "sort":{"value": "timespan", "type":"int"}, "filter":{"type_sort": "int", "min": 10000, "sort": "value", "order": "desc"}},
+        {"iskey": true, "value":"short_iri", "value_map": ["ci_label"], "limit_length": 20, "title": "","column_width":"8%", "type": "text", "sort":{"value": "short_iri", "type":"text"}, "link":{"field":"browser","prefix":""}}
       ],
       "ext_data": {
         //"citing_doi_citation": {"name": call_crossref, "param": {"fields":["citing_doi"]}, "async": true},
@@ -146,6 +146,12 @@ var heuristics = (function () {
       }
       function capitalize_1st_letter(str){
         return str.charAt(0).toUpperCase() + str.slice(1);
+      }
+      function ci_label(str) {
+        return "Browse >";
+      }
+      function map_source(str) {
+        return str.toUpperCase().replace("/","");
       }
       function decodeURIStr(str) {
         return decodeURIComponent(str);
@@ -261,6 +267,8 @@ var heuristics = (function () {
       return {
         lower_case: lower_case,
         capitalize_1st_letter: capitalize_1st_letter,
+        ci_label: ci_label,
+        map_source: map_source,
         decodeURIStr: decodeURIStr,
         encodeURIStr: encodeURIStr,
         encodeDOIURL: encodeDOIURL,
