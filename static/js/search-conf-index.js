@@ -27,7 +27,7 @@ var search_conf = {
       "query": [
             "{",
             "VALUES ?citing_iri {<https://doi.org/[[VAR]]> <http://dx.doi.org/[[VAR]]>} .",
-            "?iri cito:hasCitingEntity citing_iri .",
+            "?iri cito:hasCitingEntity ?citing_iri .",
             "}"
       ]
     },
