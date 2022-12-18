@@ -225,8 +225,8 @@ poci_doc_manager = HTMLDocumentationHandler(poci_api_manager)
 coci_api_manager = APIManager(c["api_coci"])
 coci_doc_manager = HTMLDocumentationHandler(coci_api_manager)
 
-#coci_api_manager_v2 = APIManager(c["api_coci_v2"])
-#coci_doc_manager_v2 = HTMLDocumentationHandler(coci_api_manager_v2)
+coci_api_manager_v2 = APIManager(c["api_coci_v2"])
+coci_doc_manager_v2 = HTMLDocumentationHandler(coci_api_manager_v2)
 
 croci_api_manager = APIManager(c["api_croci"])
 croci_doc_manager = HTMLDocumentationHandler(croci_api_manager)
@@ -460,9 +460,9 @@ class Api:
         elif dataset == "coci":
             man = coci_api_manager
             doc = coci_doc_manager
-            #if "v2" in call:
-            #    man = coci_api_manager_v2
-            #    doc = coci_doc_manager_v2
+            if "v2" in call:
+                man = coci_api_manager_v2
+                doc = coci_doc_manager_v2
         elif dataset == "doci":
             man = doci_api_manager
             doc = doci_doc_manager
