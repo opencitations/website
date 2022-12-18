@@ -234,6 +234,9 @@ croci_doc_manager = HTMLDocumentationHandler(croci_api_manager)
 index_api_manager = APIManager(c["api_index"])
 index_doc_manager = HTMLDocumentationHandler(index_api_manager)
 
+index_api_manager_v2 = APIManager(c["api_index_v2"])
+index_doc_manager_v2 = HTMLDocumentationHandler(index_api_manager_v2)
+
 occ_api_manager = APIManager(c["api_occ"])
 occ_doc_manager = HTMLDocumentationHandler(occ_api_manager)
 
@@ -475,6 +478,9 @@ class Api:
         elif dataset == "index":
             man = index_api_manager
             doc = index_doc_manager
+            if "v2" in call:
+                man = index_api_manager_v2
+                doc = index_doc_manager_v2
         elif dataset == "wikidata":
             man = wikidata_api_manager
             doc = wikidata_doc_manager
