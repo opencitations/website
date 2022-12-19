@@ -965,7 +965,7 @@ class CCCContentNegotiation(ContentNegotiation):
 
 class MetaContentNegotiation(ContentNegotiation):
     def __init__(self):
-        ContentNegotiation.__init__(self, "https://w3id.org/oc", c["meta_local_url"],
+        ContentNegotiation.__init__(self, c["oc_base_url"], c["meta_local_url"],
                                     context_path=c["ocdm_json_context_path"],
                                     from_triplestore=c["sparql_endpoint_meta"],
                                     label_func=lambda u: "%s %s" % re.findall("^.+/meta/(..)/(.+)$", u)[0])
