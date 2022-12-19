@@ -133,7 +133,7 @@ var search_conf = {
       "ext_data": {
         //"citing_ref": {"name": call_crossref, "param": {"fields":["citing_id_val"]}, "async": true},
         "citing_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["citing_id_val"]}, "async": true},
-        "cited_ref": {"name": "ext_call_to_get_ref", "param": {"fields":["cited_id_val"]}, "async": true}
+        "cited_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["cited_id_val"]}, "async": true}
       },
       "extra_elems":[
         {"elem_type": "a","elem_value": "Back to search" ,"elem_class": "btn btn-primary left" ,"elem_innerhtml": "Show the search interface", "others": {"href": "/index/search"}}
@@ -370,25 +370,28 @@ var callbackfunctions = (function () {
               url: call_meta + call_id,
               type: 'GET',
               async: async_bool,
-              success: function( res ) {
+              success: function( call_res ) {
 
-                  console.log(res);
-                  var entity_ref = "";
-                  if (res != undefined){
-                    if ("title" in res) {
-                      entity_ref += "Title: "+res["title"]+"\n";
+                  if (call_res.length > 0) {
+                    // meta is supposed to return 1 entity only
+                    res = call_res[0];
+                    var entity_ref = "";
+                    if (res != undefined){
+                      if ("title" in res) {
+                        entity_ref += "Title: "+res["title"]+"\n";
+                      }
+                      if ("author" in res) {
+                        entity_ref += "Author: "+res["author"]+"\n";
+                      }
+                      if ("pub_date" in res) {
+                        entity_ref += "Publication date: "+res["pub_date"];
+                      }
                     }
-                    if ("author" in res) {
-                      entity_ref += "Author: "+res["author"]+"\n";
-                    }
-                    if ("pub_date" in res) {
-                      entity_ref += "Publication date: "+res["pub_date"];
-                    }
+                    var res_obj = {"reference": entity_ref};
+                    var func_param = [];
+                    func_param.push(index, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
+                    Reflect.apply(callbk_func,undefined,func_param);
                   }
-                  var res_obj = {"reference": entity_ref};
-                  var func_param = [];
-                  func_param.push(index, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
-                  Reflect.apply(callbk_func,undefined,func_param);
               }
          });
       }
