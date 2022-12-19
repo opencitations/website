@@ -398,6 +398,7 @@ var callbackfunctions = (function () {
 
   return {
     call_crossref: call_crossref,
-    ext_call_to_get_ref: ext_call_to_get_ref
+    ext_call_to_get_ref: ext_call_to_get_ref,
+    meta_call_to_get_ref: meta_call_to_get_ref
    }
   })();
