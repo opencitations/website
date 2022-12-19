@@ -86,12 +86,10 @@ active = {
 urls = (
     # Generic URLs
     "/", "Home",
-    "/(meta)(/api/.+)", "Api",
     "/(wikidata)(/api/.+)", "Api",
     "/(index)(/api/.+)", "Api",
     "/index/([^/]+)(/api/.+)", "Api",
     "/index/sparql", "SparqlIndex",
-    "/meta/sparql", "SparqlMeta",
     "/index/search", "SearchIndex",
     "/index/browser/(.+)", "BrowserIndex",
     "/index/coci", "Coci",
@@ -101,6 +99,11 @@ urls = (
     "/index/coci/(.*)", "CociContentNegotiation",
     "/index/doci/(.*)", "DociContentNegotiation",
     "/index/croci/(ci/.*)?", "CrociContentNegotiation",
+
+    # META related urls
+    "/(meta)(/api/.+)", "Api",
+    "/meta/sparql", "SparqlMeta",
+    "/meta/(../.+)", "MetaContentNegotiation",
     "/meta", "Meta",
 
     # CCC related urls
