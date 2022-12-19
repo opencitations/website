@@ -24,11 +24,15 @@ var search_conf = {
       "heuristics": [['lower_case','encodeDOIURL']],
       "category": "citation",
       "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
-      "query": [
-            "{",
-            "VALUES ?citing_iri {<https://doi.org/[[VAR]]> <http://dx.doi.org/[[VAR]]>} .",
-            "?iri cito:hasCitingEntity ?citing_iri .",
-            "}"
+      "query": [`
+            {
+              VALUES ?citing_iri {<https://doi.org/[[VAR]]> <http://dx.doi.org/[[VAR]]>} .
+              ?iri cito:hasCitingEntity ?citing_iri .
+              ?iri cito:hasCitingEntity ?citing_id_iri .
+              BIND(STRAFTER(str(?citing_id_iri), '.org/') AS ?citing_id_val)
+              ?iri cito:hasCitedEntity ?cited_id_iri .
+              BIND(STRAFTER(str(?cited_id_iri), '.org/') AS ?cited_id_val)
+            }`
       ]
     },
     {
@@ -40,11 +44,15 @@ var search_conf = {
       "heuristics": [['lower_case','encodeDOIURL']],
       "category": "citation",
       "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
-      "query": [
-            "{",
-            "VALUES ?cited_iri {<https://doi.org/[[VAR]]> <http://dx.doi.org/[[VAR]]>} .",
-            "?iri cito:hasCitedEntity ?cited_iri .",
-            "}"
+      "query": [`
+            {
+              VALUES ?cited_iri {<https://doi.org/[[VAR]]> <http://dx.doi.org/[[VAR]]>} .
+              ?iri cito:hasCitedEntity ?cited_iri .
+              ?iri cito:hasCitingEntity ?citing_id_iri .
+              BIND(STRAFTER(str(?citing_id_iri), '.org/') AS ?citing_id_val)
+              ?iri cito:hasCitedEntity ?cited_id_iri .
+              BIND(STRAFTER(str(?cited_id_iri), '.org/') AS ?cited_id_val)
+            }`
       ]
     },
     {
@@ -58,8 +66,33 @@ var search_conf = {
       "query": [`
         {
           VALUES ?iri { <https://w3id.org/oc/index/coci/ci/[[VAR]]> <https://w3id.org/oc/index/doci/ci/[[VAR]]> <https://w3id.org/oc/index/croci/ci/[[VAR]]> }
+          ?iri cito:hasCitingEntity ?citing_id_iri .
+          BIND(STRAFTER(str(?citing_id_iri), '.org/') AS ?citing_id_val)
+          ?iri cito:hasCitedEntity ?cited_id_iri .
+          BIND(STRAFTER(str(?cited_id_iri), '.org/') AS ?cited_id_val)
         }
         `
+      ]
+    },
+    {
+      "name":"citedpmid",
+      "label": "Citations of a specific document (PMID)",
+      "placeholder": "PMID e.g. 11529879",
+      "advanced": true,
+      "freetext": true,
+      "heuristics": [['lower_case','encodeDOIURL']],
+      "category": "citation",
+      "regex":"(\d{1,})",
+      "query": [`
+            {
+              VALUES ?cited_iri {<https://pubmed.ncbi.nlm.nih.gov/[[VAR]]>} .
+              ?iri cito:hasCitedEntity ?cited_iri .
+              ?iri cito:hasCitingEntity ?citing_id_iri .
+              BIND(STRAFTER(str(?citing_id_iri), '.org/') AS ?citing_id_val)
+              ?iri cito:hasCitedEntity ?cited_id_iri .
+              BIND(STRAFTER(str(?cited_id_iri), '.org/') AS ?cited_id_val)
+            }
+            `
       ]
     }
   ],
@@ -70,17 +103,13 @@ var search_conf = {
       "label": "Citation",
       "macro_query": [
         `
-            SELECT DISTINCT ?iri ?source ?browser ?short_iri ?citing_doi ?citing_doi_iri ?cited_doi ?cited_doi_iri ?creationdate ?timespan
+            SELECT DISTINCT ?iri ?source ?browser ?short_iri ?citing_id_val ?citing_id_iri ?cited_id_val ?cited_id_iri ?creationdate ?timespan
                         WHERE  {
-                        [[RULE]]
                         GRAPH ?g {
 
-                            BIND(STRAFTER(STR(?iri), '/ci/') as ?short_iri) .
-                            ?iri cito:hasCitingEntity ?citing_doi_iri .
-                            BIND(STRAFTER(str(?citing_doi_iri), ".org/") AS ?citing_doi)
-                            ?iri cito:hasCitedEntity ?cited_doi_iri .
-                            BIND(STRAFTER(str(?cited_doi_iri), ".org/") AS ?cited_doi)
+                            [[RULE]]
 
+                            BIND(STRAFTER(STR(?iri), '/ci/') as ?short_iri) .
                             OPTIONAL {
                                 ?iri cito:hasCitationCreationDate ?creationdate .
                                 ?iri cito:hasCitationTimeSpan ?timespan .
@@ -93,18 +122,18 @@ var search_conf = {
       ],
       "fields": [
         {"value":"source", "value_map": ["map_source"],"title": "Source", "column_width":"10%", "type": "text", "sort":{"value": "source", "type":"text"}},
-        {"value":"citing_doi", "value_map": ["decodeURIStr"],"title": "Citing", "column_width":"12%", "type": "text", "sort":{"value": "citing_doi", "type":"text"}, "link":{"field":"citing_doi_iri","prefix":""}},
-        {"value": "ext_data.citing_doi_citation.reference", "title": "Citing\nreference", "column_width":"16%", "type": "text"},
-        {"value":"cited_doi", "value_map": ["decodeURIStr"], "title": "Cited", "column_width":"12%", "type": "text", "sort":{"value": "cited_doi", "type":"text"}, "link":{"field":"cited_doi_iri","prefix":""}},
-        {"value": "ext_data.cited_doi_citation.reference", "title": "Cited\nreference", "column_width":"16%", "type": "text"},
+        {"value":"citing_id_val", "value_map": ["decodeURIStr"],"title": "Citing", "column_width":"12%", "type": "text", "sort":{"value": "citing_id_val", "type":"text"}, "link":{"field":"citing_id_iri","prefix":""}},
+        {"value": "ext_data.citing_ref.reference", "title": "Citing\nreference", "column_width":"16%", "type": "text"},
+        {"value":"cited_id_val", "value_map": ["decodeURIStr"], "title": "Cited", "column_width":"12%", "type": "text", "sort":{"value": "cited_id_val", "type":"text"}, "link":{"field":"cited_id_iri","prefix":""}},
+        {"value": "ext_data.cited_ref.reference", "title": "Cited\nreference", "column_width":"16%", "type": "text"},
         {"value":"creationdate", "value_map":["creation_year"], "title": "Creation", "column_width":"10%", "type": "text", "sort":{"value": "creationdate", "type":"text"},"filter":{"type_sort": "int", "min": 10000, "sort": "sum", "order": "desc"}},
         {"value":"timespan", "value_map":["timespan_in_months"], "title": "Timespan\n(months)", "column_width":"12%", "type": "text", "sort":{"value": "timespan", "type":"int"}, "filter":{"type_sort": "int", "min": 10000, "sort": "value", "order": "desc"}},
         {"iskey": true, "value":"short_iri", "value_map": ["ci_label"], "limit_length": 20, "title": "","column_width":"12%", "type": "text", "sort":{"value": "short_iri", "type":"text"}, "link":{"field":"browser","prefix":""}}
       ],
       "ext_data": {
-        //"citing_doi_citation": {"name": call_crossref, "param": {"fields":["citing_doi"]}, "async": true},
-        "citing_doi_citation": {"name": "call_crossref_4citation", "param": {"fields":["citing_doi"]}, "async": true},
-        "cited_doi_citation": {"name": "call_crossref_4citation", "param": {"fields":["cited_doi"]}, "async": true}
+        //"citing_ref": {"name": call_crossref, "param": {"fields":["citing_id_val"]}, "async": true},
+        "citing_ref": {"name": "ext_call_to_get_ref", "param": {"fields":["citing_id_val"]}, "async": true},
+        "cited_ref": {"name": "ext_call_to_get_ref", "param": {"fields":["cited_id_val"]}, "async": true}
       },
       "extra_elems":[
         {"elem_type": "a","elem_value": "Back to search" ,"elem_class": "btn btn-primary left" ,"elem_innerhtml": "Show the search interface", "others": {"href": "/index/search"}}
@@ -303,7 +332,7 @@ var callbackfunctions = (function () {
       }
     }
     //https://citation.crosscite.org/format?doi=10.1145%2F2783446.2783605&style=apa&lang=en-US
-    function call_crossref_4citation(conf_params, index, async_bool, callbk_func, key_full_name, data_field, func_name ){
+    function ext_call_to_get_ref(conf_params, index, async_bool, callbk_func, key_full_name, data_field, func_name ){
       var call_crossref_api = "https://citation.crosscite.org/format?doi=";
       var suffix = "&style=apa&lang=en-US";
 
@@ -329,6 +358,6 @@ var callbackfunctions = (function () {
 
   return {
     call_crossref: call_crossref,
-    call_crossref_4citation: call_crossref_4citation
+    ext_call_to_get_ref: ext_call_to_get_ref
    }
   })();
