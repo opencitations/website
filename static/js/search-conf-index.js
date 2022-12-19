@@ -378,13 +378,13 @@ var callbackfunctions = (function () {
                     var entity_ref = "";
                     if (res != undefined){
                       if ("title" in res) {
-                        entity_ref += "Title: "+res["title"]+"\n";
+                        entity_ref += "Title: <i>"+res["title"]+"</i><br/>";
                       }
                       if ("author" in res) {
-                        entity_ref += "Author: "+res["author"]+"\n";
+                        entity_ref += "Author: <i>"+res["author"]+"</i><br/>";
                       }
                       if ("pub_date" in res) {
-                        entity_ref += "Publication date: "+res["pub_date"];
+                        entity_ref += "Publication date: <i>"+res["pub_date"]+"</i>";
                       }
                     }
                     var res_obj = {"reference": entity_ref};
