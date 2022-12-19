@@ -376,7 +376,7 @@ var callbackfunctions = (function () {
                   console.log(res);
                   var entity_ref = "";
                   if (res != undefined){
-                    entity_ref = "\nTitle: " res["title"]+"Author: "+ res["author"] + "\nDate: "+res[pub_date]
+                    entity_ref = "\nTitle: "+res["title"]+"Author: "+ res["author"] + "\nDate: "+res[pub_date];
                   }
                   var res_obj = {"reference": entity_ref};
                   var func_param = [];
