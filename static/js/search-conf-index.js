@@ -122,18 +122,18 @@ var search_conf = {
       ],
       "fields": [
         {"value":"source", "value_map": ["map_source"],"title": "Source", "column_width":"10%", "type": "text", "sort":{"value": "source", "type":"text"}},
-        {"value":"citing_id_val", "value_map": ["decodeURIStr"],"title": "Citing", "column_width":"12%", "type": "text", "sort":{"value": "citing_id_val", "type":"text"}, "link":{"field":"citing_id_iri","prefix":""}},
-        {"value": "ext_data.citing_ref.reference", "title": "Citing\nreference", "column_width":"16%", "type": "text"},
-        {"value":"cited_id_val", "value_map": ["decodeURIStr"], "title": "Cited", "column_width":"12%", "type": "text", "sort":{"value": "cited_id_val", "type":"text"}, "link":{"field":"cited_id_iri","prefix":""}},
-        {"value": "ext_data.cited_ref.reference", "title": "Cited\nreference", "column_width":"16%", "type": "text"},
+        //{"value":"citing_id_val", "value_map": ["decodeURIStr"],"title": "Citing", "column_width":"12%", "type": "text", "sort":{"value": "citing_id_val", "type":"text"}, "link":{"field":"citing_id_iri","prefix":""}},
+        {"value": "ext_data.citing_ref.reference", "title": "Citing\nreference", "column_width":"28%", "type": "text"},
+        //{"value":"cited_id_val", "value_map": ["decodeURIStr"], "title": "Cited", "column_width":"12%", "type": "text", "sort":{"value": "cited_id_val", "type":"text"}, "link":{"field":"cited_id_iri","prefix":""}},
+        {"value": "ext_data.cited_ref.reference", "title": "Cited\nreference", "column_width":"28%", "type": "text"},
         {"value":"creationdate", "value_map":["creation_year"], "title": "Creation", "column_width":"10%", "type": "text", "sort":{"value": "creationdate", "type":"text"},"filter":{"type_sort": "int", "min": 10000, "sort": "sum", "order": "desc"}},
         {"value":"timespan", "value_map":["timespan_in_months"], "title": "Timespan\n(months)", "column_width":"12%", "type": "text", "sort":{"value": "timespan", "type":"int"}, "filter":{"type_sort": "int", "min": 10000, "sort": "value", "order": "desc"}},
         {"iskey": true, "value":"short_iri", "value_map": ["ci_label"], "limit_length": 20, "title": "","column_width":"12%", "type": "text", "sort":{"value": "short_iri", "type":"text"}, "link":{"field":"browser","prefix":""}}
       ],
       "ext_data": {
         //"citing_ref": {"name": call_crossref, "param": {"fields":["citing_id_val"]}, "async": true},
-        "citing_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["citing_id_val"]}, "async": true},
-        "cited_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["cited_id_val"]}, "async": true}
+        "citing_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["citing_id_val","citing_id_iri"]}, "async": true},
+        "cited_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["cited_id_val","cited_id_iri"]}, "async": true}
       },
       "extra_elems":[
         {"elem_type": "a","elem_value": "Back to search" ,"elem_class": "btn btn-primary left" ,"elem_innerhtml": "Show the search interface", "others": {"href": "/index/search"}}
@@ -359,6 +359,7 @@ var callbackfunctions = (function () {
       //https://test.opencitations.net/meta/api/v1/metadata/doi:10.1007/978-1-4020-9632-7
       var call_meta = "https://test.opencitations.net/meta/api/v1/metadata/";
       var str_id = conf_params[0];
+      var link_id = conf_params[1];
 
       if (str_id != undefined) {
         var call_id = "doi:"+str_id;
@@ -375,13 +376,13 @@ var callbackfunctions = (function () {
                   if (call_res.length > 0) {
                     // meta is supposed to return 1 entity only
                     res = call_res[0];
-                    var entity_ref = "";
+                    var entity_ref = "<a href='"+link_id+"'>"+str_id +"</a><br/><br/>";
                     if (res != undefined){
                       if ("title" in res) {
-                        entity_ref += "Title: <i>"+res["title"]+"</i><br/>";
+                        entity_ref += "Title: <i>"+res["title"]+"</i><br/><br/>";
                       }
                       if ("author" in res) {
-                        entity_ref += "Author: <i>"+res["author"]+"</i><br/>";
+                        entity_ref += "Author: <i>"+res["author"]+"</i><br/><br/>";
                       }
                       if ("pub_date" in res) {
                         entity_ref += "Publication date: <i>"+res["pub_date"]+"</i>";
