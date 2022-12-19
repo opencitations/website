@@ -121,14 +121,14 @@ var search_conf = {
             `
       ],
       "fields": [
-        {"value":"source", "value_map": ["map_source"],"title": "Source", "column_width":"10%", "type": "text", "sort":{"value": "source", "type":"text"}},
+        //{"value":"source", "value_map": ["map_source"],"title": "Source", "column_width":"10%", "type": "text", "sort":{"value": "source", "type":"text"}},
+        {"iskey": true, "value":"short_iri", "value_map": ["ci_label"], "limit_length": 20, "title": "Source","column_width":"14%", "type": "text", "sort":{"value": "source", "type":"text"}, "link":{"field":"browser","prefix":""}}
         //{"value":"citing_id_val", "value_map": ["decodeURIStr"],"title": "Citing", "column_width":"12%", "type": "text", "sort":{"value": "citing_id_val", "type":"text"}, "link":{"field":"citing_id_iri","prefix":""}},
-        {"value": "ext_data.citing_ref.reference", "title": "Citing reference", "column_width":"28%", "type": "text"},
+        {"value": "ext_data.citing_ref.reference", "title": "Citing reference", "column_width":"30%", "type": "text"},
         //{"value":"cited_id_val", "value_map": ["decodeURIStr"], "title": "Cited", "column_width":"12%", "type": "text", "sort":{"value": "cited_id_val", "type":"text"}, "link":{"field":"cited_id_iri","prefix":""}},
-        {"value": "ext_data.cited_ref.reference", "title": "Cited reference", "column_width":"28%", "type": "text"},
-        {"value":"creationdate", "value_map":["creation_year"], "title": "Creation", "column_width":"10%", "type": "text", "sort":{"value": "creationdate", "type":"text"},"filter":{"type_sort": "int", "min": 10000, "sort": "sum", "order": "desc"}},
-        {"value":"timespan", "value_map":["timespan_in_months"], "title": "Timespan\n(months)", "column_width":"12%", "type": "text", "sort":{"value": "timespan", "type":"int"}, "filter":{"type_sort": "int", "min": 10000, "sort": "value", "order": "desc"}},
-        {"iskey": true, "value":"short_iri", "value_map": ["ci_label"], "limit_length": 20, "title": "","column_width":"12%", "type": "text", "link":{"field":"browser","prefix":""}}
+        {"value": "ext_data.cited_ref.reference", "title": "Cited reference", "column_width":"30%", "type": "text"},
+        {"value":"creationdate", "value_map":["creation_year"], "title": "Creation", "column_width":"12%", "type": "text", "sort":{"value": "creationdate", "type":"text"},"filter":{"type_sort": "int", "min": 10000, "sort": "sum", "order": "desc"}},
+        {"value":"timespan", "value_map":["timespan_in_months"], "title": "Timespan\n(months)", "column_width":"14%", "type": "text", "sort":{"value": "timespan", "type":"int"}, "filter":{"type_sort": "int", "min": 10000, "sort": "value", "order": "desc"}}
       ],
       "ext_data": {
         //"citing_ref": {"name": call_crossref, "param": {"fields":["citing_id_val"]}, "async": true},
@@ -177,7 +177,9 @@ var heuristics = (function () {
         return str.charAt(0).toUpperCase() + str.slice(1);
       }
       function ci_label(str) {
-        return "Browse >";
+        var a = str.split("/ci/")[0];
+        var source = a.split("/index/browser/")[a.length - 1];
+        return source.toUpperCase();
       }
       function map_source(str) {
         return str.toUpperCase().replace("/","");
