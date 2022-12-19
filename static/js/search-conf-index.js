@@ -177,10 +177,12 @@ var heuristics = (function () {
         return str.charAt(0).toUpperCase() + str.slice(1);
       }
       function ci_label(str) {
-        var a = str.split("/ci/")[0];
-        var b = a.split("/index/");
-        var source = b[b.length - 1];
-        return source.toUpperCase();
+        //var a = str.split("/ci/")[0];
+        //var b = a.split("/index/");
+        //var source = b[b.length - 1];
+        //return source.toUpperCase();
+        var a = str.split("/index/");
+        return a[a.length - 1];
       }
       function map_source(str) {
         return str.toUpperCase().replace("/","");

@@ -514,7 +514,7 @@ a.search-a:hover {
     appearance: none;
     width: 15px;
     height: 25px;
-  border-radius: 5px;
+    border-radius: 5px;
     background: var(--main-bg-color);
     cursor: pointer;
 }
