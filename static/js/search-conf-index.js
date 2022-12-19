@@ -362,7 +362,7 @@ var callbackfunctions = (function () {
 
       if (str_id != undefined) {
         var call_id = "doi:"+str_id;
-        if (str_id.match(/\d{1,}/g)) {
+        if (/^\d{1,}$/.test(str_id)) {
           call_id = "pmid:"+str_id;
         }
 
