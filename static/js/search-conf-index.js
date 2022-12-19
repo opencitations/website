@@ -360,9 +360,8 @@ var callbackfunctions = (function () {
       var call_meta = "https://test.opencitations.net/meta/api/v1/metadata/";
       var str_id = conf_params[0];
 
-      if (str_doi != undefined) {
-
-        var call_id = "doi:"+str_id
+      if (str_id != undefined) {
+        var call_id = "doi:"+str_id;
         if (str_id.match(/\d{1,}/g)) {
           call_id = "pmid:"+str_id;
         }
