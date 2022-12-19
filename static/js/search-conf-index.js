@@ -178,7 +178,8 @@ var heuristics = (function () {
       }
       function ci_label(str) {
         var a = str.split("/ci/")[0];
-        var source = a.split("/index/browser/")[a.length - 1];
+        var b = a.split("/index/browser/");
+        var source = b[b.length - 1];
         return source.toUpperCase();
       }
       function map_source(str) {
