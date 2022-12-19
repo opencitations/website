@@ -376,7 +376,15 @@ var callbackfunctions = (function () {
                   console.log(res);
                   var entity_ref = "";
                   if (res != undefined){
-                    entity_ref = "\nTitle: "+res["title"]+"Author: "+ res["author"] + "\nDate: "+res[pub_date];
+                    if ("title" in res) {
+                      entity_ref += "Title: "+res["title"]+"\n";
+                    }
+                    if ("author" in res) {
+                      entity_ref += "Author: "+res["author"]+"\n";
+                    }
+                    if ("pub_date" in res) {
+                      entity_ref += "Publication date: "+res["pub_date"];
+                    }
                   }
                   var res_obj = {"reference": entity_ref};
                   var func_param = [];
