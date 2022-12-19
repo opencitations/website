@@ -82,7 +82,7 @@ var search_conf = {
       "freetext": true,
       "heuristics": [['lower_case','encodeDOIURL']],
       "category": "citation",
-      "regex":"(\d{1,})",
+      "regex":"(\\d{1,})",
       "query": [`
             {
               VALUES ?cited_iri {<https://pubmed.ncbi.nlm.nih.gov/[[VAR]]>} .
