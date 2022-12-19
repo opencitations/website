@@ -123,12 +123,12 @@ var search_conf = {
       "fields": [
         {"value":"source", "value_map": ["map_source"],"title": "Source", "column_width":"10%", "type": "text", "sort":{"value": "source", "type":"text"}},
         //{"value":"citing_id_val", "value_map": ["decodeURIStr"],"title": "Citing", "column_width":"12%", "type": "text", "sort":{"value": "citing_id_val", "type":"text"}, "link":{"field":"citing_id_iri","prefix":""}},
-        {"value": "ext_data.citing_ref.reference", "title": "Citing\nreference", "column_width":"28%", "type": "text"},
+        {"value": "ext_data.citing_ref.reference", "title": "Citing reference", "column_width":"28%", "type": "text"},
         //{"value":"cited_id_val", "value_map": ["decodeURIStr"], "title": "Cited", "column_width":"12%", "type": "text", "sort":{"value": "cited_id_val", "type":"text"}, "link":{"field":"cited_id_iri","prefix":""}},
-        {"value": "ext_data.cited_ref.reference", "title": "Cited\nreference", "column_width":"28%", "type": "text"},
+        {"value": "ext_data.cited_ref.reference", "title": "Cited reference", "column_width":"28%", "type": "text"},
         {"value":"creationdate", "value_map":["creation_year"], "title": "Creation", "column_width":"10%", "type": "text", "sort":{"value": "creationdate", "type":"text"},"filter":{"type_sort": "int", "min": 10000, "sort": "sum", "order": "desc"}},
         {"value":"timespan", "value_map":["timespan_in_months"], "title": "Timespan\n(months)", "column_width":"12%", "type": "text", "sort":{"value": "timespan", "type":"int"}, "filter":{"type_sort": "int", "min": 10000, "sort": "value", "order": "desc"}},
-        {"iskey": true, "value":"short_iri", "value_map": ["ci_label"], "limit_length": 20, "title": "","column_width":"12%", "type": "text", "sort":{"value": "short_iri", "type":"text"}, "link":{"field":"browser","prefix":""}}
+        {"iskey": true, "value":"short_iri", "value_map": ["ci_label"], "limit_length": 20, "title": "","column_width":"12%", "type": "text", "link":{"field":"browser","prefix":""}}
       ],
       "ext_data": {
         //"citing_ref": {"name": call_crossref, "param": {"fields":["citing_id_val"]}, "async": true},
@@ -393,6 +393,13 @@ var callbackfunctions = (function () {
                     func_param.push(index, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
                     Reflect.apply(callbk_func,undefined,func_param);
                   }
+              },
+              error: function (error)
+              {
+                  var res_obj = {"reference": "<a href='"+link_id+"'>"+str_id +"</a><br/><br/>"};
+                  var func_param = [];
+                  func_param.push(index, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
+                  Reflect.apply(callbk_func,undefined,func_param);
               }
          });
       }
