@@ -88,9 +88,9 @@ var search_conf = {
               VALUES ?cited_iri {<https://pubmed.ncbi.nlm.nih.gov/[[VAR]]>} .
               ?iri cito:hasCitedEntity ?cited_iri .
               ?iri cito:hasCitingEntity ?citing_id_iri .
-              BIND(STRAFTER(str(?citing_id_iri), '.org/') AS ?citing_id_val)
+              BIND(STRAFTER(str(?citing_id_iri), '.gov/') AS ?citing_id_val)
               ?iri cito:hasCitedEntity ?cited_id_iri .
-              BIND(STRAFTER(str(?cited_id_iri), '.org/') AS ?cited_id_val)
+              BIND(STRAFTER(str(?cited_id_iri), '.gov/') AS ?cited_id_val)
             }
             `
       ]
@@ -132,7 +132,7 @@ var search_conf = {
       ],
       "ext_data": {
         //"citing_ref": {"name": call_crossref, "param": {"fields":["citing_id_val"]}, "async": true},
-        "citing_ref": {"name": "ext_call_to_get_ref", "param": {"fields":["citing_id_val"]}, "async": true},
+        "citing_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["citing_id_val"]}, "async": true},
         "cited_ref": {"name": "ext_call_to_get_ref", "param": {"fields":["cited_id_val"]}, "async": true}
       },
       "extra_elems":[
@@ -355,9 +355,49 @@ var callbackfunctions = (function () {
       }
     }
 
+    function meta_call_to_get_ref(conf_params, index, async_bool, callbk_func, key_full_name, data_field, func_name ){
+      //https://test.opencitations.net/meta/api/v1/metadata/doi:10.1007/978-1-4020-9632-7
+      var call_meta = "https://test.opencitations.net/meta/api/v1/metadata/";
+      var str_id = conf_params[0];
+
+      if (str_id != undefined) {
+        var call_id = "doi:"+str_id;
+        if (/^\d{1,}$/.test(str_id)) {
+          call_id = "pmid:"+str_id;
+        }
+
+        $.ajax({
+              url: call_meta + call_id,
+              type: 'GET',
+              async: async_bool,
+              success: function( res ) {
+
+                  console.log(res);
+                  var entity_ref = "";
+                  if (res != undefined){
+                    if ("title" in res) {
+                      entity_ref += "Title: "+res["title"]+"\n";
+                    }
+                    if ("author" in res) {
+                      entity_ref += "Author: "+res["author"]+"\n";
+                    }
+                    if ("pub_date" in res) {
+                      entity_ref += "Publication date: "+res["pub_date"];
+                    }
+                  }
+                  var res_obj = {"reference": entity_ref};
+                  var func_param = [];
+                  func_param.push(index, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
+                  Reflect.apply(callbk_func,undefined,func_param);
+              }
+         });
+      }
+    }
+
 
   return {
     call_crossref: call_crossref,
-    ext_call_to_get_ref: ext_call_to_get_ref
+    ext_call_to_get_ref: ext_call_to_get_ref,
+    meta_call_to_get_ref: meta_call_to_get_ref
    }
   })();
