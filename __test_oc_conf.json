@@ -13,7 +13,7 @@
   "corpus_local_url": "/corpus/",
   "virtual_local_url": "/virtual/",
   "ccc_local_url": "/ccc/",
-  "meta_local_url": "/index/meta/",
+  "meta_local_url": "/meta/",
   "coci_local_url": "/index/coci/",
   "doci_local_url": "/index/doci/",
   "poci_local_url": "/index/poci/",
