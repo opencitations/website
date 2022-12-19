@@ -93,7 +93,7 @@ ul.search-elem li{
 }
 .results-tab th {}
 
-.results-tab td a{color: black;}
+.results-tab td a{color: black; text-decoration: underline;}
 .results-tab td a:active,
 .results-tab td a:hover,
 .results-tab td a:focus {

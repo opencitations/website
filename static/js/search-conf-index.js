@@ -382,14 +382,18 @@ var callbackfunctions = (function () {
                     var entity_ref = "<a href='"+link_id+"'>"+str_id +"</a><br/><br/>";
                     if (res != undefined){
                       if ("title" in res) {
-                        entity_ref += "Title: <i>"+res["title"]+"</i><br/><br/>";
+                        if (res["title"] != "") {
+                          entity_ref += "Title: <i>"+res["title"]+"</i><br/><br/>";
+                        }
                       }
                       if ("author" in res) {
-                        entity_ref += "Author: <i>"+res["author"]+"</i><br/><br/>";
+                        if (res["author"] != "") {
+                            entity_ref += "Author: <i>"+res["author"]+"</i>";
+                        }
                       }
-                      if ("pub_date" in res) {
-                        entity_ref += "Publication date: <i>"+res["pub_date"]+"</i>";
-                      }
+                      //if ("pub_date" in res) {
+                      //  entity_ref += "Publication date: <i>"+res["pub_date"]+"</i>";
+                      //}
                     }
                     var res_obj = {"reference": entity_ref};
                     var func_param = [];
