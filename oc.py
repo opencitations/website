@@ -883,7 +883,7 @@ class SparqlIndex(Sparql):
 class SparqlMeta(Sparql):
     def __init__(self):
         Sparql.__init__(self, c["sparql_endpoint_meta"],
-                        "OC-Meta", c["oc_base_url"]+"/meta/sparql")
+                        "OpenCitations Meta", c["oc_base_url"]+"/meta/sparql")
 
 
 class SparqlCCC(Sparql):
