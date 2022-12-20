@@ -214,8 +214,8 @@ web_logger = WebLogger("opencitations.net", c["log_dir"], [
     {"REMOTE_ADDR": ["130.136.130.1", "130.136.2.47", "127.0.0.1"]}
 )
 
-meta_api_manager = APIManager(c["api_meta"])
-meta_doc_manager = HTMLDocumentationHandler(meta_api_manager)
+#meta_api_manager = APIManager(c["api_meta"])
+#meta_doc_manager = HTMLDocumentationHandler(meta_api_manager)
 
 doci_api_manager = APIManager(c["api_doci"])
 doci_doc_manager = HTMLDocumentationHandler(doci_api_manager)
@@ -483,9 +483,9 @@ class Api:
         elif dataset == "ccc":
             man = ccc_api_manager
             doc = ccc_doc_manager
-        elif dataset == "meta":
-            man = meta_api_manager
-            doc = meta_doc_manager
+        #elif dataset == "meta":
+        #    man = meta_api_manager
+        #    doc = meta_doc_manager
 
         if man is None:
             raise web.notfound()
