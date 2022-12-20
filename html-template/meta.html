@@ -8,7 +8,7 @@ $def with (pages, active)
 
 
         <link rel="icon" href="/static/favicon.ico" />
-        <title>OpenCitations - Querying Data</title>
+        <title>OpenCitations - OpenCitations Meta</title>
 
         <!-- Bootstrap core CSS -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
@@ -76,43 +76,44 @@ $def with (pages, active)
           </div>
 
             <div class="cover left">
-                <h3>Querying Data</h3>
-                <p><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> provides three main mechanisms to query the data it provides.
-                <!--You can check the <a href="/statistics#used_services">usage statistics of these services throughout the time.</a>--></p>
-                <ul>
-                    <li>
-                        <p><strong><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> SPARQL endpoints.</strong> <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> made available a <a href="https://www.w3.org/TR/sparql11-query/">SPARQL</a> endpoint for all the datasets released. When such a SPARQL endpoint is accessed with a browser, it shows an editor GUI generated with <a href="https://yasgui.org/">YASGUI</a>. Of course, any SPARQL endpoint can additionally be queried using the <a href="https://www.w3.org/TR/sparql11-protocol/">SPARQL Protocol</a>, e.g. via <code>curl</code>. The SPARQL endpoints available are:</p>
-                        <ul>
-                            <li><p><a href="/sparql"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus SPARQL endpoint</a>;</p></li>
-                            <li><p><a href="/index/sparql"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes SPARQL endpoint</a>;</p></li>
-                            <li><p><a href="/meta/sparql"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta SPARQL endpoint</a>.</p></li>
-                            <!--<li><p><a href="/ccc/sparql"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> CCC SPARQL endpoint</a>.</p></li>-->
-                        </ul>
-                    </li>
-                    <li>
-                        <p><strong><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> REST APIs.</strong> All the data in any of the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> datasets can be retrieved by using an HTTP REST API. The rationale of making REST APIs available in addition to the SPARQL endpoints was to provide convenient access to the data included in the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> datasets for Web developers and users who are not necessarily experts in Semantic Web technologies. All the REST APIs made available by <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>, has been implemented by means of <a href="https://github.com/opencitations/ramose">RAMOSE, the Restful API Manager Over SPARQL Endpoints</a>, which is a Python application that allows one to simply create a REST API over any SPARQL endpoint by means of a simple configuration file that execute a SPARQL query dependently of the particular API call specified. The REST APIs available are:</p>
-                        <ul>
-                            <li><p><a href="/api/v1"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus REST API</a>;</p></li>
-                            <li><p><a href="/meta/api/v1"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta REST API</a>;</p></li>
-                            <li><p><a href="/index/api/v1"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes unifying REST API</a>;</p></li>
-                            <li><p><a href="/index/coci/api/v1">COCI REST API</a>;</p></li>
-                            <li><p><a href="/index/doci/api/v1">DOCI REST API</a>;</p></li>
-                            <li><p><a href="/index/croci/api/v1">CROCI REST API</a>.</p></li>
-                            <!--<li><p><a href="/ccc/api/v1">CCC REST API</a>.</p></li>-->
-                        </ul>
+                <h3><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta</h3>
+                <p>The <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta database stores and delivers bibliographic metadata for all publications involved in the OpenCitations Indexes</p>
 
-                        <p><strong>If you are going to use the REST APIs within an application/code, we encourage you to first get the <a href="/accesstoken">OpenCitations Access Token</a> and specify it in the "authorization" header of your REST API call. Obtaining the token takes only a few seconds and needs to happen only once. It costs you nothing, however, it could help <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> a lot. Thank you!</strong></p>
-                    </li>
-                    <li>
-                        <p><strong><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Search Interfaces.</strong> <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> has additionally developed user-friendly text search interfaces and browsing interfaces that can be used to search data in all the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> datasets and to visualise and browse them, respectively. These two interfaces have been developed by means of <a href="https://github.com/opencitations/oscar">OSCAR, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> RDF Search Application</a>, and <a href="https://github.com/opencitations/lucinda">LUCINDA, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> RDF Resource Browser</a>, that provide a configurable layer over SPARQL endpoints that permit one easily to create Web interfaces for querying and visualising the results of SPARQL queries. The search interfaces available are:</p>
-                        <ul>
-                            <li><p><a href="/search"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus Search Interface</a>;</p></li>
-                            <li><p><a href="/index/search"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes Search Interface</a>.</p></li>
-                            <!--<li><p><a href="/ccc/search"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Citations in Context Corpus Search Interface</a>.</p></li>-->
-                        </ul>
-                    </li>
+                <p>For each publication, the metadata exposed by OpenCitations Meta includes the publication's <strong>title</strong>, <strong>type</strong>, <strong>venue</strong> (e.g. journal name), <strong>volume</strong> number, <strong>issue</strong> number, <strong>page</strong> numbers, <stong>publication date</strong>, and <strong>identifiers</strong> such as Digital Object Identifiers (DOIs) and PubMed Identifiers (PMIDs). In addition, OpenCitations Meta includes details of the main actors involved in the publication of the document, i.e., the names of the <strong>authors</strong>, <strong>editors</strong>, and <strong>publishers</strong>, each with its own additional metadata and identifier (e.g. ORCID).</p>
+
+                <p>Currently, OpenCitations Meta contains:</p>
+                <ul>
+                    <li>87,321,593 bibliographic entities</li>
+                    <li>277,750,235 authors and 2,359,301 editors (counted by their roles, without disambiguating individuals)</li>
+                    <li>8,227,648 publication venues</li>
+                    <li>17,268 publishers</li>
                 </ul>
-            </div>
+
+                <p>OpenCitations Meta was first released on <a href="https://opencitations.hypotheses.org/3107" title="Link to the first blog post about OpenCitations Meta">20 December 2022</a>.</p>
+
+                <h4>Entity URLs</h4>
+
+                <p>Each entity is identified by a URI structured as follows: <code>https://w3id.org/oc/meta/[[OMID]]</code></p>
+
+                <h4>The OpenCitations Meta Identifier</h4>
+                <p>Every entity in OpenCitations Meta is assigned persistent internal identifier called OpenCitations Meta Identifier (OMID). The OMID has structure <code>[[entity_type_abbreviation]]/[[supplier_prefix]][[sequential_number]]</code>.
+                   For example, the first journal article ever processed has OMID <code>br/0601</code> (the full URI is <a href="https://w3id.org/oc/meta/br/0601" alt="Link to an examplar entity from OpenCitations Meta">https://w3id.org/oc/meta/br/0601</a>), where <code>br</code> is the abbreviation of bibliographic resource, and <code>060</code> corresponds to the supplier prefix, helpful in recognising at a glance the index it belongs to (i.e., OpenCitations Meta). Finally, <code>1</code> indicates that this is the index's first bibliographic resource ever minted.</p>
+
+                <p>The entities subject to deduplication and associated with an OMID are <strong>identifiers</strong> (abbr. <code>id</code>), <strong>agent roles</strong> (i.e., authors, editors, publishers, abbr. <code>ar</code>),
+                   <strong>responsible agents</strong> (i.e., people and organisations, abbr. <code>ra</code>), <strong>resource embodiments</strong> (i.e., pages, abbr. <code>re</code>),
+                   venues, volumes, and issues (which are all <strong>bibliographic resources</strong>, abbr. <code>br</code>).</p>
+
+                <p>On the contrary, titles, types, and dates are treated as literal values, not entities.</p>
+
+                <h4>Access to OC-Meta data</h4>
+                <p>All the data in META:</p>
+                <ul>
+                    <li><p>can be queried by means of the <a href="/meta/sparql"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta SPARQL endpoint</a>;</p></li>
+                    <li><p>can be retrieved by using the <a href="/meta/api/v1">META REST API</a>;</p></li>
+                    <!--<li><p>can be searched by using the <a href="/meta/search"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta Search Interface</a>;</p></li>-->
+                    <li><p>are available as <a href="/download#meta">dumps</a> on <a href="https://figshare.com">Figshare</a> in CSV and JSON-LD.</p></li>
+                </ul>
+          </div>
         </div>
 
         <footer>

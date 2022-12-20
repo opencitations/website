@@ -77,7 +77,7 @@ $def with (pages, active)
 
             <div class="cover left">
                  <h3>$active.title()</h3>
-                <p>This page contains details of and links to all the data dumps of the <a href="#index"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes</a>, the <a href="#ccc"><span class="oc-purple">Open</span> Biomedical <span class="oc-blue">Citations</span> in Context Corpus</a>, and of the <a href="#occ"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus (OCC)</a>. They are made available online by means of the support of <a href="http://figshare.com">Figshare</a> and of the <a href="https://archive.org/">Internet Archive</a>.</p>
+                <p>This page contains details of and links to all the data dumps of the <a href="#index"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes</a>, the <a href="#ccc"><span class="oc-purple">Open</span> Biomedical <span class="oc-blue">Citations</span> in Context Corpus</a>, <a href="#meta"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta</a> and of the <a href="#occ"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus (OCC)</a>. They are made available online by means of the support of <a href="http://figshare.com">Figshare</a> and of the <a href="https://archive.org/">Internet Archive</a>.</p>
                 <p>Each dump of an <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index is composed by four zip archives. Two of these archives contains the actual data and provenance information of the index in N-Triples, while the other two archives contain the same information in CSV.</p>
                 <p>Each dump of the <span class="oc-purple">Open</span> Biomedical <span class="oc-blue">Citations</span> in Context Corpus is composed by one single zip artchive containing all the information about actual data and provenance stored in JSON-LD.</p>
                 <p>Instead, each dump of the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus is composed by several zip archives, each containing either data or provenance information relating to a particular sub-dataset within the OCC. After unzipping an archive, one needs to use <a href="http://dar.linux.free.fr/">Disk ARchive (DAR)</a> - a multi-platform archive tool for managing huge amount of data - to recreate the whole OCC structure.</p>
@@ -92,9 +92,29 @@ $def with (pages, active)
                                 <li><p><a href="#doci">DOCI, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of DataCite open DOI-to-DOI references</a></p></li>
                             </ul>
                         </li>
+                        <li><p><a href="#meta"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta</a></p></li>
                         <li><p><a href="#ccc"><span class="oc-purple">Open</span> Biomedical <span class="oc-blue">Citations</span> in Context Corpus</a></p></li>
                         <li><p><a href="#occ"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus</a></p></li>
                     </ul>
+                </div>
+
+                <a class="anchor" id="meta"></a>
+                <h4><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta</h4>
+                <h5>The <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta database stores and delivers bibliographic metadata for all publications involved in the OpenCitations Indexes</h5>
+                <h5>Most recent OpenCitations Meta data dump - December 2022 Dump</h5>
+                <p>Dump created on 2022-12-20, it includes information on:</p>
+                <ul>
+                  <li><p>87,321,593 bibliographic entities</p></li>
+                  <li><p>277,750,235 authors and 2,359,301 editors (counted by their roles, without disambiguating individuals)</p></li>
+                  <li><p>8,227,648 publication venues</p></li>
+                  <li><p>17,268 publishers</p></li>
+                </ul>
+                <div class="table-responsive">
+                     <table class="table">
+                       <tr><th>Type and format</th><th>Archive</th><th>Size</th></tr>
+                       <tr><td>Metadata (CSV)</td><td><a href="https://doi.org/10.6084/m9.figshare.21747461">ZIP</a></td><td>35.5 GB (7.53 GB zipped)</td></tr>
+                       <tr><td>Metadata and provenance (RDF)</td><td><a href="https://doi.org/10.6084/m9.figshare.21747536">ZIP</a></td><td>29.1 GB zipped</td></tr>
+                     </table>
                 </div>
 
                 <a class="anchor" id="index"></a>

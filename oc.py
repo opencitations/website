@@ -70,6 +70,7 @@ pages = [
 active = {
     "corpus": "datasets",
     "index": "datasets",
+    "meta": "datasets",
     "coci": "datasets",
     "doci": "datasets",
     "croci": "datasets",
@@ -96,6 +97,12 @@ urls = (
     "/index/coci/(.*)", "CociContentNegotiation",
     "/index/doci/(.*)", "DociContentNegotiation",
     "/index/croci/(ci/.*)?", "CrociContentNegotiation",
+
+    # META related urls
+    "/(meta)(/api/.+)", "Api",
+    "/meta/sparql", "SparqlMeta",
+    "/meta/(../.+)", "MetaContentNegotiation",
+    "/meta", "Meta",
 
     # CCC related urls
     "/(ccc)(/api/.+)", "Api",
@@ -207,20 +214,26 @@ web_logger = WebLogger("opencitations.net", c["log_dir"], [
     {"REMOTE_ADDR": ["130.136.130.1", "130.136.2.47", "127.0.0.1"]}
 )
 
+meta_api_manager = APIManager(c["api_meta"])
+meta_doc_manager = HTMLDocumentationHandler(meta_api_manager)
+
 doci_api_manager = APIManager(c["api_doci"])
 doci_doc_manager = HTMLDocumentationHandler(doci_api_manager)
 
 coci_api_manager = APIManager(c["api_coci"])
 coci_doc_manager = HTMLDocumentationHandler(coci_api_manager)
 
-#coci_api_manager_v2 = APIManager(c["api_coci_v2"])
-#coci_doc_manager_v2 = HTMLDocumentationHandler(coci_api_manager_v2)
+coci_api_manager_v2 = APIManager(c["api_coci_v2"])
+coci_doc_manager_v2 = HTMLDocumentationHandler(coci_api_manager_v2)
 
 croci_api_manager = APIManager(c["api_croci"])
 croci_doc_manager = HTMLDocumentationHandler(croci_api_manager)
 
 index_api_manager = APIManager(c["api_index"])
 index_doc_manager = HTMLDocumentationHandler(index_api_manager)
+
+index_api_manager_v2 = APIManager(c["api_index_v2"])
+index_doc_manager_v2 = HTMLDocumentationHandler(index_api_manager_v2)
 
 occ_api_manager = APIManager(c["api_occ"])
 occ_doc_manager = HTMLDocumentationHandler(occ_api_manager)
@@ -449,9 +462,9 @@ class Api:
         elif dataset == "coci":
             man = coci_api_manager
             doc = coci_doc_manager
-            #if "v2" in call:
-            #    man = coci_api_manager_v2
-            #    doc = coci_doc_manager_v2
+            if "v2" in call:
+                man = coci_api_manager_v2
+                doc = coci_doc_manager_v2
         elif dataset == "doci":
             man = doci_api_manager
             doc = doci_doc_manager
@@ -461,12 +474,18 @@ class Api:
         elif dataset == "index":
             man = index_api_manager
             doc = index_doc_manager
+            if "v2" in call:
+                man = index_api_manager_v2
+                doc = index_doc_manager_v2
         elif dataset == "wikidata":
             man = wikidata_api_manager
             doc = wikidata_doc_manager
         elif dataset == "ccc":
             man = ccc_api_manager
             doc = ccc_doc_manager
+        elif dataset == "meta":
+            man = meta_api_manager
+            doc = meta_doc_manager
 
         if man is None:
             raise web.notfound()
@@ -679,6 +698,12 @@ class CCC:
         return render.ccc(pages, active["ccc"])
 
 
+class Meta:
+    def GET(self):
+        web_logger.mes()
+        return render.meta(pages, active["meta"])
+
+
 class Coci:
     def GET(self):
         web_logger.mes()
@@ -855,6 +880,12 @@ class SparqlIndex(Sparql):
                         "Indexes", c["oc_base_url"]+"/index/sparql")
 
 
+class SparqlMeta(Sparql):
+    def __init__(self):
+        Sparql.__init__(self, c["sparql_endpoint_meta"],
+                        "OC-Meta", c["oc_base_url"]+"/meta/sparql")
+
+
 class SparqlCCC(Sparql):
     def __init__(self):
         Sparql.__init__(self, c["sparql_endpoint_ccc"],
@@ -917,6 +948,14 @@ class CCCContentNegotiation(ContentNegotiation):
                                     context_path=c["ocdm_json_context_path"],
                                     from_triplestore=c["sparql_endpoint_ccc"],
                                     label_func=lambda u: "%s %s" % re.findall("^.+/ccc/(..)/070(.+)$", u)[0])
+
+
+class MetaContentNegotiation(ContentNegotiation):
+    def __init__(self):
+        ContentNegotiation.__init__(self, c["oc_base_url"], c["meta_local_url"],
+                                    context_path=c["ocdm_json_context_path"],
+                                    from_triplestore=c["sparql_endpoint_meta"],
+                                    label_func=lambda u: "%s %s" % re.findall("^.+/meta/(..)/(.+)$", u)[0])
 
 
 class CociContentNegotiation(ContentNegotiation):
