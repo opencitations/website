@@ -127,9 +127,9 @@ urls = (
     "/(policy)", "Policy",
 
     # OCC SPARQL-related urls
-    "/sparql", "SparqlOC",
-    "/search", "SearchOC",
-    "/browser/(.+)", "BrowserOC",
+    "/sparql", "SparqlIndex",
+    "/search", "SearchIndex",
+    "/browser/(.+)", "BrowserIndex",
     "()(/api/.+)", "Api",
 
     # Other generic URLs
@@ -461,9 +461,11 @@ class Api:
         man = None
 
         if dataset == "":
-            man = occ_api_manager
-            doc = occ_doc_manager
-        elif dataset == "coci":
+            dataset = "index"
+            #man = occ_api_manager
+            #doc = occ_doc_manager
+
+        if dataset == "coci":
             man = coci_api_manager
             doc = coci_doc_manager
             if "v2" in call:
@@ -896,7 +898,7 @@ class SparqlIndex(Sparql):
 class SparqlMeta(Sparql):
     def __init__(self):
         Sparql.__init__(self, c["sparql_endpoint_meta"],
-                        "OC-Meta", c["oc_base_url"]+"/meta/sparql")
+                        "OpenCitations Meta", c["oc_base_url"]+"/meta/sparql")
 
 
 class SparqlCCC(Sparql):
