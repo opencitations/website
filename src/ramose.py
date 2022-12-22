@@ -849,8 +849,8 @@ class DataType(object):
 class Operation(object):
     def __init__(self, op_complete_url, op_key, i, tp, sparql_http_method, addon):
         """ This class is responsible for materialising a API operation to be run against a SPARQL endpoint.
-        
-        It takes in input a full URL referring to a call to an operation (parameter 'op_complete_url'), 
+
+        It takes in input a full URL referring to a call to an operation (parameter 'op_complete_url'),
         the particular shape representing an operation (parameter 'op_key'), the definition (in JSON) of such
         operation (parameter 'i'), the URL of the triplestore to contact (parameter 'tp'), the HTTP method
         to use for the SPARQL request (paramenter 'sparql_http_method', set to either 'get' or 'post'), and the path
@@ -1337,12 +1337,12 @@ class Operation(object):
                 sc = 408
                 return sc, "HTTP status code %s: request timeout - %s: %s (line %s)" % \
                         (sc, exc_type.__name__, exc_obj, exc_tb.tb_lineno), "text/plain"
-            except TypeError:
+            except TypeError as e:
                 exc_type, exc_obj, exc_tb = exc_info()
                 sc = 400
                 return sc, "HTTP status code %s: " \
-                            "parameter in the request not compliant with the type specified - %s: %s (line %s)" % \
-                            (sc, exc_type.__name__, exc_obj, exc_tb.tb_lineno), "text/plain"
+                            "parameter in the request not compliant with the type specified - %s: %s (line %s) - Error Type: %s" % \
+                            (sc, exc_type.__name__, exc_obj, exc_tb.tb_lineno, e), "text/plain"
             except:
                 exc_type, exc_obj, exc_tb = exc_info()
                 sc = 500
