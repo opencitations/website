@@ -24,10 +24,15 @@ var search_conf = {
       "heuristics": [['lower_case','encodeDOIURL']],
       "category": "citation",
       "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
-      "query": [
-            "{",
-            "?iri cito:hasCitingEntity <http://dx.doi.org/[[VAR]]> .",
-            "}"
+      "query": [`
+            {
+              VALUES ?citing_iri {<https://doi.org/[[VAR]]> <http://dx.doi.org/[[VAR]]>} .
+              ?iri cito:hasCitingEntity ?citing_iri .
+              ?iri cito:hasCitingEntity ?citing_id_iri .
+              BIND(STRAFTER(str(?citing_id_iri), '.org/') AS ?citing_id_val)
+              ?iri cito:hasCitedEntity ?cited_id_iri .
+              BIND(STRAFTER(str(?cited_id_iri), '.org/') AS ?cited_id_val)
+            }`
       ]
     },
     {
@@ -39,10 +44,15 @@ var search_conf = {
       "heuristics": [['lower_case','encodeDOIURL']],
       "category": "citation",
       "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
-      "query": [
-            "{",
-            "?iri cito:hasCitedEntity <http://dx.doi.org/[[VAR]]> .",
-            "}"
+      "query": [`
+            {
+              VALUES ?cited_iri {<https://doi.org/[[VAR]]> <http://dx.doi.org/[[VAR]]>} .
+              ?iri cito:hasCitedEntity ?cited_iri .
+              ?iri cito:hasCitingEntity ?citing_id_iri .
+              BIND(STRAFTER(str(?citing_id_iri), '.org/') AS ?citing_id_val)
+              ?iri cito:hasCitedEntity ?cited_id_iri .
+              BIND(STRAFTER(str(?cited_id_iri), '.org/') AS ?cited_id_val)
+            }`
       ]
     },
     {
@@ -55,9 +65,34 @@ var search_conf = {
       "regex":"(\\d{1,}-\\d{1,})",
       "query": [`
         {
-          VALUES ?iri { <https://w3id.org/oc/index/coci/ci/[[VAR]]> <https://w3id.org/oc/index/croci/ci/[[VAR]]> }
+          VALUES ?iri { <https://w3id.org/oc/index/coci/ci/[[VAR]]> <https://w3id.org/oc/index/doci/ci/[[VAR]]> <https://w3id.org/oc/index/croci/ci/[[VAR]]> }
+          ?iri cito:hasCitingEntity ?citing_id_iri .
+          BIND(STRAFTER(str(?citing_id_iri), '.org/') AS ?citing_id_val)
+          ?iri cito:hasCitedEntity ?cited_id_iri .
+          BIND(STRAFTER(str(?cited_id_iri), '.org/') AS ?cited_id_val)
         }
         `
+      ]
+    },
+    {
+      "name":"citedpmid",
+      "label": "Citations of a specific document (PMID)",
+      "placeholder": "PMID e.g. 11529879",
+      "advanced": false,
+      "freetext": false,
+      "heuristics": [['lower_case','encodeDOIURL']],
+      "category": "citation",
+      "regex":"(\\d{1,})",
+      "query": [`
+            {
+              VALUES ?cited_iri {<https://pubmed.ncbi.nlm.nih.gov/[[VAR]]>} .
+              ?iri cito:hasCitedEntity ?cited_iri .
+              ?iri cito:hasCitingEntity ?citing_id_iri .
+              BIND(STRAFTER(str(?citing_id_iri), '.gov/') AS ?citing_id_val)
+              ?iri cito:hasCitedEntity ?cited_id_iri .
+              BIND(STRAFTER(str(?cited_id_iri), '.gov/') AS ?cited_id_val)
+            }
+            `
       ]
     }
   ],
@@ -68,40 +103,37 @@ var search_conf = {
       "label": "Citation",
       "macro_query": [
         `
-            SELECT DISTINCT ?iri ?browser ?short_iri ?citing_doi ?citing_doi_iri ?cited_doi ?cited_doi_iri ?creationdate ?timespan
+            SELECT DISTINCT ?iri ?source ?browser ?short_iri ?citing_id_val ?citing_id_iri ?cited_id_val ?cited_id_iri ?creationdate ?timespan
                         WHERE  {
-                        [[RULE]]
-                        hint:Prior hint:runFirst true .
+                        GRAPH ?g {
 
-                        #Consider citing/cited DOI a must field
-                        BIND(STRAFTER(STR(?iri), '/ci/') as ?short_iri) .
-                        ?iri cito:hasCitingEntity ?citing_doi_iri .
-                        BIND(REPLACE(STR(?citing_doi_iri), 'http://dx.doi.org/', '', 'i') as ?citing_doi) .
-                        ?iri cito:hasCitedEntity ?cited_doi_iri .
-                        BIND(REPLACE(STR(?cited_doi_iri), 'http://dx.doi.org/', '', 'i') as ?cited_doi) .
+                            [[RULE]]
 
-                        #we consider as optional only the creation date and the timespan of the citation
-                        OPTIONAL {
-                            ?iri cito:hasCitationCreationDate ?creationdate .
-                            ?iri cito:hasCitationTimeSpan ?timespan .
-                          }
-                        BIND(REPLACE(STR(?iri), '/index/', '/index/browser/', 'i') as ?browser) .
+                            BIND(STRAFTER(STR(?iri), '/ci/') as ?short_iri) .
+                            OPTIONAL {
+                                ?iri cito:hasCitationCreationDate ?creationdate .
+                                ?iri cito:hasCitationTimeSpan ?timespan .
+                              }
+                            BIND(REPLACE(STR(?iri), '/index/', '/index/browser/', 'i') as ?browser) .
+                            BIND(STRAFTER(str(?g), "/index/") AS ?source)
+                        }
             }
             `
       ],
       "fields": [
-        {"iskey": true, "value":"short_iri", "value_map": [], "limit_length": 20, "title": "OCI","column_width":"10%", "type": "text", "sort":{"value": "short_iri", "type":"text"}, "link":{"field":"browser","prefix":""}},
-        {"value":"citing_doi", "value_map": ["decodeURIStr"],"title": "Citing DOI", "column_width":"12%", "type": "text", "sort":{"value": "citing_doi", "type":"text"}, "link":{"field":"citing_doi_iri","prefix":""}},
-        {"value": "ext_data.citing_doi_citation.reference", "title": "Citing reference", "column_width":"19%", "type": "text"},
-        {"value":"cited_doi", "value_map": ["decodeURIStr"], "title": "Cited DOI", "column_width":"12%", "type": "text", "sort":{"value": "cited_doi", "type":"text"}, "link":{"field":"cited_doi_iri","prefix":""}},
-        {"value": "ext_data.cited_doi_citation.reference", "title": "Cited reference", "column_width":"19%", "type": "text"},
-        {"value":"creationdate", "value_map":["creation_year"], "title": "Creation", "column_width":"8%", "type": "text", "sort":{"value": "creationdate", "type":"text"},"filter":{"type_sort": "int", "min": 10000, "sort": "sum", "order": "desc"}},
-        {"value":"timespan", "value_map":["timespan_in_months"], "title": "Timespan (months)", "column_width":"13%", "type": "text", "sort":{"value": "timespan", "type":"int"}, "filter":{"type_sort": "int", "min": 10000, "sort": "value", "order": "desc"}}
+        //{"value":"source", "value_map": ["map_source"],"title": "Source", "column_width":"10%", "type": "text", "sort":{"value": "source", "type":"text"}},
+        {"iskey": true, "value":"iri", "value_map": ["ci_label"], "title": "Id","column_width":"16%", "type": "text", "sort":{"value": "source", "type":"text"}, "link":{"field":"browser","prefix":""}},
+        //{"value":"citing_id_val", "value_map": ["decodeURIStr"],"title": "Citing", "column_width":"12%", "type": "text", "sort":{"value": "citing_id_val", "type":"text"}, "link":{"field":"citing_id_iri","prefix":""}},
+        {"value": "ext_data.citing_ref.reference", "title": "Citing entity", "column_width":"29%", "type": "text"},
+        //{"value":"cited_id_val", "value_map": ["decodeURIStr"], "title": "Cited", "column_width":"12%", "type": "text", "sort":{"value": "cited_id_val", "type":"text"}, "link":{"field":"cited_id_iri","prefix":""}},
+        {"value": "ext_data.cited_ref.reference", "title": "Cited entity", "column_width":"29%", "type": "text"},
+        {"value":"creationdate", "value_map":["creation_year"], "title": "Creation", "column_width":"12%", "type": "text", "sort":{"value": "creationdate", "type":"text"},"filter":{"type_sort": "int", "min": 10000, "sort": "sum", "order": "desc"}},
+        {"value":"timespan", "value_map":["timespan_in_months"], "title": "Timespan\n(months)", "column_width":"14%", "type": "text", "sort":{"value": "timespan", "type":"int"}, "filter":{"type_sort": "int", "min": 10000, "sort": "value", "order": "desc"}}
       ],
       "ext_data": {
-        //"citing_doi_citation": {"name": call_crossref, "param": {"fields":["citing_doi"]}, "async": true},
-        "citing_doi_citation": {"name": "call_crossref_4citation", "param": {"fields":["citing_doi"]}, "async": true},
-        "cited_doi_citation": {"name": "call_crossref_4citation", "param": {"fields":["cited_doi"]}, "async": true}
+        //"citing_ref": {"name": call_crossref, "param": {"fields":["citing_id_val"]}, "async": true},
+        "citing_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["citing_id_val","citing_id_iri"]}, "async": true},
+        "cited_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["cited_id_val","cited_id_iri"]}, "async": true}
       },
       "extra_elems":[
         {"elem_type": "a","elem_value": "Back to search" ,"elem_class": "btn btn-primary left" ,"elem_innerhtml": "Show the search interface", "others": {"href": "/index/search"}}
@@ -143,6 +175,17 @@ var heuristics = (function () {
       }
       function capitalize_1st_letter(str){
         return str.charAt(0).toUpperCase() + str.slice(1);
+      }
+      function ci_label(str) {
+        //var a = str.split("/ci/")[0];
+        //var b = a.split("/index/");
+        //var source = b[b.length - 1];
+        //return source.toUpperCase();
+        var a = str.split("/index/");
+        return a[a.length - 1];
+      }
+      function map_source(str) {
+        return str.toUpperCase().replace("/","");
       }
       function decodeURIStr(str) {
         return decodeURIComponent(str);
@@ -258,6 +301,8 @@ var heuristics = (function () {
       return {
         lower_case: lower_case,
         capitalize_1st_letter: capitalize_1st_letter,
+        ci_label: ci_label,
+        map_source: map_source,
         decodeURIStr: decodeURIStr,
         encodeURIStr: encodeURIStr,
         encodeDOIURL: encodeDOIURL,
@@ -292,7 +337,7 @@ var callbackfunctions = (function () {
       }
     }
     //https://citation.crosscite.org/format?doi=10.1145%2F2783446.2783605&style=apa&lang=en-US
-    function call_crossref_4citation(conf_params, index, async_bool, callbk_func, key_full_name, data_field, func_name ){
+    function ext_call_to_get_ref(conf_params, index, async_bool, callbk_func, key_full_name, data_field, func_name ){
       var call_crossref_api = "https://citation.crosscite.org/format?doi=";
       var suffix = "&style=apa&lang=en-US";
 
@@ -315,9 +360,64 @@ var callbackfunctions = (function () {
       }
     }
 
+    function meta_call_to_get_ref(conf_params, index, async_bool, callbk_func, key_full_name, data_field, func_name ){
+      //https://opencitations.net/meta/api/v1/metadata/doi:10.1007/978-1-4020-9632-7
+      var call_meta = "https://opencitations.net/meta/api/v1/metadata/";
+      var str_id = conf_params[0];
+      var link_id = conf_params[1];
+
+      if (str_id != undefined) {
+        var call_id = "doi:"+str_id;
+        if (/^\d{1,}$/.test(str_id)) {
+          call_id = "pmid:"+str_id;
+        }
+
+        $.ajax({
+              url: call_meta + call_id,
+              type: 'GET',
+              async: async_bool,
+              success: function( call_res ) {
+
+                  if (call_res.length > 0) {
+                    // meta is supposed to return 1 entity only
+                    res = call_res[0];
+                    var entity_ref = "<a href='"+link_id+"'>"+str_id +"</a><br/><br/>";
+                    if (res != undefined){
+                      if ("title" in res) {
+                        if (res["title"] != "") {
+                          entity_ref += "Title: <i>"+res["title"]+"</i><br/><br/>";
+                        }
+                      }
+                      if ("author" in res) {
+                        if (res["author"] != "") {
+                            entity_ref += "Author: <i>"+res["author"]+"</i>";
+                        }
+                      }
+                      //if ("pub_date" in res) {
+                      //  entity_ref += "Publication date: <i>"+res["pub_date"]+"</i>";
+                      //}
+                    }
+                    var res_obj = {"reference": entity_ref};
+                    var func_param = [];
+                    func_param.push(index, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
+                    Reflect.apply(callbk_func,undefined,func_param);
+                  }
+              },
+              error: function (error)
+              {
+                  var res_obj = {"reference": "<a href='"+link_id+"'>"+str_id +"</a><br/><br/>"};
+                  var func_param = [];
+                  func_param.push(index, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
+                  Reflect.apply(callbk_func,undefined,func_param);
+              }
+         });
+      }
+    }
+
 
   return {
     call_crossref: call_crossref,
-    call_crossref_4citation: call_crossref_4citation
+    ext_call_to_get_ref: ext_call_to_get_ref,
+    meta_call_to_get_ref: meta_call_to_get_ref
    }
   })();

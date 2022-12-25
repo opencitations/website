@@ -103,14 +103,15 @@ $def with (pages, active, date, tot, cit, cited)
                 <p>The corpus URL (<a href="https://w3id.org/oc/corpus/">https://w3id.org/oc/corpus/</a>) identifies the entire OCC, which is composed of several sub-datasets, one for each of the aforementioned bibliographic entities included in the corpus. Each of these has a URL composed by suffixing the corpus URL with the two-letter short name for the class of entity (e.g. <q>be</q> for a bibliographic reference) followed by an oblique slash (e.g. <a href="https://w3id.org/oc/corpus/be/">https://w3id.org/oc/corpus/be/</a>). Individual members of each sub-dataset are identified by incrementing numbers, unique within that sub-dataset, e.g. <a href="https://w3id.org/oc/corpus/br/1">https://w3id.org/oc/corpus/br/1</a> or <a href="https://w3id.org/oc/corpus/be/24">https://w3id.org/oc/corpus/be/24</a>.</p>
                 <p>The OCC stores data relevant to these citations in RDF, encoded as JSON-LD, and each dataset is described appropriately by means of the <a href="https://www.w3.org/TR/vocab-dcat/">Data Catalog Vocabulary</a> and the <a href="https://www.w3.org/TR/void/">VoID Vocabulary</a>.</p>
 
-                <p>All the data in the OCC are available for download in the following ways:</p>
+                <p>OCC data are available as <a href="/download#occ">dumps</a> on <a href="https://figshare.com">Figshare</a></p>
+                <!--<p>All the data in the OCC are available for download in the following ways:</p>
                 <ul>
                     <li><p>by querying the <a href="/sparql">OCC SPARQL endpoint</a>;</p></li>
                     <li><p>by using the <a href="/api/v1">OCC REST API</a>, implemented by means of <a href="https://github.com/opencitations/ramose">RAMOSE</a> (the Restful API Manager Over SPARQL Endpoints), where they can be downloaded in JSON and CSV formats;</p></li>
                     <li><p>as <a href="download#occ">dumps</a> of the full Corpus on <a href="https://figshare.com">Figshare</a> in JSON-LD format;</p></li>
                     <li><p>using the HTTP URI of the individual bibliographic entities (e.g. <a href="https://w3id.org/oc/corpus/br/1">https://w3id.org/oc/corpus/br/1</a>), where they can be downloaded in different formats (HTML, RDF/XML, Turtle, and JSON-LD) via content negotiation;</p></li>
                     <li><p>additionally, bibliographic entities can be <a href="/search">searched</a> and browsed using  <a href="https://github.com/opencitations/oscar">OSCAR</a> and <a href="https://github.com/opencitations/lucinda">LUCINDA</a>, the search and browse interfaces developed by <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>.</p></li>
-                </ul>
+                </ul>-->
 
                 <h4 class="mt-more">The ingestion workflow</h4>
                 <p>The ingestion of citation data into the OCC, briefly summarised in <a class="cgen" href="#refIllustration1">Figure 1</a>, is handled by two Python scripts called the <em>bibliographic references Extractor</em> (<em>BEE</em>) and the <em>SPAR Citation Indexer</em> (<em>SPACIN</em>), available in the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> <a href="https://github.com/opencitations/script">GitHub repository</a>.</p>
