@@ -77,29 +77,29 @@ $def with (pages, active)
 
             <div class="cover left">
                 <h3>POCI, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of PubMed open PMID-to-PMID citations</h3>
-                <p><strong>POCI</strong>, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of PubMed open PMID-to-PMID citations, is an RDF dataset containing details of all the citations that are specified  [... TODO ...]. The citations available in POCI are treated as first-class data entities, with accompanying properties including the citations timespan, modelled according to the <a href="/model"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Data Model</a>.
+                <p><strong>POCI</strong>, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of PubMed open PMID-to-PMID citations, is an RDF dataset containing details of all the citations that are specified in the National Institutes of Health (NIH) Open Citation Collection. The citations available in POCI are treated as first-class data entities, with accompanying properties including the citations timespan, modelled according to the <a href="/model"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Data Model</a>.
                 <p>Currently, POCI contains:</p>
                 <ul>
-                    <li><p>[... TODO ...] citations;</p></li>
-                    <li><p>[... TODO ...] bibliographic resources.</p></li>
+                    <li><p>717,654,703 citations;</p></li>
+                    <li><p>26,024,862 bibliographic resources.</p></li>
                 </ul>
 
-                <p>POCI was first created and released on [... TODO ...] December 2022</a>.</p>
-                <p>Most recent update of POCI: <strong>December 2022</strong>, based on the <a href="https://archive.org/details/datacite_dump_20211022">last dump of PubMed dated [... TODO ...].</a></p>
+                <p>POCI was first created and released on 27 December 2022</a>.</p>
+                <p>Most recent update of POCI: <strong>December 2022</strong>, based on the <a href="https://nih.figshare.com/collections/iCite_Database_Snapshots_NIH_Open_Citation_Collection_/4586573/36"> dump of NIH Open Citation Collection dated November 2022.</a></p>
 
                 <h4>Citation URLs</h4>
                 <p>Each citation (i.e. an individual of the class <code>cito:Citation</code>) is identified by an URL structured as follows: <code>https://w3id.org/oc/index/poci/ci/[[OCI]]</code>.</p>
 
                 <h4>Open Citation Identifiers</h4>
-                <p>Each Open Citation Identifier <code>[[OCI]]</code> has a simple structure: the lower-case letters "oci" followed by a colon, followed by two numbers separated by a dash (e.g. [... TODO ...]), in which the first number identifies the citing work and the second number identifies the cited work.</p>
-                <p>For citations in which the citing and cited works are identified by DOIs, which includes all the POCI citations, the OCI is created in the following manner, as explained more fully <a href="https://opencitations.hypotheses.org/816">here</a>. Each case-insensitive DOI is first normalized to lower case letters. Then, after omitting the initial <q>doi:10.</q> prefix, the alphanumeric string of the DOI is converted reversibly to a pure numerical string using the simple two-numeral lookup table for numerals, lower case letters and other characters presented at <a href="https://github.com/opencitations/oci/blob/master/lookup.csv">https://github.com/opencitations/oci/blob/master/lookup.csv</a>. Finally, each converted numeral is prefixes by a <q>080</q>, which indicates that <a href="https://datacite.org/">DataCite</a> is the supplier of the original metadata of the citation (as indicated at <a href="/oci">http://opencitations.net/oci</a>).</p>
+                <p>Each Open Citation Identifier <code>[[OCI]]</code> has a simple structure: the lower-case letters "oci" followed by a colon, followed by two numbers separated by a dash (e.g. <a href="https://w3id.org/oc/index/poci/ci/01600102060800080706-016002060909030401">https://w3id.org/oc/index/poci/ci/01600102060800080706-016002060909030401</a>), in which the first number identifies the citing work and the second number identifies the cited work.</p>
+                <p>For citations in which the citing and cited works are identified by PMIDs, which includes all the POCI citations, the OCI is created in the following manner, as explained more fully <a href="https://opencitations.hypotheses.org/816">here</a>. Each converted numeral part of OCI is prefixes by a <q>0160</q>, which indicates that <a href="https://icite.od.nih.gov/">NIH</a> is the supplier of the original metadata of the citation (as indicated at <a href="/oci">http://opencitations.net/oci</a>).</p>
                 <p>OCIs can be resolved using the <a href="/oci"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> OCI Resolution Service</a>.</p>
 
                 <h4>Access to POCI data</h4>
                 <p>All the data in POCI:</p>
                 <ul>
-                    <li><p>can be queried by means of the <a href="/index/sparql"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes SPARQL endpoint</a>;</p></li>
-                    <li><p>can be retrieved by using the <a href="/index/poci/api/v1">POCI REST API</a>;</p></li>
+                    <!--<li><p>can be queried by means of the <a href="/index/sparql"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes SPARQL endpoint</a>;</p></li>-->
+                    <li><p>can be retrieved using the <a href="/index/poci/api/v1">POCI REST API</a>;</p></li>
                     <!--<li><p>can be searched by using the <a href="/index/search"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes Search Interface</a>;</p></li>-->
                     <li><p>are available as <a href="/download#poci">dumps</a> on <a href="https://figshare.com">Figshare</a> in CSV, N-Triples and Scholix.</p></li>
                 </ul>
