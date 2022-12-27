@@ -8,7 +8,7 @@ $def with (pages, active)
 
 
         <link rel="icon" href="/static/favicon.ico" />
-        <title>OpenCitations - Datasets</title>
+        <title>OpenCitations - POCI</title>
 
         <!-- Bootstrap core CSS -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
@@ -76,29 +76,32 @@ $def with (pages, active)
           </div>
 
             <div class="cover left">
-                <h3>Datasets</h3>
-                <p><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> provides four main datasets.
-                <!--You can check the statistics of the <a href="/statistics#indexed_records">OpenCitations datasets coverage throughout the time.</a>--></p>
+                <h3>POCI, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of PubMed open PMID-to-PMID citations</h3>
+                <p><strong>POCI</strong>, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of PubMed open PMID-to-PMID citations, is an RDF dataset containing details of all the citations from publications bearing PubMed Identifiers (PMIDs) to other PMID-identified publications, harvested from the National Institutes of Health Open Citations Collection (NIH-OCC). The citations available in POCI are treated as first-class data entities, with accompanying properties including the citations timespan, modelled according to the <a href="/model"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Data Model</a>.
+                <p>Currently, POCI contains:</p>
                 <ul>
-                    <li>
-                        <p><strong><a href="/index"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes</a>.</strong> The Indexes contain information about the citations themselves, in which the citations, instead of being considered as simple links, are treated as <a href="https://opencitations.hypotheses.org/816">first-class data entities</a> in their own right. This permits each Index to endow each citation with descriptive properties, such as the date on which the citation was created, its timespan (i.e.the interval between the publication date of the cited entity and the publication date of the citing entity), and its type (e.g. whether or not it is a self-citation). These Indexes do not store metadata about the citing and cited bibliographic entities internally. Rather, these entities are identified in the Indexes by their unique identifiers (e.g. DOIs), enabling bibliographic information to be retrieved on-the-fly upon request by means of the external APIs (see the operation “metadata” at
-                          <a href="https://w3id.org/oc/index/api/v1">https://w3id.org/oc/index/api/v1</a> for additional information). The Indexes currently available are:</p>
-                        <ul>
-                          <li><p><a href="/index/coci">COCI – citations from Crossref</a>;</p></li>
-                          <li><p><a href="/index/doci">DOCI – citations from DataCite</a>;</p></li>
-                          <li><p><a href="/index/poci">POCI – citations from PubMed</a>;</p></li>
-                          <li><p><a href="/index/croci">CROCI – citations from Crowdsourcing</a>.</p></li>
-                        </ul>
-                    </li>
-                    <li><p><strong><a href="/meta"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta</a>.</strong> OpenCitations Meta stores and delivers bibliographic metadata for all publications involved in the OpenCitations Indexes.</p></li>
-                    <li><p><strong><a href="/corpus"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus (OCC)</a>.</strong> The OCC is a database of open downloadable bibliographic and citation data recorded in RDF and released under a Creative Commons CC0 public domain waiver. The current content of the OCC has been mainly derived from biomedical articles within the <a href="https://www.ncbi.nlm.nih.gov/pmc/tools/openftlist/">Open Access Subset of PubMed Central</a>, harvested using the <a href="https://europepmc.org/RestfulWebService">Europe PubMed Central REST API</a>.</p></li>
-                    <li><p><strong><a href="/ccc"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> in Context Corpus (CCC)</a>.</strong>
-                      The CCC is a RDF dataset including bibliographic and citation data mined from the full-text of articles,
-                      such as in-text references (e.g. (Daquino et al. 2020)), structural elements (sentences, paragraphs, footnotes, captions, tables, and sections), rhetorical elements (e.g. section "Methods"), and the sequential number of the structural elements including in-text reference pointers (e.g. sentence 5, paragraph 2, section 1 "Introduction").
-                      Like OCC, CCC has been mainly derived from biomedical articles
-                      within the <a href="https://www.ncbi.nlm.nih.gov/pmc/tools/openftlist/">Open Access Subset of PubMed Central</a>,
-                      harvested using the <a href="https://europepmc.org/RestfulWebService">Europe PubMed Central REST API</a>.
-                      CCC is released under a Creative Commons CC0 public domain waiver. </p></li>
+                    <li><p>717,654,703 citations;</p></li>
+                    <li><p>26,024,862 bibliographic resources.</p></li>
+                </ul>
+
+                <p>POCI was first created and released on 27 December 2022</a>.</p>
+                <p>Most recent update of POCI: <strong>December 2022</strong>, based on the <a href="https://nih.figshare.com/collections/iCite_Database_Snapshots_NIH_Open_Citation_Collection_/4586573/36"> dump of NIH Open Citation Collection dated November 2022.</a></p>
+
+                <h4>Citation URLs</h4>
+                <p>Each citation (i.e. an individual of the class <code>cito:Citation</code>) is identified by an URL structured as follows: <code>https://w3id.org/oc/index/poci/ci/[[OCI]]</code>.</p>
+
+                <h4>Open Citation Identifiers</h4>
+                <p>Each Open Citation Identifier <code>[[OCI]]</code> has a simple structure: the lower-case letters "oci" followed by a colon, followed by two numbers separated by a dash (e.g. <a href="https://w3id.org/oc/index/poci/ci/01600102060800080706-016002060909030401">https://w3id.org/oc/index/poci/ci/01600102060800080706-016002060909030401</a>), in which the first number identifies the citing work and the second number identifies the cited work.</p>
+                <p>For citations in which the citing and cited works are identified by PMIDs, which includes all the POCI citations, the OCI is created in the following manner, as explained more fully <a href="https://opencitations.hypotheses.org/816">here</a>. Each converted numeral part of OCI is prefixes by a <q>0160</q>, which indicates that <a href="https://icite.od.nih.gov/">NIH</a> is the supplier of the original metadata of the citation (as indicated at <a href="/oci">http://opencitations.net/oci</a>).</p>
+                <p>OCIs can be resolved using the <a href="/oci"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> OCI Resolution Service</a>.</p>
+
+                <h4>Access to POCI data</h4>
+                <p>All the data in POCI:</p>
+                <ul>
+                    <!--<li><p>can be queried by means of the <a href="/index/sparql"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes SPARQL endpoint</a>;</p></li>-->
+                    <li><p>can be retrieved using the <a href="/index/poci/api/v1">POCI REST API</a>;</p></li>
+                    <!--<li><p>can be searched by using the <a href="/index/search"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes Search Interface</a>;</p></li>-->
+                    <li><p>are available as <a href="/download#poci">dumps</a> on <a href="https://figshare.com">Figshare</a> in CSV, N-Triples and Scholix.</p></li>
                 </ul>
             </div>
         </div>

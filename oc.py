@@ -73,6 +73,7 @@ active = {
     "meta": "datasets",
     "coci": "datasets",
     "doci": "datasets",
+    "poci": "datasets",
     "croci": "datasets",
     "ccc": "datasets",
     "oci": "tools",
@@ -93,9 +94,11 @@ urls = (
     "/index/browser/(.+)", "BrowserIndex",
     "/index/coci", "Coci",
     "/index/doci", "Doci",
+    "/index/poci", "Poci",
     "/index/croci", "Croci",
     "/index/coci/(.*)", "CociContentNegotiation",
     "/index/doci/(.*)", "DociContentNegotiation",
+    "/index/poci/(.*)", "PociContentNegotiation",
     "/index/croci/(ci/.*)?", "CrociContentNegotiation",
 
     # META related urls
@@ -103,6 +106,9 @@ urls = (
     "/meta/sparql", "SparqlMeta",
     "/meta/(../.+)", "MetaContentNegotiation",
     "/meta", "Meta",
+
+    # POCI tmp urls > to be removed when POCI is ingested in Index
+    "/poci/sparql", "SparqlPoci",
 
     # CCC related urls
     "/(ccc)(/api/.+)", "Api",
@@ -219,6 +225,9 @@ meta_doc_manager = HTMLDocumentationHandler(meta_api_manager)
 
 doci_api_manager = APIManager(c["api_doci"])
 doci_doc_manager = HTMLDocumentationHandler(doci_api_manager)
+
+poci_api_manager = APIManager(c["api_poci"])
+poci_doc_manager = HTMLDocumentationHandler(poci_api_manager)
 
 coci_api_manager = APIManager(c["api_coci"])
 coci_doc_manager = HTMLDocumentationHandler(coci_api_manager)
@@ -470,6 +479,9 @@ class Api:
         elif dataset == "doci":
             man = doci_api_manager
             doc = doci_doc_manager
+        elif dataset == "poci":
+            man = poci_api_manager
+            doc = poci_doc_manager
         elif dataset == "croci":
             man = croci_api_manager
             doc = croci_doc_manager
@@ -718,6 +730,12 @@ class Doci:
         return render.doci(pages, active["doci"])
 
 
+class Poci:
+    def GET(self):
+        web_logger.mes()
+        return render.poci(pages, active["poci"])
+
+
 class Croci:
     def GET(self):
         web_logger.mes()
@@ -887,6 +905,14 @@ class SparqlMeta(Sparql):
         Sparql.__init__(self, c["sparql_endpoint_meta"],
                         "OpenCitations Meta", c["oc_base_url"]+"/meta/sparql")
 
+# this class will be removed when POCI is ingested in Index
+
+
+class SparqlPoci(Sparql):
+    def __init__(self):
+        Sparql.__init__(self, c["sparql_endpoint_poci"],
+                        "POCI", c["oc_base_url"]+"/poci/sparql")
+
 
 class SparqlCCC(Sparql):
     def __init__(self):
@@ -980,6 +1006,17 @@ class DociContentNegotiation(ContentNegotiation):
                                         "^.+/ci/(.+)$", u)[0]
                                     if "/ci/" in u else "provenance agent 1" if "/pa/1" in u
                                     else "DOCI")
+
+
+class PociContentNegotiation(ContentNegotiation):
+    def __init__(self):
+        ContentNegotiation.__init__(self, c["index_base_url"], c["poci_local_url"],
+                                    context_path=c["ocdm_json_context_path"],
+                                    from_triplestore=c["sparql_endpoint_poci"],
+                                    label_func=lambda u: "oci:%s" % re.findall(
+                                        "^.+/ci/(.+)$", u)[0]
+                                    if "/ci/" in u else "provenance agent 1" if "/pa/1" in u
+                                    else "POCI")
 
 
 class CrociContentNegotiation(ContentNegotiation):
