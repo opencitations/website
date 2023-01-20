@@ -107,8 +107,11 @@ urls = (
     "/meta/(../.+)", "MetaContentNegotiation",
     "/meta", "Meta",
 
-    # POCI tmp urls > to be removed when POCI is ingested in Index
+    # POCI + DOCI + CROCI temporal urls
+    # to be removed when POCI + DOCI + CROCI are ingested in INDEX
     "/poci/sparql", "SparqlPoci",
+    "/doci/sparql", "SparqlPoci",
+    "/croci/sparql", "SparqlPoci",
 
     # CCC related urls
     "/(ccc)(/api/.+)", "Api",
@@ -911,7 +914,7 @@ class SparqlMeta(Sparql):
 class SparqlPoci(Sparql):
     def __init__(self):
         Sparql.__init__(self, c["sparql_endpoint_poci"],
-                        "POCI", c["oc_base_url"]+"/poci/sparql")
+                        "POCI-DOCI-CROCI", c["oc_base_url"]+"/poci/sparql")
 
 
 class SparqlCCC(Sparql):
@@ -1001,7 +1004,7 @@ class DociContentNegotiation(ContentNegotiation):
     def __init__(self):
         ContentNegotiation.__init__(self, c["index_base_url"], c["doci_local_url"],
                                     context_path=c["ocdm_json_context_path"],
-                                    from_triplestore=c["sparql_endpoint_index"],
+                                    from_triplestore=c["sparql_endpoint_poci"],
                                     label_func=lambda u: "oci:%s" % re.findall(
                                         "^.+/ci/(.+)$", u)[0]
                                     if "/ci/" in u else "provenance agent 1" if "/pa/1" in u
@@ -1023,7 +1026,7 @@ class CrociContentNegotiation(ContentNegotiation):
     def __init__(self):
         ContentNegotiation.__init__(self, c["index_base_url"], c["croci_local_url"],
                                     context_path=c["ocdm_json_context_path"],
-                                    from_triplestore=c["sparql_endpoint_index"],
+                                    from_triplestore=c["sparql_endpoint_poci"],
                                     label_func=lambda u: "oci:%s" % re.findall(
                                         "^.+/ci/(.+)$", u)[0]
                                     if "/ci/" in u else "CROCI")
