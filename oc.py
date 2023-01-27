@@ -900,7 +900,7 @@ class SparqlOC(Sparql):
 class SparqlIndex(Sparql):
     def __init__(self):
         Sparql.__init__(self, c["sparql_endpoint_index"],
-                        "Indexes", c["oc_base_url"]+"/index/sparql")
+                        "COCI", c["oc_base_url"]+"/index/sparql")
 
 
 class SparqlMeta(Sparql):
