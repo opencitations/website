@@ -24,6 +24,10 @@ import re
 import urllib
 from rdflib import RDFS, ConjunctiveGraph, Graph, Literal, URIRef
 import json
+from rdflib.plugin import register, Serializer
+
+# register jsonld
+register('json-ld', Serializer, 'rdflib_jsonld.serializer', 'JsonLDSerializer')
 
 
 class LinkedDataDirector(object):
