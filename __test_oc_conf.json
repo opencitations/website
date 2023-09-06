@@ -7,7 +7,7 @@
   "json_context_path": "/srv/data/corpus/context.json",
   "ocdm_json_context_path": "/srv/data/ccc/context.json",
   "sparql_endpoint": "http://127.0.0.1:3000/blazegraph/sparql",
-  "sparql_endpoint_index": "http://127.0.0.1:3001/blazegraph/sparql",
+  "sparql_endpoint_index": "http://127.0.0.1:7001",
   "sparql_endpoint_ccc": "http://127.0.0.1:3002/blazegraph/sparql",
   "sparql_endpoint_meta": "http://127.0.0.1:3003/blazegraph/sparql",
   "corpus_local_url": "/corpus/",
