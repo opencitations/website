@@ -893,10 +893,13 @@ var search = (function () {
 				if (!util.is_undefined_key(field_conf_obj,"value_map")) {
 					//for all the data apply the mapping
 					for (var j = 0; j < new_data.length; j++) {
-						var result = new_data[j][field_conf_obj.value].value;
-						for (var k = 0; k < field_conf_obj["value_map"].length; k++) {
-							var fname = field_conf_obj["value_map"][k];
-							result = Reflect.apply(heuristics[fname],undefined,[result]);
+						var result = "";
+						if (new_data[j].hasOwnProperty(field_conf_obj.value)) {
+							result = new_data[j][field_conf_obj.value].value;
+							for (var k = 0; k < field_conf_obj["value_map"].length; k++) {
+								var fname = field_conf_obj["value_map"][k];
+								result = Reflect.apply(heuristics[fname],undefined,[result]);
+							}
 						}
 						new_data[j][field_conf_obj.value].value = result;
 					}
