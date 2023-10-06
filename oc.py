@@ -96,6 +96,7 @@ urls = (
     "/index/doci", "Doci",
     "/index/poci", "Poci",
     "/index/croci", "Croci",
+    "/index/(ci/.*)?", "IndexContentNegotiation",
     "/index/coci/(.*)", "CociContentNegotiation",
     "/index/doci/(.*)", "DociContentNegotiation",
     "/index/croci/(ci/.*)?", "CrociContentNegotiation",
@@ -949,6 +950,15 @@ class ContentNegotiation:
         else:
             web_logger.mes()
             return cur_page
+
+class IndexContentNegotiation(ContentNegotiation):
+    def __init__(self):
+        ContentNegotiation.__init__(self, c["index_base_url"], c["index_local_url"],
+                                    context_path=c["ocdm_json_context_path"],
+                                    from_triplestore=c["sparql_endpoint_index"],
+                                    label_func=lambda u: "oci:%s" % re.findall(
+                                        "^.+/ci/(.+)$", u)[0]
+                                    if "/ci/" in u else "INDEX")
 
 
 class CorpusContentNegotiation(ContentNegotiation):
