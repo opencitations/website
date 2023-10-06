@@ -24,7 +24,10 @@ import re
 import urllib
 from rdflib import RDFS, ConjunctiveGraph, Graph, Literal, URIRef
 import json
+from rdflib.plugin import register, Serializer
 
+# register jsonld
+register('json-ld', Serializer, 'rdflib_jsonld.serializer', 'JsonLDSerializer')
 
 class LinkedDataDirector(object):
     __extensions = (".rdf", ".ttl", ".json", ".html")
@@ -240,14 +243,18 @@ class LinkedDataDirector(object):
             else:
                 try:
                     resource_url = self.baseurl + url.rsplit(".", 1)[0]
+                    if "test.opencitations" in resource_url:
+                        resource_url = resource_url.replace("test.opencitations","opencitations")
                     if resource_url.endswith("/index"):
                         resource_url = resource_url[:-5]
-                    print(resource_url)
-                    res = self.tp.query("CONSTRUCT {?s ?p ?o} "
-                                        "WHERE { <%s> ?p ?o . BIND(<%s> as ?s) }" %
-                                        (resource_url, resource_url))
+                    res = self.tp.query("SELECT ?s ?p ?o WHERE { <"+resource_url+"> ?p ?o . BIND(<"+resource_url+"> as ?s) }"
+                    return res
                     if res is not None:
                         cur_graph = Graph()
+                        result_json = []
+                        for row in res:
+                            s, p, o = row
+                            result_json.append({str(s),str(p),str(o)})
                         for st in res:
                             cur_graph.add(st)
 
