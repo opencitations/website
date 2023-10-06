@@ -247,7 +247,7 @@ class LinkedDataDirector(object):
                         resource_url = resource_url.replace("test.opencitations","opencitations")
                     if resource_url.endswith("/index"):
                         resource_url = resource_url[:-5]
-                    res = self.tp.query("SELECT ?s ?p ?o WHERE { <"+resource_url+"> ?p ?o . BIND(<"+resource_url+"> as ?s) }"
+                    res = self.tp.query("SELECT ?s ?p ?o WHERE { <"+resource_url+"> ?p ?o . BIND(<"+resource_url+"> as ?s) }")
                     return res
                     if res is not None:
                         cur_graph = Graph()
