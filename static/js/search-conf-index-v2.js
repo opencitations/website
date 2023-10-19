@@ -15,12 +15,18 @@ var search_conf = {
       "placeholder": "DOI e.g. 10.1016/J.WEBSEM.2012.08.001",
       "advanced": true,
       "freetext": false,
-      "heuristics": [['lower_case','get_omid']],
+      "heuristics": [['lower_case']],
       "category": "citation",
       "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
       "query": [`
             {
-              ?oci cito:hasCitingEntity <https://w3id.org/oc/meta/[[VAR]]> .
+              SERVICE <https://test.opencitations.net/meta/sparql> {
+                ?citing datacite:hasIdentifier ?identifier.
+                ?identifier datacite:usesIdentifierScheme ?scheme;
+                    literal:hasLiteralValue [[VAR]].
+              }
+              ?oci cito:hasCitingEntity ?citing .
+              ?oci cito:hasCitedEntity ?cited .
             }`
       ]
     },
@@ -30,12 +36,18 @@ var search_conf = {
       "placeholder": "DOI e.g. 10.1016/J.WEBSEM.2012.08.001",
       "advanced": true,
       "freetext": true,
-      "heuristics": [['lower_case','get_omid']],
+      "heuristics": [['lower_case']],
       "category": "citation",
       "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
       "query": [`
             {
-              ?oci cito:hasCitedEntity <https://w3id.org/oc/meta/[[VAR]]> .
+              SERVICE <https://test.opencitations.net/meta/sparql> {
+                ?citing datacite:hasIdentifier ?identifier.
+                ?identifier datacite:usesIdentifierScheme ?scheme;
+                    literal:hasLiteralValue [[VAR]].
+              }
+              ?oci cito:hasCitingEntity ?citing .
+              ?oci cito:hasCitedEntity ?cited .
             }`
       ]
     },
@@ -50,6 +62,8 @@ var search_conf = {
       "query": [`
         {
           BIND(<https://w3id.org/oc/index/ci/[[VAR]]> as ?oci) .
+          ?oci cito:hasCitingEntity ?citing .
+          ?oci cito:hasCitedEntity ?cited .
         }
         `
       ]
@@ -64,8 +78,7 @@ var search_conf = {
         `
             SELECT ?oci ?citing ?cited
             WHERE  {
-              ?oci cito:hasCitingEntity ?citing .
-              ?oci cito:hasCitedEntity ?cited .
+              [[RULE]]
             }
             `
       ],
@@ -75,8 +88,8 @@ var search_conf = {
         {"value": "ext_data.cited_ref.reference", "title": "Cited entity", "column_width":"29%", "type": "text"}
       ],
       "ext_data": {
-        "citing_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["citing_id_val","citing_id_iri"]}, "async": true},
-        "cited_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["cited_id_val","cited_id_iri"]}, "async": true}
+        "citing_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["citing"]}, "async": true},
+        "cited_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["cited"]}, "async": true}
       },
       "extra_elems":[
         {"elem_type": "a","elem_value": "Back to search" ,"elem_class": "btn btn-primary left" ,"elem_innerhtml": "Show the search interface", "others": {"href": "/index/search"}}
@@ -106,7 +119,7 @@ var search_conf = {
 
   }
 
-
+console.log(search_conf);
 
 
 var heuristics = (function () {
@@ -250,7 +263,7 @@ var heuristics = (function () {
         else {
           id_pref = "";
         }
-        const meta_api_url = 'https://test.opencitations.net/meta/api/v1#/metadata/';
+        var meta_api_url = 'https://test.opencitations.net/meta/api/v1/metadata/';
         meta_api_url = meta_api_url + id_pref + str_id;
 
         fetch(meta_api_url)
@@ -339,7 +352,7 @@ var callbackfunctions = (function () {
       //https://test.opencitations.net/meta/api/v1/metadata/doi:10.1007/978-1-4020-9632-7
       var call_meta = "https://test.opencitations.net/meta/api/v1/metadata/";
       var str_id = conf_params[0];
-      var link_id = conf_params[1];
+      var link_id = str_id;
 
       if (str_id != undefined) {
         var call_id = "doi:"+str_id;
