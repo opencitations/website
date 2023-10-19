@@ -96,11 +96,11 @@ urls = (
     "/index/doci", "Doci",
     "/index/poci", "Poci",
     "/index/croci", "Croci",
-    "/index/(ci/.*)?", "IndexContentNegotiation",
-    "/index/coci/(ci/.*)?", "IndexContentNegotiation",
-    "/index/poci/(ci/.*)?", "IndexContentNegotiation",
-    "/index/doci/(ci/.*)?", "IndexContentNegotiation",
-    "/index/croci/(ci/.*)?", "IndexContentNegotiation",
+    "/index/(.*)?", "IndexContentNegotiation",
+    "/index/coci/(.*)?", "IndexContentNegotiation",
+    "/index/poci/(.*)?", "IndexContentNegotiation",
+    "/index/doci/(.*)?", "IndexContentNegotiation",
+    "/index/croci/(.*)?", "IndexContentNegotiation",
 
     # META related urls
     "/(meta)(/api/.+)", "Api",
@@ -959,7 +959,8 @@ class IndexContentNegotiation(ContentNegotiation):
                                     from_triplestore=c["sparql_endpoint_index"],
                                     label_func=lambda u: "oci:%s" % re.findall(
                                         "^.+/ci/(.+)$", u)[0]
-                                    if "/ci/" in u else "INDEX")
+                                    if "/ci/" in u else "provenance agent 1" if "/pa/1" in u
+                                    else "INDEX")
 
 
 class CorpusContentNegotiation(ContentNegotiation):
