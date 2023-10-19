@@ -255,9 +255,9 @@ class LinkedDataDirector(object):
                     for _a_source in ["index/coci/","index/doci/","index/poci/","index/oroci/","index/croci/"]:
                         if _a_source in resource_url:
                             resource_url = resource_url.replace(_a_source,"index/")
-                            _a_source_t = "<"+resource_url+"> <http://www.w3.org/ns/prov#atLocation> <https://w3id.org/oc/"+_a_source+"> ."
+                            _a_source_t = "?s <http://www.w3.org/ns/prov#atLocation> <https://w3id.org/oc/"+_a_source+"> ."
 
-                    sparql_query = "CONSTRUCT {?s ?p ?o} WHERE { <"+resource_url+"> ?p ?o . "+_a_source_t+" BIND (<"+resource_url+"> as ?s) }"
+                    sparql_query = "CONSTRUCT {?s ?p ?o} WHERE { <"+resource_url+"> ?p ?o . BIND (<"+resource_url+"> as ?s) . "+_a_source_t+"}"
                     res = requests.get(self.tp, params={"query": sparql_query}, headers={"Accept":"text/turtle"})
 
                     if res.status_code == 200:
