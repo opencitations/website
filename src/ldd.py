@@ -262,12 +262,13 @@ class LinkedDataDirector(object):
 
                     if res.status_code == 200:
                         turtle_data = res.text
-                        cur_graph = Graph()
-                        cur_graph.parse(data=turtle_data, format="turtle")
+                        if turtle_data != "" and turtle_data != None:
+                            cur_graph = Graph()
+                            cur_graph.parse(data=turtle_data, format="turtle")
 
-                        if self.label_func is not None:
-                            cur_graph.add((URIRef(resource_url), RDFS.label,
-                                           Literal(self.label_func(resource_url))))
+                            if self.label_func is not None:
+                                cur_graph.add((URIRef(resource_url), RDFS.label,
+                                               Literal(self.label_func(resource_url))))
                 except TypeError as e:
                     print("The function used for adding the label is not working correctly: %s" % e)
                 except Exception:
