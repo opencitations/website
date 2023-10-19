@@ -97,9 +97,9 @@ urls = (
     "/index/poci", "Poci",
     "/index/croci", "Croci",
     "/index/(ci/.*)?", "IndexContentNegotiation",
-    "/index/coci/(.*)", "CociContentNegotiation",
-    "/index/doci/(.*)", "DociContentNegotiation",
-    "/index/croci/(ci/.*)?", "CrociContentNegotiation",
+    "/index/coci/(ci/.*)?", "IndexContentNegotiation",
+    "/index/doci/(ci/.*)?", "IndexContentNegotiation",
+    "/index/croci/(ci/.*)?", "IndexContentNegotiation",
 
     # META related urls
     "/(meta)(/api/.+)", "Api",
