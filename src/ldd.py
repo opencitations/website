@@ -262,7 +262,8 @@ class LinkedDataDirector(object):
 
                     if res.status_code == 200:
                         turtle_data = res.text
-                        if turtle_data != "" and turtle_data != None:
+                        contains_only_prefix = all(line.strip().startswith('@prefix') or line.strip() == "" for line in turtle_data.split('\n'))
+                        if turtle_data != "" and turtle_data != None and not contains_only_prefix:
                             cur_graph = Graph()
                             cur_graph.parse(data=turtle_data, format="turtle")
 
