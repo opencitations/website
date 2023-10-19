@@ -248,12 +248,9 @@ class LinkedDataDirector(object):
                     resource_url = self.baseurl + url.rsplit(".", 1)[0]
                     if resource_url.endswith("/index"):
                         resource_url = resource_url[:-5]
-                    if "test.opencitations" in resource_url:
-                        resource_url = resource_url.replace("test.opencitations","opencitations")
                     #res = self.tp.query("CONSTRUCT {?s ?p ?o} "
                     #                    "WHERE { <%s> ?p ?o . BIND(<%s> as ?s) }" %
                     #                    (resource_url, resource_url))
-                    return resource_url
                     sparql_query = "CONSTRUCT {?s ?p ?o} WHERE { "+resource_url+" ?p ?o . BIND ("+resource_url+" as ?s) }"
                     res = requests.get(self.tp, params={"query": sparql_query}, headers={"Accept":"text/turtle"})
 
