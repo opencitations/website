@@ -257,7 +257,6 @@ class LinkedDataDirector(object):
 
                     if res.status_code == 200:
                         turtle_data = res.text
-                        return turtle_data
                         cur_graph = Graph()
                         cur_graph.parse(data=turtle_data, format="turtle")
 
