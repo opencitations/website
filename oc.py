@@ -98,6 +98,7 @@ urls = (
     "/index/croci", "Croci",
     "/index/(ci/.*)?", "IndexContentNegotiation",
     "/index/coci/(ci/.*)?", "IndexContentNegotiation",
+    "/index/poci/(ci/.*)?", "IndexContentNegotiation",
     "/index/doci/(ci/.*)?", "IndexContentNegotiation",
     "/index/croci/(ci/.*)?", "IndexContentNegotiation",
 
