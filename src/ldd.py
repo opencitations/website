@@ -25,9 +25,11 @@ import urllib
 from rdflib import RDFS, ConjunctiveGraph, Graph, Literal, URIRef
 import json
 from rdflib.plugin import register, Serializer
+import requests
 
 # register jsonld
 register('json-ld', Serializer, 'rdflib_jsonld.serializer', 'JsonLDSerializer')
+
 
 class LinkedDataDirector(object):
     __extensions = (".rdf", ".ttl", ".json", ".html")
@@ -52,8 +54,9 @@ class LinkedDataDirector(object):
         self.label_func = label_func
         self.tp = None
         if from_triplestore is not None:
-            self.tp = ConjunctiveGraph('SPARQLStore')
-            self.tp.open(from_triplestore)
+            #self.tp = ConjunctiveGraph('SPARQLStore')
+            #self.tp.open(from_triplestore)
+            self.tp = from_triplestore
 
         with open(jsonld_context_path) as f:
             self.jsonld_context = json.load(f)["@context"]
@@ -243,20 +246,21 @@ class LinkedDataDirector(object):
             else:
                 try:
                     resource_url = self.baseurl + url.rsplit(".", 1)[0]
-                    return resource_url
-                    if "test.opencitations" in resource_url:
-                        resource_url = resource_url.replace("test.opencitations","opencitations")
                     if resource_url.endswith("/index"):
                         resource_url = resource_url[:-5]
-                    res = self.tp.query("SELECT ?s ?p ?o WHERE { <"+resource_url+"> ?p ?o . BIND(<"+resource_url+"> as ?s) }")
-                    if res is not None:
+                    if "test.opencitations" in resource_url:
+                        resource_url = resource_url.replace("test.opencitations","opencitations")
+                    #res = self.tp.query("CONSTRUCT {?s ?p ?o} "
+                    #                    "WHERE { <%s> ?p ?o . BIND(<%s> as ?s) }" %
+                    #                    (resource_url, resource_url))
+                    return resource_url
+                    sparql_query = "CONSTRUCT {?s ?p ?o} WHERE { "+resource_url+" ?p ?o . BIND ("+resource_url+" as ?s) }"
+                    res = requests.get(self.tp, params={"query": sparql_query}, headers={"Accept":"text/turtle"})
+
+                    if res.status_code == 200:
+                        turtle_data = response.text
                         cur_graph = Graph()
-                        result_json = []
-                        for row in res:
-                            s, p, o = row
-                            result_json.append({str(s),str(p),str(o)})
-                        for st in res:
-                            cur_graph.add(st)
+                        cur_graph.parse(data=turtle_data, format="turtle")
 
                         if self.label_func is not None:
                             cur_graph.add((URIRef(resource_url), RDFS.label,
