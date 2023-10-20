@@ -83,8 +83,8 @@ var search_conf = {
       ],
       "fields": [
         {"iskey": true, "value":"oci", "title": "Id","column_width":"16%", "type": "text", "sort":{"value": "source", "type":"text"}, "link":{"field":"browser","prefix":""}},
-        //{"value": "ext_data.citing_ref.reference", "title": "Citing entity", "column_width":"29%", "type": "text"},
-        //{"value": "ext_data.cited_ref.reference", "title": "Cited entity", "column_width":"29%", "type": "text"}
+        {"value": "ext_data.citing_ref.reference", "title": "Citing entity", "column_width":"29%", "type": "text"},
+        {"value": "ext_data.cited_ref.reference", "title": "Cited entity", "column_width":"29%", "type": "text"}
       ],
       "ext_data": {
         "citing_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["citing"]}, "async": true},
@@ -350,15 +350,16 @@ var callbackfunctions = (function () {
     function meta_call_to_get_ref(conf_params, index, async_bool, callbk_func, key_full_name, data_field, func_name ){
       //https://test.opencitations.net/meta/api/v1/metadata/doi:10.1007/978-1-4020-9632-7
       var call_meta = "https://test.opencitations.net/meta/api/v1/metadata/";
+      // takes an omid url, e.g. "https://w3id.org/oc/meta/br/0610200888"
       var str_id = conf_params[0];
       var link_id = str_id;
 
       if (str_id != undefined) {
-        var call_id = "doi:"+str_id;
-        if (/^\d{1,}$/.test(str_id)) {
-          call_id = "pmid:"+str_id;
-        }
-
+        //var call_id = "doi:"+str_id;
+        //if (/^\d{1,}$/.test(str_id)) {
+        //  call_id = "pmid:"+str_id;
+        //}
+        var call_id = "omid:"+str_id.split("meta/")[1];
         $.ajax({
               url: call_meta + call_id,
               type: 'GET',
