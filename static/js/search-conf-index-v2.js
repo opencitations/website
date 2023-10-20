@@ -82,8 +82,8 @@ var search_conf = {
             `
       ],
       "fields": [
-        {"iskey": true, "value":"oci", "title": "Id","column_width":"16%", "type": "text", "sort":{"value": "source", "type":"text"}, "link":{"field":"browser","oci":""}},
-        {"value": "ext_data.citing_ref.reference", "title": "Citing entity", "column_width":"29%", "type": "text"},
+        {"iskey": true, "value":"oci", "title": "Id","column_width":"16%", "type": "text", "sort":{"value": "oci", "type":"text"}, "link":{"field":"browser","oci":""}},
+        {"value": "ext_data.citing_ref.reference", "title": "Citing entity", "column_width":"29%", "type": "text", "sort":{"value": "ext_data.citing_ref.reference", "type":"text"}},
         {"value": "ext_data.cited_ref.reference", "title": "Cited entity", "column_width":"29%", "type": "text"}
       ],
       "ext_data": {
