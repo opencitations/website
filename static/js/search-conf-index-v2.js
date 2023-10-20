@@ -373,17 +373,24 @@ var callbackfunctions = (function () {
                     if (res != undefined){
                       if ("title" in res) {
                         if (res["title"] != "") {
-                          entity_ref += "Title: <i>"+res["title"]+"</i><br/><br/>";
+                          entity_ref += "<i><strong>"+res["title"]+"</strong></i><br/>";
+                        }
+                      }
+                      if ("venue" in res) {
+                        if (res["venue"] != "") {
+                          entity_ref += "<br/>Venue: <i>"+res["venue"]+"</i>";
+                        }
+                      }
+                      if ("pub_date" in res) {
+                        if (res["pub_date"] != "") {
+                          entity_ref += "<br/>Publication date: <i>"+res["pub_date"]+"</i>";
                         }
                       }
                       if ("author" in res) {
                         if (res["author"] != "") {
-                            entity_ref += "Author: <i>"+res["author"]+"</i>";
+                            entity_ref += "<br/>Author(s): <i>"+res["author"]+"</i>";
                         }
                       }
-                      //if ("pub_date" in res) {
-                      //  entity_ref += "Publication date: <i>"+res["pub_date"]+"</i>";
-                      //}
                     }
                     var res_obj = {"reference": entity_ref};
                     var func_param = [];
