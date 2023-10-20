@@ -392,8 +392,8 @@ var callbackfunctions = (function () {
                             for (var i = 0; i < res["author"].split(";").length; i++) {
                               var an_author = res["author"][i];
                               var omid_matches = an_author.match(/omid:[^;\s]+/);
-                              if (matches) {
-                                an_author = "<a href='https://w3id.org/oc/meta/"+matches[0].split("omid:")[1]+"'>" + an_author + "</a>";
+                              if (omid_matches) {
+                                an_author = "<a href='https://w3id.org/oc/meta/"+omid_matches[0].split("omid:")[1]+"'>" + an_author + "</a>";
                               }
                               str_authors += an_author + "; ";
                             }
