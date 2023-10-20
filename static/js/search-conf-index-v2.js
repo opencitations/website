@@ -369,16 +369,26 @@ var callbackfunctions = (function () {
                   if (call_res.length > 0) {
                     // meta is supposed to return 1 entity only
                     res = call_res[0];
-                    var entity_ref = "<a href='"+link_id+"'>"+str_id +"</a><br/><br/>";
+                    var entity_ref = "";
                     if (res != undefined){
                       if ("title" in res) {
                         if (res["title"] != "") {
-                          entity_ref += "<p><i><strong>"+res["title"]+"</strong></i></p><br/>";
+                          entity_ref += "<p><i><strong><a href='"+link_id+"'>"+res["title"]+"</a></strong></i></p><br/>";
                         }
                       }
                       if ("venue" in res) {
                         if (res["venue"] != "") {
-                          entity_ref += "<p><strong>Venue: </strong><i>"+res["venue"]+"</i></p>";
+                          str_venues = "";
+                          l_venues = res["venue"].split(";");
+                          for (var i = 0; i < l_venues.length; i++) {
+                            var a_venue = l_venues[i];
+                            var omid_matches = a_venue.match(/omid:br\/\d{1,}/);
+                            if (omid_matches) {
+                              a_venue = "<a href='https://w3id.org/oc/meta/"+omid_matches[0].split("omid:")[1]+"'>" + a_venue + "</a>";
+                            }
+                            str_venues += a_venue + "; ";
+                          }
+                          entity_ref += "<p><strong>Venue: </strong><i>"+str_venues+"</i></p>";
                         }
                       }
                       if ("pub_date" in res) {
@@ -392,7 +402,7 @@ var callbackfunctions = (function () {
                             l_authors = res["author"].split(";");
                             for (var i = 0; i < l_authors.length; i++) {
                               var an_author = l_authors[i];
-                              var omid_matches = an_author.match(/omid:[^;\s]+/);
+                              var omid_matches = an_author.match(/omid:ra\/\d{1,}/);
                               if (omid_matches) {
                                 an_author = "<a href='https://w3id.org/oc/meta/"+omid_matches[0].split("omid:")[1]+"'>" + an_author + "</a>";
                               }
