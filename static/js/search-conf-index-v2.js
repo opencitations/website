@@ -389,8 +389,9 @@ var callbackfunctions = (function () {
                       if ("author" in res) {
                         if (res["author"] != "") {
                             str_authors = "";
-                            for (var i = 0; i < res["author"].split(";").length; i++) {
-                              var an_author = res["author"][i];
+                            l_authors = res["author"].split(";");
+                            for (var i = 0; i < l_authors.length; i++) {
+                              var an_author = l_authors[i];
                               var omid_matches = an_author.match(/omid:[^;\s]+/);
                               if (omid_matches) {
                                 an_author = "<a href='https://w3id.org/oc/meta/"+omid_matches[0].split("omid:")[1]+"'>" + an_author + "</a>";
