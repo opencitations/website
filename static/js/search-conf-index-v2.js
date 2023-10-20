@@ -373,22 +373,32 @@ var callbackfunctions = (function () {
                     if (res != undefined){
                       if ("title" in res) {
                         if (res["title"] != "") {
-                          entity_ref += "<i><strong>"+res["title"]+"</strong></i><br/>";
+                          entity_ref += "<p><i><strong>"+res["title"]+"</strong></i></p><br/>";
                         }
                       }
                       if ("venue" in res) {
                         if (res["venue"] != "") {
-                          entity_ref += "<br/>Venue: <i>"+res["venue"]+"</i>";
+                          entity_ref += "<p><strong>Venue: </strong><i>"+res["venue"]+"</i></p>";
                         }
                       }
                       if ("pub_date" in res) {
                         if (res["pub_date"] != "") {
-                          entity_ref += "<br/>Publication date: <i>"+res["pub_date"]+"</i>";
+                          entity_ref += "<p><strong>Publication date: </strong><i>"+res["pub_date"]+"</i></p>";
                         }
                       }
                       if ("author" in res) {
                         if (res["author"] != "") {
-                            entity_ref += "<br/>Author(s): <i>"+res["author"]+"</i>";
+                            str_authors = "";
+                            for (var i = 0; i < res["author"].split(";").length; i++) {
+                              var an_author = res["author"][i];
+                              var omid_matches = an_author.match(/omid:[^;\s]+/);
+                              if (matches) {
+                                an_author = "<a href='https://w3id.org/oc/meta/"+matches[0].split("omid:")[1]+"'>" + an_author + "</a>";
+                              }
+                              str_authors += an_author + "; ";
+                            }
+
+                            entity_ref += "<p><strong>Author(s): </strong><i>"+str_authors+"</i></p>";
                         }
                       }
                     }
