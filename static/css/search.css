@@ -30,17 +30,19 @@
 
 #rows_per_page {
   float:left;
-  margin-left:26%;
+  /*margin-left:26%;*/
 }
 
 #sort_results {
   float:right;
   margin-right:3%;
+  display: none;
 }
 
 #search_filters{
   float:left;
   width: 25%;
+  display: none;
 }
 
 #filter_values_list{
@@ -50,7 +52,7 @@
 
 #search_results{
   float:left;
-  width: 75%;
+  /*width: 75%;*/
   padding-bottom: 200px;
 }
 
@@ -573,11 +575,11 @@ input[type=range]::-moz-range-track {
   #rows_per_page {
     display:block;
     float:left;
-    margin-left:26%;
+    /*margin-left:26%;*/
   }
 
   #sort_results {
-    display:block;
+    /*display:block;*/
     float:right;
     margin-right:3%;
   }
