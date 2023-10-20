@@ -12,13 +12,13 @@ var search_conf = {
 "rules":  [
     {
       "name":"citingdoi",
-      "label": "References of a specific document (DOI)",
-      "placeholder": "DOI e.g. 10.1016/J.WEBSEM.2012.08.001",
+      "label": "References of a bibliographic resource (DOI, PMID, OMID)",
+      "placeholder": "e.g. 10.1016/J.WEBSEM.2012.08.001 | br/0612058700 | 37844613",
       "advanced": true,
       "freetext": false,
       "heuristics": [['lower_case']],
       "category": "citation",
-      "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
+      "regex":"(\S+)",
       "query": [`
             {
               SERVICE <https://test.opencitations.net/meta/sparql> {
@@ -32,13 +32,13 @@ var search_conf = {
     },
     {
       "name":"citeddoi",
-      "label": "Citations of a specific document (DOI)",
-      "placeholder": "DOI e.g. 10.1016/J.WEBSEM.2012.08.001",
+      "label": "Citations of a bibliographic resource (DOI, PMID, OMID)",
+      "placeholder": "e.g. 10.1016/J.WEBSEM.2012.08.001 | br/0612058700 | 37844613",
       "advanced": true,
       "freetext": true,
       "heuristics": [['lower_case']],
       "category": "citation",
-      "regex":"(10.\\d{4,9}\/[-._;()/:A-Za-z0-9][^\\s]+)",
+      "regex":"(\S+)",
       "query": [`
             {
               SERVICE <https://test.opencitations.net/meta/sparql> {
