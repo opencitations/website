@@ -5,7 +5,7 @@ var search_conf = {
     {"prefix":"literal","iri":"http://www.essepuntato.it/2010/06/literalreification/"},
     {"prefix":"biro","iri":"http://purl.org/spar/biro/"},
     {"prefix":"fabio","iri":"http://purl.org/spar/fabio/"},
-    {"prefix":"rdf","iri":"http://www.w3.org/1999/02/22-rdf-syntax-ns#"}
+    {"prefix":"rdf","iri":"http://www.w3.org/1999/02/22-rdf-syntax-ns#"},
     {"prefix":"datacite","iri":"http://purl.org/spar/datacite/"}
   ],
 
