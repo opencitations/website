@@ -6,6 +6,7 @@ var search_conf = {
     {"prefix":"biro","iri":"http://purl.org/spar/biro/"},
     {"prefix":"fabio","iri":"http://purl.org/spar/fabio/"},
     {"prefix":"rdf","iri":"http://www.w3.org/1999/02/22-rdf-syntax-ns#"}
+    {"prefix":"datacite","iri":"http://purl.org/spar/datacite/"}
   ],
 
 "rules":  [
