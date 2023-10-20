@@ -23,7 +23,7 @@ var search_conf = {
             {
               SERVICE <https://test.opencitations.net/meta/sparql> {
                 ?citing datacite:hasIdentifier ?identifier .
-                ?identifier literal:hasLiteralValue [[VAR]] .
+                ?identifier literal:hasLiteralValue "[[VAR]]" .
               }
               ?oci cito:hasCitingEntity ?citing .
               ?oci cito:hasCitedEntity ?cited .
@@ -43,7 +43,7 @@ var search_conf = {
             {
               SERVICE <https://test.opencitations.net/meta/sparql> {
                 ?citing datacite:hasIdentifier ?identifier .
-                ?identifier literal:hasLiteralValue [[VAR]] .
+                ?identifier literal:hasLiteralValue "[[VAR]]" .
               }
               ?oci cito:hasCitingEntity ?citing .
               ?oci cito:hasCitedEntity ?cited .
