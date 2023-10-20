@@ -13,7 +13,7 @@ var search_conf = {
     {
       "name":"citingdoi",
       "label": "References of a bibliographic resource (DOI, PMID, OMID)",
-      "placeholder": "e.g. 10.1016/J.WEBSEM.2012.08.001 | br/0612058700 | 37844613",
+      "placeholder": "e.g. 10.1016/J.WEBSEM.2012.08.001 | 37844613 | br/0612058700",
       "advanced": true,
       "freetext": false,
       "heuristics": [['lower_case']],
@@ -33,7 +33,7 @@ var search_conf = {
     {
       "name":"citeddoi",
       "label": "Citations of a bibliographic resource (DOI, PMID, OMID)",
-      "placeholder": "e.g. 10.1016/J.WEBSEM.2012.08.001 | br/0612058700 | 37844613",
+      "placeholder": "e.g. 10.1016/J.WEBSEM.2012.08.001 | 37844613 | br/0612058700",
       "advanced": true,
       "freetext": true,
       "heuristics": [['lower_case']],

@@ -391,7 +391,7 @@ td ar + ar {
   width:50%;
 }
 .adv-search-input input{
-  font-size: 22px;
+  font-size: 100%;
 }
 .adv-search-selector{
   margin-right: 10px;
@@ -401,7 +401,7 @@ td ar + ar {
 }
 
 .adv-search-selector select {
-  font-size: 130%;
+  font-size: 100%;
 }
 .adv-search-footer{
   width:80%;
