@@ -21,9 +21,8 @@ var search_conf = {
       "query": [`
             {
               SERVICE <https://test.opencitations.net/meta/sparql> {
-                ?citing datacite:hasIdentifier ?identifier.
-                ?identifier datacite:usesIdentifierScheme ?scheme;
-                    literal:hasLiteralValue [[VAR]].
+                ?citing datacite:hasIdentifier ?identifier .
+                ?identifier literal:hasLiteralValue [[VAR]] .
               }
               ?oci cito:hasCitingEntity ?citing .
               ?oci cito:hasCitedEntity ?cited .
@@ -42,9 +41,8 @@ var search_conf = {
       "query": [`
             {
               SERVICE <https://test.opencitations.net/meta/sparql> {
-                ?citing datacite:hasIdentifier ?identifier.
-                ?identifier datacite:usesIdentifierScheme ?scheme;
-                    literal:hasLiteralValue [[VAR]].
+                ?citing datacite:hasIdentifier ?identifier .
+                ?identifier literal:hasLiteralValue [[VAR]] .
               }
               ?oci cito:hasCitingEntity ?citing .
               ?oci cito:hasCitedEntity ?cited .
@@ -84,8 +82,8 @@ var search_conf = {
       ],
       "fields": [
         {"iskey": true, "value":"oci", "title": "Id","column_width":"16%", "type": "text", "sort":{"value": "source", "type":"text"}, "link":{"field":"browser","prefix":""}},
-        {"value": "ext_data.citing_ref.reference", "title": "Citing entity", "column_width":"29%", "type": "text"},
-        {"value": "ext_data.cited_ref.reference", "title": "Cited entity", "column_width":"29%", "type": "text"}
+        //{"value": "ext_data.citing_ref.reference", "title": "Citing entity", "column_width":"29%", "type": "text"},
+        //{"value": "ext_data.cited_ref.reference", "title": "Cited entity", "column_width":"29%", "type": "text"}
       ],
       "ext_data": {
         "citing_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["citing"]}, "async": true},
