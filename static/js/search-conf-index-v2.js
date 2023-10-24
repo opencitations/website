@@ -360,6 +360,7 @@ var callbackfunctions = (function () {
         //  call_id = "pmid:"+str_id;
         //}
         var call_id = "omid:"+str_id.split("meta/")[1];
+        console.log(call_id);
         $.ajax({
               url: call_meta + call_id,
               type: 'GET',
