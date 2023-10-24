@@ -83,8 +83,8 @@ var search_conf = {
       ],
       "fields": [
         {"iskey": true, "value":"oci", "title": "Id","column_width":"16%", "type": "text", "link":{"field":"oci","oci":""}},
-        {"value": "ext_data.citing_ref.reference_html", "label":"ext_data.citing_ref.reference_value", "title": "Citing entity", "column_width":"29%", "type": "text"},
-        {"value": "ext_data.cited_ref.reference_html", "label":"ext_data.citing_ref.reference_value", "title": "Cited entity", "column_width":"29%", "type": "text"}
+        {"value_html": "ext_data.citing_ref.reference_html", "value":"ext_data.citing_ref.reference_value", "title": "Citing entity", "column_width":"29%", "type": "text"},
+        {"value_html": "ext_data.cited_ref.reference_html", "value":"ext_data.citing_ref.reference_value", "title": "Cited entity", "column_width":"29%", "type": "text"}
       ],
       "ext_data": {
         "citing_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["citing"]}, "async": true},
