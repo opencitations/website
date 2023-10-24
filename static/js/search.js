@@ -1057,6 +1057,7 @@ var search = (function () {
 
 			//console.log(table_conf.data.results.bindings);
 			function _update_all_data_entry_field(data_key_val, field, new_val) {
+				console.log(new_val);
 				var init_obj = {"value": new_val, "label": new_val};
 				init_obj["uri"] = _update_uri(data_key_val,field);
 
@@ -2174,7 +2175,7 @@ var htmldom = (function () {
 
 					var tabCell = tr.insertCell(-1);
 					tabCell.setAttribute("field", f_obj["value"]);
-					var cell_inner = _cell_inner_str(results_obj, f_obj["value"], f_obj["value_html"], f_obj["value_text_len"]);
+					var cell_inner = _cell_inner_str(results_obj, f_obj["value"], f_obj["value_text_len"]);
 
 					tabCell.setAttribute("value", cell_inner.str_value);
 					tabCell.innerHTML = cell_inner.str_html;
@@ -2183,7 +2184,7 @@ var htmldom = (function () {
 		return tr;
 	}
 
-	function _cell_inner_str(results_obj,cell_field, cell_html = undefined, limit_length = undefined) {
+	function _cell_inner_str(results_obj,cell_field, limit_length = undefined) {
 		if (results_obj.hasOwnProperty(cell_field)) {
 			var str_html = "";
 
@@ -2210,6 +2211,7 @@ var htmldom = (function () {
 				}
 			}
 			else {
+				console.log(results_obj[cell_field]);
 				str_value = results_obj[cell_field].value;
 
 				var inner_value = str_value;
@@ -2220,11 +2222,7 @@ var htmldom = (function () {
 				if(results_obj[cell_field].hasOwnProperty("uri")){
 					str_html = "<a class='res-val-link' href='"+String(results_obj[cell_field].uri)+"' target='_blank'>"+inner_value+"</a>";
 				}else {
-					if (cell_html != undefined) {
-						str_html = cell_html;
-					}else {
 						str_html = inner_value;
-					}
 				}
 			}
 		}else{
@@ -3000,7 +2998,7 @@ var htmldom = (function () {
 				var mycell = tab_res.rows[tr_index].cells[j];
 				if (mycell.getAttribute("field") == entry_data_field) {
 					console.log(mycell, entry_data_field, obj_val);
-					var cell_inner = _cell_inner_str(obj_val, entry_data_field, undefined, my_field_conf.value_text_len);
+					var cell_inner = _cell_inner_str(obj_val, entry_data_field, my_field_conf.value_text_len);
 					mycell.setAttribute("value", cell_inner.str_value);
 					mycell.innerHTML = cell_inner.str_html;
 				}
