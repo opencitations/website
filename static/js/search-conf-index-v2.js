@@ -82,9 +82,9 @@ var search_conf = {
             `
       ],
       "fields": [
-        {"iskey": true, "value":"oci", "title": "Id","column_width":"16%", "type": "text", "link":{"field":"oci","oci":""}},
-        {"value":"ext_data.citing_ref.reference", "title": "Citing entity", "column_width":"29%", "type": "text"},
-        {"value":"ext_data.citing_ref.reference", "title": "Cited entity", "column_width":"29%", "type": "text"}
+        {"iskey": true, "value":"oci", "title": "Id","column_width":"15%", "type": "text", "link":{"field":"oci","oci":""}},
+        {"value":"ext_data.citing_ref.reference", "title": "Citing entity", "column_width":"40%", "type": "text"},
+        {"value":"ext_data.citing_ref.reference", "title": "Cited entity", "column_width":"40%", "type": "text"}
       ],
       "ext_data": {
         "citing_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["citing"]}, "async": true},
@@ -420,7 +420,7 @@ var callbackfunctions = (function () {
                         }
                       }
                     }
-                    var res_obj = {"reference": {"value_html": entity_ref_val, "value": entity_ref}};
+                    var res_obj = {"reference": entity_ref};
                     var func_param = [];
                     func_param.push(index, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
                     Reflect.apply(callbk_func,undefined,func_param);
@@ -429,7 +429,7 @@ var callbackfunctions = (function () {
               error: function (error)
               {
                   //var res_obj = {"reference_html": "<a href='"+link_id+"'>"+str_id +"</a><br/><br/>", "reference_value": ""};
-                  var res_obj = {"reference": {"label": "<a href='"+link_id+"'>"+str_id +"</a><br/><br/>", "value": str_id}};
+                  var res_obj = {"reference": "<a href='"+link_id+"'>"+str_id +"</a><br/><br/>"};
                   var func_param = [];
                   func_param.push(index, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
                   Reflect.apply(callbk_func,undefined,func_param);

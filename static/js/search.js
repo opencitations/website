@@ -1029,6 +1029,7 @@ var search = (function () {
 				if (new_val == -1) {
 					new_val = "";
 				}
+
 				//util.index_in_arrjsons(search_conf_json.categories,"name",)
 
 				var conf_fields = util.get_val_adv(search_conf_json,"categories.[[name,citation]].fields");
@@ -1056,7 +1057,7 @@ var search = (function () {
 
 			//console.log(table_conf.data.results.bindings);
 			function _update_all_data_entry_field(data_key_val, field, new_val) {
-				var init_obj = {"value": new_val.value, "value_html": new_val.value_html};
+				var init_obj = {"value": new_val, "label": new_val};
 				init_obj["uri"] = _update_uri(data_key_val,field);
 
 
@@ -2219,7 +2220,7 @@ var htmldom = (function () {
 				if(results_obj[cell_field].hasOwnProperty("uri")){
 					str_html = "<a class='res-val-link' href='"+String(results_obj[cell_field].uri)+"' target='_blank'>"+inner_value+"</a>";
 				}else {
-						str_html = inner_value;
+					str_html = inner_value;
 				}
 			}
 		}else{
@@ -2994,7 +2995,6 @@ var htmldom = (function () {
 			for (var j = 0; j < tab_res.rows[tr_index].cells.length; j++) {
 				var mycell = tab_res.rows[tr_index].cells[j];
 				if (mycell.getAttribute("field") == entry_data_field) {
-					console.log(mycell, entry_data_field, obj_val);
 					var cell_inner = _cell_inner_str(obj_val, entry_data_field, my_field_conf.value_text_len);
 					mycell.setAttribute("value", cell_inner.str_value);
 					mycell.innerHTML = cell_inner.str_html;
