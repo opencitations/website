@@ -374,8 +374,8 @@ var callbackfunctions = (function () {
                     if (res != undefined){
                       if ("title" in res) {
                         if (res["title"] != "") {
-                          entity_ref += "<p><i><strong><a href='"+link_id+"'>"+res["title"]+"</a></strong></i></p><br/>";
                           entity_ref_val += res["title"];
+                          entity_ref += "<p><i><strong><a href='"+link_id+"'>"+res["title"]+"</a></strong></i></p><br/>";
                         }
                       }
                       if ("venue" in res) {
@@ -387,8 +387,8 @@ var callbackfunctions = (function () {
                             var a_venue = l_venues[i];
                             var omid_matches = a_venue.match(/omid:br\/\d{1,}/);
                             if (omid_matches) {
-                              a_venue = "<a href='https://w3id.org/oc/meta/"+omid_matches[0].split("omid:")[1]+"'>" + a_venue + "</a>";
                               entity_ref_val += a_venue + " ; ";
+                              a_venue = "<a href='https://w3id.org/oc/meta/"+omid_matches[0].split("omid:")[1]+"'>" + a_venue + "</a>";
                             }
                             str_venues += a_venue + "; ";
                           }
@@ -398,8 +398,8 @@ var callbackfunctions = (function () {
                       if ("pub_date" in res) {
                         if (res["pub_date"] != "") {
                           entity_ref_val += " ;; ";
-                          entity_ref += "<p><strong>Publication date: </strong><i>"+res["pub_date"]+"</i></p>";
                           entity_ref_val += res["pub_date"];
+                          entity_ref += "<p><strong>Publication date: </strong><i>"+res["pub_date"]+"</i></p>";
                         }
                       }
                       if ("author" in res) {
@@ -411,8 +411,8 @@ var callbackfunctions = (function () {
                               var an_author = l_authors[i];
                               var omid_matches = an_author.match(/omid:ra\/\d{1,}/);
                               if (omid_matches) {
-                                an_author = "<a href='https://w3id.org/oc/meta/"+omid_matches[0].split("omid:")[1]+"'>" + an_author + "</a>";
                                 entity_ref_val += an_author + "; ";
+                                an_author = "<a href='https://w3id.org/oc/meta/"+omid_matches[0].split("omid:")[1]+"'>" + an_author + "</a>";
                               }
                               str_authors += an_author + "; ";
                             }
@@ -420,7 +420,7 @@ var callbackfunctions = (function () {
                         }
                       }
                     }
-                    var res_obj = {"reference": {"label": entity_ref, "value": entity_ref_val}};
+                    var res_obj = {"reference": {"label": entity_ref_val, "value": entity_ref}};
                     var func_param = [];
                     func_param.push(index, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
                     Reflect.apply(callbk_func,undefined,func_param);
