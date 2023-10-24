@@ -1057,7 +1057,7 @@ var search = (function () {
 
 			//console.log(table_conf.data.results.bindings);
 			function _update_all_data_entry_field(data_key_val, field, new_val) {
-				var init_obj = {"value": new_val, "label": new_val};
+				var init_obj = {"value": new_val.value, "label": new_val.label};
 				init_obj["uri"] = _update_uri(data_key_val,field);
 
 
