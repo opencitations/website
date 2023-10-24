@@ -2999,7 +2999,7 @@ var htmldom = (function () {
 			for (var j = 0; j < tab_res.rows[tr_index].cells.length; j++) {
 				var mycell = tab_res.rows[tr_index].cells[j];
 				if (mycell.getAttribute("field") == entry_data_field) {
-					console.log(entry_data_field, obj_val);
+					console.log(mycell, entry_data_field, obj_val);
 					var cell_inner = _cell_inner_str(obj_val, entry_data_field, undefined, my_field_conf.value_text_len);
 					mycell.setAttribute("value", cell_inner.str_value);
 					mycell.innerHTML = cell_inner.str_html;
