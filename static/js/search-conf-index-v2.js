@@ -420,7 +420,7 @@ var callbackfunctions = (function () {
                         }
                       }
                     }
-                    var res_obj = {"reference": {"label": entity_ref, "value": entity_ref_val.join(" ;; ")}};
+                    var res_obj = {"reference": {"label": entity_ref, "value": entity_ref_val}};
                     var func_param = [];
                     func_param.push(index, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
                     Reflect.apply(callbk_func,undefined,func_param);
