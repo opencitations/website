@@ -83,8 +83,8 @@ var search_conf = {
       ],
       "fields": [
         {"iskey": true, "value":"oci", "title": "Id","column_width":"16%", "type": "text", "link":{"field":"oci","oci":""}},
-        {"value": "ext_data.citing_ref.reference", "title": "Citing entity", "column_width":"29%", "type": "text"},
-        {"value": "ext_data.cited_ref.reference", "title": "Cited entity", "column_width":"29%", "type": "text"}
+        {"value": "ext_data.citing_ref.reference_html", "label":"ext_data.citing_ref.reference_value", "title": "Citing entity", "column_width":"29%", "type": "text"},
+        {"value": "ext_data.cited_ref.reference_html", "label":"ext_data.citing_ref.reference_value", "title": "Cited entity", "column_width":"29%", "type": "text"}
       ],
       "ext_data": {
         "citing_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["citing"]}, "async": true},
@@ -370,10 +370,12 @@ var callbackfunctions = (function () {
                     // meta is supposed to return 1 entity only
                     res = call_res[0];
                     var entity_ref = "";
+                    var entity_ref_val = [];
                     if (res != undefined){
                       if ("title" in res) {
                         if (res["title"] != "") {
                           entity_ref += "<p><i><strong><a href='"+link_id+"'>"+res["title"]+"</a></strong></i></p><br/>";
+                          entity_ref_val.push(res["title"]);
                         }
                       }
                       if ("venue" in res) {
@@ -389,11 +391,13 @@ var callbackfunctions = (function () {
                             str_venues += a_venue + "; ";
                           }
                           entity_ref += "<p><strong>Venue: </strong><i>"+str_venues+"</i></p>";
+                          entity_ref_val.push(str_venues);
                         }
                       }
                       if ("pub_date" in res) {
                         if (res["pub_date"] != "") {
                           entity_ref += "<p><strong>Publication date: </strong><i>"+res["pub_date"]+"</i></p>";
+                          entity_ref_val.push(res["pub_date"]);
                         }
                       }
                       if ("author" in res) {
@@ -410,10 +414,11 @@ var callbackfunctions = (function () {
                             }
 
                             entity_ref += "<p><strong>Author(s): </strong><i>"+str_authors+"</i></p>";
+                            entity_ref_val.push(entity_ref);
                         }
                       }
                     }
-                    var res_obj = {"reference": entity_ref};
+                    var res_obj = {"reference_html": entity_ref, "reference_value": " ;; ".join(entity_ref_val)};
                     var func_param = [];
                     func_param.push(index, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
                     Reflect.apply(callbk_func,undefined,func_param);
@@ -421,7 +426,7 @@ var callbackfunctions = (function () {
               },
               error: function (error)
               {
-                  var res_obj = {"reference": "<a href='"+link_id+"'>"+str_id +"</a><br/><br/>"};
+                  var res_obj = {"reference_html": "<a href='"+link_id+"'>"+str_id +"</a><br/><br/>", "reference_value": ""};
                   var func_param = [];
                   func_param.push(index, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
                   Reflect.apply(callbk_func,undefined,func_param);
