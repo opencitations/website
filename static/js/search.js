@@ -1029,7 +1029,7 @@ var search = (function () {
 				if (new_val == -1) {
 					new_val = "";
 				}
-
+				console.log(new_val);
 				//util.index_in_arrjsons(search_conf_json.categories,"name",)
 
 				var conf_fields = util.get_val_adv(search_conf_json,"categories.[[name,citation]].fields");
@@ -1057,7 +1057,6 @@ var search = (function () {
 
 			//console.log(table_conf.data.results.bindings);
 			function _update_all_data_entry_field(data_key_val, field, new_val) {
-				console.log(new_val);
 				var init_obj = {"value": new_val, "label": new_val};
 				init_obj["uri"] = _update_uri(data_key_val,field);
 

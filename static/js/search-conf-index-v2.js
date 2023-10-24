@@ -418,7 +418,7 @@ var callbackfunctions = (function () {
                         }
                       }
                     }
-                    var res_obj = {"reference_html": entity_ref, "reference_value": entity_ref_val.join(" ;; ")};
+                    var res_obj = {"reference": {"label": entity_ref, "value": entity_ref_val.join(" ;; ")}};
                     var func_param = [];
                     func_param.push(index, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
                     Reflect.apply(callbk_func,undefined,func_param);
@@ -426,7 +426,8 @@ var callbackfunctions = (function () {
               },
               error: function (error)
               {
-                  var res_obj = {"reference_html": "<a href='"+link_id+"'>"+str_id +"</a><br/><br/>", "reference_value": ""};
+                  //var res_obj = {"reference_html": "<a href='"+link_id+"'>"+str_id +"</a><br/><br/>", "reference_value": ""};
+                  var res_obj = {"reference": {"label": "<a href='"+link_id+"'>"+str_id +"</a><br/><br/>", "value": str_id}};
                   var func_param = [];
                   func_param.push(index, key_full_name, data_field, async_bool, func_name, conf_params, res_obj);
                   Reflect.apply(callbk_func,undefined,func_param);
