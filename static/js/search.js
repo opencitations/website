@@ -1029,7 +1029,6 @@ var search = (function () {
 				if (new_val == -1) {
 					new_val = "";
 				}
-				console.log(new_val);
 				//util.index_in_arrjsons(search_conf_json.categories,"name",)
 
 				var conf_fields = util.get_val_adv(search_conf_json,"categories.[[name,citation]].fields");
@@ -1057,7 +1056,7 @@ var search = (function () {
 
 			//console.log(table_conf.data.results.bindings);
 			function _update_all_data_entry_field(data_key_val, field, new_val) {
-				var init_obj = {"value": new_val.value, "label": new_val.label};
+				var init_obj = {"value": new_val.value, "value_html": new_val.value_html};
 				init_obj["uri"] = _update_uri(data_key_val,field);
 
 
@@ -2210,7 +2209,6 @@ var htmldom = (function () {
 				}
 			}
 			else {
-				console.log(results_obj[cell_field]);
 				str_value = results_obj[cell_field].value;
 
 				var inner_value = str_value;
