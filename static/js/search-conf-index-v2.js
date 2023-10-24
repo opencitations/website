@@ -84,7 +84,7 @@ var search_conf = {
       "fields": [
         {"iskey": true, "value":"oci", "title": "Id","column_width":"15%", "type": "text", "link":{"field":"oci","oci":""}},
         {"value":"ext_data.citing_ref.reference", "title": "Citing entity", "column_width":"40%", "type": "text"},
-        {"value":"ext_data.citing_ref.reference", "title": "Cited entity", "column_width":"40%", "type": "text"}
+        {"value":"ext_data.cited_ref.reference", "title": "Cited entity", "column_width":"40%", "type": "text"}
       ],
       "ext_data": {
         "citing_ref": {"name": "meta_call_to_get_ref", "param": {"fields":["citing"]}, "async": true},
