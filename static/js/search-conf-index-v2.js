@@ -370,16 +370,17 @@ var callbackfunctions = (function () {
                     // meta is supposed to return 1 entity only
                     res = call_res[0];
                     var entity_ref = "";
-                    var entity_ref_val = [];
+                    var entity_ref_val = "";
                     if (res != undefined){
                       if ("title" in res) {
                         if (res["title"] != "") {
                           entity_ref += "<p><i><strong><a href='"+link_id+"'>"+res["title"]+"</a></strong></i></p><br/>";
-                          entity_ref_val.push(res["title"]);
+                          entity_ref_val += res["title"];
                         }
                       }
                       if ("venue" in res) {
                         if (res["venue"] != "") {
+                          entity_ref_val += " ;; ";
                           str_venues = "";
                           l_venues = res["venue"].split(";");
                           for (var i = 0; i < l_venues.length; i++) {
@@ -387,21 +388,23 @@ var callbackfunctions = (function () {
                             var omid_matches = a_venue.match(/omid:br\/\d{1,}/);
                             if (omid_matches) {
                               a_venue = "<a href='https://w3id.org/oc/meta/"+omid_matches[0].split("omid:")[1]+"'>" + a_venue + "</a>";
+                              entity_ref_val += a_venue + " ; ";
                             }
                             str_venues += a_venue + "; ";
                           }
                           entity_ref += "<p><strong>Venue: </strong><i>"+str_venues+"</i></p>";
-                          entity_ref_val.push(str_venues);
                         }
                       }
                       if ("pub_date" in res) {
                         if (res["pub_date"] != "") {
+                          entity_ref_val += " ;; ";
                           entity_ref += "<p><strong>Publication date: </strong><i>"+res["pub_date"]+"</i></p>";
-                          entity_ref_val.push(res["pub_date"]);
+                          entity_ref_val += res["pub_date"];
                         }
                       }
                       if ("author" in res) {
                         if (res["author"] != "") {
+                            entity_ref_val += " ;; ";
                             str_authors = "";
                             l_authors = res["author"].split(";");
                             for (var i = 0; i < l_authors.length; i++) {
@@ -409,12 +412,11 @@ var callbackfunctions = (function () {
                               var omid_matches = an_author.match(/omid:ra\/\d{1,}/);
                               if (omid_matches) {
                                 an_author = "<a href='https://w3id.org/oc/meta/"+omid_matches[0].split("omid:")[1]+"'>" + an_author + "</a>";
+                                entity_ref_val += an_author + "; ";
                               }
                               str_authors += an_author + "; ";
                             }
-
                             entity_ref += "<p><strong>Author(s): </strong><i>"+str_authors+"</i></p>";
-                            entity_ref_val.push(entity_ref);
                         }
                       }
                     }
