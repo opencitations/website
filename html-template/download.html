@@ -86,15 +86,15 @@ $def with (pages, active)
                 <div class="toc">
                     <h4>Table of content</h4>
                     <ul>
+                        <li><p><a href="#meta"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta</a></p></li>
                         <li>
-                            <p><a href="#index"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes</a></p>
+                            <p><a href="#index"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index</a></p>
                             <ul>
                                 <li><p><a href="#coci">COCI, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of Crossref open DOI-to-DOI references</a></p></li>
                                 <li><p><a href="#doci">DOCI, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of DataCite open DOI-to-DOI references</a></p></li>
                                 <li><p><a href="#poci">POCI, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of PubMed open PMID-to-PMID references</a></p></li>
                             </ul>
                         </li>
-                        <li><p><a href="#meta"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta</a></p></li>
                         <li><p><a href="#ccc"><span class="oc-purple">Open</span> Biomedical <span class="oc-blue">Citations</span> in Context Corpus</a></p></li>
                         <li><p><a href="#occ"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Corpus</a></p></li>
                     </ul>
@@ -103,7 +103,29 @@ $def with (pages, active)
                 <a class="anchor" id="meta"></a>
                 <h4><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta</h4>
                 <h5>The <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta database stores and delivers bibliographic metadata for all publications involved in the OpenCitations Indexes</h5>
-                <h5>Most recent OpenCitations Meta data dump - June 2023 Dump</h5>
+                <h5>Most recent OpenCitations Meta data dump - October 2023 Dump</h5>
+                <p>Dump created on 2023-10-24. Compared to the previous dump, this one adds the metadata contained in the <a href="https://doi.org/10.5281/zenodo.7845968">OpenAIRE Information Inference Service (IIS)</a> and in the <a href="https://api.crossref.org/snapshots/monthly/2023/09">Crossref dump, dated September 2023</a>. This dump includes information on:</p>
+                <ul>
+                  <li><p>105,953,699 bibliographic entities</p></li>
+                  <li><p>338,173,282 authors and 2,523,200 editors (counted by their roles, without disambiguating individuals)</p></li>
+                  <li><p>691,262 publication venues</p></li>
+                  <li><p>36,679 publishers</p></li>
+                </ul>
+                <div class="table-responsive">
+                     <table class="table">
+                       <tr><th>Type and format</th><th>Archive</th><th>Size</th></tr>
+                       <tr><td>Metadata (CSV)</td><td><a href="https://doi.org/10.6084/m9.figshare.21747461.v5">ZIP</a></td><td>43 GB (10 GB zipped) on NTFS</td></tr>
+                       <tr><td>Metadata and provenance (RDF)</td><td>TBA</td><td>TBA</td></tr>
+                     </table>
+                </div>
+                <p>In addition, a CSV dump containing all the bibliographic resources identified by their own PIDs (e.g., DOI, PMID, ISSN) and their corresponding OMID (e.g., br/12345):</p>
+                <div class="table-responsive">
+                     <table class="table">
+                         <tr><td>BR OMID map (CSV)</td><td><a href="10.6084/m9.figshare.24427156">ZIP</a></td><td>4.6 GB (0.8 GB zipped)</td></tr>
+                     </table>
+                </div>
+
+                <h5>June 2023 Dump</h5>
                 <p>Dump created on 2023-06-28. Compared to the previous dump, this one adds the metadata contained in the <a href="https://nih.figshare.com/collections/iCite_Database_Snapshots_NIH_Open_Citation_Collection_/4586573/36">dump of NIH Open Citation Collection dated November 2022</a>. This dump includes information on:</p>
                 <ul>
                   <li><p>99,851,773 bibliographic entities</p></li>
@@ -135,7 +157,7 @@ $def with (pages, active)
                      </table>
                 </div>
 
-                <h5>December 2023 Dump</h5>
+                <h5>December 2022 Dump</h5>
                 <p>Dump created on 2022-12-20, based on open references to works with DOIs within the Crossref dump dated December 2022. This dump includes information on:</p>
                 <ul>
                   <li><p>87,321,593 bibliographic entities</p></li>
@@ -152,6 +174,31 @@ $def with (pages, active)
                 </div>
 
                 <a class="anchor" id="index"></a>
+                <h4><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index</h4>
+                <p>The <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index stores OMID-to-OMID references representing all the references contained in the individual indexes (e.g., COCI, DOCI)</p>
+                <h5>Most recent OpenCitations Index data dump - October 2023 Dump</h5>
+                <p>Dump created on 2023-10-25. This dump includes information on:</p>
+                <ul>
+                    <li><p>84,687,532 bibliographic resources;</p></li>
+                    <li><p>1,836,126,096 citations;</p></li>
+                </ul>
+                <div class="table-responsive">
+                     <table class="table">
+                         <tr><th>Type and format</th><th>Archive</th><th>Size</th></tr>
+                         <tr><td>Citation data (CSV)</td><td><a href="10.6084/m9.figshare.24356626">ZIP</a></td><td>157.3 GB (24.7 GB zipped)</td></tr>
+                         <tr><td>Citation data (N-Triple)</td><td><a href="10.6084/m9.figshare.24369136">ZIP</a></td><td>1.3 TB (57.6 GB zipped)</td></tr>
+                         <tr><td>Citation data (Scholix)</td><td><a href="10.6084/m9.figshare.24416749">ZIP</a></td><td>1.6 TB (34.1 GB zipped)</td></tr>
+                         <tr><td>Provenance data (CSV)</td><td><a href="10.6084/m9.figshare.24417733">ZIP</a></td><td>286 GB (12.8 GB zipped)</td></tr>
+                         <tr><td>Provenance data (N-Triple)</td><td><a href="10.6084/m9.figshare.24417736">ZIP</a></td><td>2.3 TB (73 GB zipped)</td></tr>
+                     </table>
+                </div>
+                <p>In addition, a N-Triple dump containing information regarding the data source collection (e.g., COCI, DOCI, POCI, etc) of all the citation data:</p>
+                <div class="table-responsive">
+                     <table class="table">
+                         <tr><td>Citation data sources' info (N-Triple)</td><td><a href="https://doi.org/10.6084/m9.figshare.24427051">ZIP</a></td><td>287 GB (16 GB zipped)</td></tr>
+                     </table>
+                </div>
+
                 <h4><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes</h4>
                 <a class="anchor" id="doci"></a>
                 <h5>DOCI, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of DataCite open DOI-to-DOI references</h5>
