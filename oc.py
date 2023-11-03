@@ -185,10 +185,22 @@ rewrite = RewriteRuleHandler(
         ("^/index/coci/sparql",
          "/index/sparql",
          True),
+        ("^/index/doci/sparql",
+         "/index/sparql",
+         True),
+        ("^/index/poci/sparql",
+         "/index/sparql",
+         True),
         ("^/index/croci/sparql",
          "/index/sparql",
          True),
         ("^/index/coci/search",
+         "/index/search",
+         True),
+        ("^/index/doci/search",
+         "/index/search",
+         True),
+        ("^/index/poci/search",
          "/index/search",
          True),
         ("^/index/croci/search",
@@ -894,13 +906,13 @@ class SparqlOC(Sparql):
 class SparqlIndex(Sparql):
     def __init__(self):
         Sparql.__init__(self, c["sparql_endpoint_index"],
-                        "Indexes", c["oc_base_url"]+"/index/sparql")
+                        "Index", c["oc_base_url"]+"/index/sparql")
 
 
 class SparqlMeta(Sparql):
     def __init__(self):
         Sparql.__init__(self, c["sparql_endpoint_meta"],
-                        "OpenCitations Meta", c["oc_base_url"]+"/meta/sparql")
+                        "Meta", c["oc_base_url"]+"/meta/sparql")
 
 
 class SparqlCCC(Sparql):
