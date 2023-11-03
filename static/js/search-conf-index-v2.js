@@ -21,7 +21,7 @@ var search_conf = {
       "regex":"(\S+)",
       "query": [`
             {
-              SERVICE <http://localhost:3003/blazegraph/sparql> {
+              SERVICE <https://test.opencitations.net/meta/sparql> {
                 ?citing datacite:hasIdentifier ?identifier .
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
               }
@@ -41,7 +41,7 @@ var search_conf = {
       "regex":"(\S+)",
       "query": [`
             {
-              SERVICE <http://localhost:3003/blazegraph/sparql> {
+              SERVICE <https://test.opencitations.net/meta/sparql> {
                 ?citing datacite:hasIdentifier ?identifier .
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
               }
