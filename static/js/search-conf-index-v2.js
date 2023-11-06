@@ -433,7 +433,7 @@ var callbackfunctions = (function () {
                             for (var s_id in supported_ids) {
                               if (l_ids[i].startsWith(s_id)) {
                                 id_val = l_ids[i].replace(s_id+":","");
-                                html_ids.push("<a href='"supported_ids[s_id]+id_val+"'>DOI:"+id_val+"</a>");
+                                html_ids.push("<a href='"+supported_ids[s_id]+id_val+"'>DOI:"+id_val+"</a>");
                               }
                             }
                           }
