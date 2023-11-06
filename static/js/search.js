@@ -128,8 +128,9 @@ var search = (function () {
 				if (!util.is_undefined_key(rule_obj,"freetext")){
 					if (rule_obj["freetext"]==true) {
 						var re = new RegExp(rule_obj["regex"]);
+						console.log(query_text, re);
 						if (query_text.match(re)) {
-							//console.log("Match with rule number"+String(i));
+							console.log("Match with rule number"+String(i));
 							//return search_conf_json["rules"][i];
 							arr_rules.push(rule_obj);
 						}
