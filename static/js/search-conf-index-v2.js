@@ -21,7 +21,7 @@ var search_conf = {
       "regex":"(\S+)",
       "query": [`
             {
-              SERVICE <http://127.0.0.1/meta/sparql> {
+              SERVICE <https://test.opencitations.net/meta/sparql> {
                 ?citing datacite:hasIdentifier ?identifier .
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
               }
@@ -41,7 +41,7 @@ var search_conf = {
       "regex":"(\S+)",
       "query": [`
             {
-              SERVICE <http://127.0.0.1/meta/sparql> {
+              SERVICE <https://test.opencitations.net/meta/sparql> {
                 ?citing datacite:hasIdentifier ?identifier .
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
               }
@@ -262,7 +262,7 @@ var heuristics = (function () {
         else {
           id_pref = "";
         }
-        var meta_api_url = 'http://127.0.0.1/meta/api/v1/metadata/';
+        var meta_api_url = 'https://test.opencitations.net/meta/api/v1/metadata/';
         meta_api_url = meta_api_url + id_pref + str_id;
 
         fetch(meta_api_url)
@@ -349,7 +349,7 @@ var callbackfunctions = (function () {
 
     function meta_call_to_get_ref(conf_params, index, async_bool, callbk_func, key_full_name, data_field, func_name ){
       //https://opencitations.net/meta/api/v1/metadata/doi:10.1007/978-1-4020-9632-7
-      var call_meta = "http://127.0.0.1/meta/api/v1/metadata/";
+      var call_meta = "https://test.opencitations.net/meta/api/v1/metadata/";
       // takes an omid url, e.g. "https://w3id.org/oc/meta/br/0610200888"
       var str_id = conf_params[0];
       var link_id = str_id;
