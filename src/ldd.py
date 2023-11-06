@@ -25,6 +25,7 @@ import urllib
 from rdflib import RDFS, ConjunctiveGraph, Graph, Literal, URIRef
 import json
 from rdflib.plugin import register, Serializer
+import requests
 
 # register jsonld
 register('json-ld', Serializer, 'rdflib_jsonld.serializer', 'JsonLDSerializer')
@@ -53,8 +54,9 @@ class LinkedDataDirector(object):
         self.label_func = label_func
         self.tp = None
         if from_triplestore is not None:
-            self.tp = ConjunctiveGraph('SPARQLStore')
-            self.tp.open(from_triplestore)
+            #self.tp = ConjunctiveGraph('SPARQLStore')
+            #self.tp.open(from_triplestore)
+            self.tp = from_triplestore
 
         with open(jsonld_context_path) as f:
             self.jsonld_context = json.load(f)["@context"]
@@ -246,18 +248,27 @@ class LinkedDataDirector(object):
                     resource_url = self.baseurl + url.rsplit(".", 1)[0]
                     if resource_url.endswith("/index"):
                         resource_url = resource_url[:-5]
-                    print(resource_url)
-                    res = self.tp.query("CONSTRUCT {?s ?p ?o} "
-                                        "WHERE { <%s> ?p ?o . BIND(<%s> as ?s) }" %
-                                        (resource_url, resource_url))
-                    if res is not None:
-                        cur_graph = Graph()
-                        for st in res:
-                            cur_graph.add(st)
+                    #res = self.tp.query("CONSTRUCT {?s ?p ?o} "
+                    #                    "WHERE { <%s> ?p ?o . BIND(<%s> as ?s) }" %
+                    #                    (resource_url, resource_url))
+                    _a_source_t = ""
+                    for _a_source in ["index/coci/","index/doci/","index/poci/","index/oroci/","index/croci/"]:
+                        if _a_source in resource_url:
+                            resource_url = resource_url.replace(_a_source,"index/")
+                            _a_source_t = "?s <http://www.w3.org/ns/prov#atLocation> <https://w3id.org/oc/"+_a_source+"> ."
 
-                        if self.label_func is not None:
-                            cur_graph.add((URIRef(resource_url), RDFS.label,
-                                           Literal(self.label_func(resource_url))))
+                    sparql_query = "CONSTRUCT {?s ?p ?o} WHERE { <"+resource_url+"> ?p ?o . BIND (<"+resource_url+"> as ?s) . "+_a_source_t+"}"
+                    res = requests.get(self.tp, params={"query": sparql_query}, headers={"Accept":"text/turtle"})
+
+                    if res.status_code == 200:
+                        turtle_data = res.text
+                        contains_only_prefix = all(line.strip().startswith('@prefix') or line.strip() == "" for line in turtle_data.split('\n'))
+                        if turtle_data != "" and turtle_data != None and not contains_only_prefix:
+                            cur_graph = Graph()
+                            cur_graph.parse(data=turtle_data, format="turtle")
+                            if self.label_func is not None:
+                                cur_graph.add((URIRef(resource_url), RDFS.label,
+                                               Literal(self.label_func(resource_url))))
                 except TypeError as e:
                     print("The function used for adding the label is not working correctly: %s" % e)
                 except Exception:

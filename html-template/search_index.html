@@ -7,11 +7,10 @@ $def with (pages, active, query_string)
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
         <link rel="icon" href="/static/favicon.ico" />
-        <title>OpenCitations - OpenCitations Indexes Search Interface</title>
+        <title>OpenCitations - OpenCitations Index Search Interface</title>
 
         <!-- Bootstrap core CSS -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
 
         <!-- Font Awesome -->
         <link href="/static/css/font-awesome.min.css" rel="stylesheet" />
@@ -80,13 +79,13 @@ $def with (pages, active, query_string)
             <div class="cover">
 
               <div class="left">
-                <h3><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes Search Interface</h3>
-                <p style="text-align:left;">Here you can perform queries on the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> <a href="/index">indexes</a> datasets.
+                <h3><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index Search Interface</h3>
+                <p style="text-align:left;">Here you can perform queries on the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> <a href="/index">Index</a> datasets.
                 Such as:</p>
                 <ul class="search-elem">
                 <li><em>REFERENCES:</em> get the references of a document with DOI: <a href="/index/search?text=10.1186%2F1756-8722-6-59&rule=citingdoi">10.1186/1756-8722-6-59</a> </li>
                 <li><em>CITATIONS:</em> get the citations of a document with DOI: <a href="/index/search?text=10.1186%2F1756-8722-5-31&rule=citeddoi">10.1186/1756-8722-5-31</a> </li>
-                <li><em>A CITATION:</em> get the data of a citation with OCI: <a href="/index/search?text=02001010806360107050663080702026306630509-02001010806360107050663080702026305630301&rule=oci">02001010806360107050663080702026306630509-02001010806360107050663080702026305630301</a> </li>
+                <li><em>A CITATION:</em> get the data of a citation with OCI: <a href="/index/search?text=06190834283-06101389277&rule=oci">06190834283-06101389277</a> </li>
                 </ul>
               </div>
               <div class="__oscar__" data-type="advanced" data-view="rows_per_page export_results sort_results" data-filter="limit_results filter_fields"></div>
@@ -129,7 +128,6 @@ $def with (pages, active, query_string)
                 <a class="social oc-blue" href="http://github.com/opencitations"><i class="fa fa-github" aria-hidden="true"></i></a>
                 <a class="social oc-blue" href="https://www.linkedin.com/company/opencitations/"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
                 <a class="social oc-blue" href="https://opencitations.hypotheses.org/"><i class="fa fa-newspaper-o" aria-hidden="true"></i></a>
-                <a class="social oc-blue" href="https://scicomm.xyz/@opencitations"><i class="bi bi-mastodon" aria-hidden="true"></i></a>
             </p>
         </footer>
 
@@ -145,7 +143,7 @@ $def with (pages, active, query_string)
 
         <!-- SEARCH GUI -->
         <!-- <script type="text/javascript" src="/staticsearch-conf.jsjson"></script> -->
-        <script type="text/javascript" src="/static/js/search-conf-index.js"></script>
+        <script type="text/javascript" src="/static/js/search-conf-index-v2.js"></script>
         <script type="text/javascript" src="/static/js/search.js"></script>
         <script>
           search.do_sparql_query("$query_string");

@@ -12,7 +12,6 @@ $def with (pages, active, sp_title, sparql_endpoint)
 
         <!-- Bootstrap core CSS -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
 
         <!-- Font Awesome -->
         <link href="/static/css/font-awesome.min.css" rel="stylesheet" />
@@ -123,7 +122,6 @@ $def with (pages, active, sp_title, sparql_endpoint)
                 <a class="social oc-blue" href="http://github.com/opencitations"><i class="fa fa-github" aria-hidden="true"></i></a>
                 <a class="social oc-blue" href="https://www.linkedin.com/company/opencitations/"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
                 <a class="social oc-blue" href="https://opencitations.hypotheses.org/"><i class="fa fa-newspaper-o" aria-hidden="true"></i></a>
-                <a class="social oc-blue" href="https://scicomm.xyz/@opencitations"><i class="bi bi-mastodon" aria-hidden="true"></i></a>
             </p>
         </footer>
 
@@ -143,16 +141,14 @@ $def with (pages, active, sp_title, sparql_endpoint)
         <script>
           yasqe.options.sparql.endpoint = "$sparql_endpoint";
           var sparql_value = "";
-          if ("$sp_title" == "Indexes") {
-            sparql_value = "PREFIX cito:<http://purl.org/spar/cito/>\n\nSELECT DISTINCT ?citing_entity ?cited_entity ?creation_date ?timespan WHERE {\n\tGRAPH <https://w3id.org/oc/index/coci/> {\n\t\t?citation a cito:Citation ;\n\t\t\tcito:hasCitingEntity ?citing_entity ;\n\t\t\tcito:hasCitationCreationDate ?creation_date ;\n\t\t\tcito:hasCitationTimeSpan ?timespan ;\n\t\t\tcito:hasCitedEntity ?cited_entity\n\t}\n} LIMIT 10";
+          if ("$sp_title" == "Index") {
+            sparql_value = "# Get all the entities citing 'OpenCitations, An Infrastructure Organization For Open Scholarship' (10.1162/qss_a_00023) with an OMID = br/062501777134\n\nPREFIX cito:<http://purl.org/spar/cito/>\nSELECT ?citation ?citing_entity WHERE {\n\t?citation a cito:Citation .\n\t?citation cito:hasCitingEntity ?citing_entity .\n\t?citation cito:hasCitedEntity <https://w3id.org/oc/meta/br/062501777134>\n}";
           } else if ("$sp_title" == "CCC"){
             sparql_value = "PREFIX cito: <http://purl.org/spar/cito/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX datacite: <http://purl.org/spar/datacite/>\nPREFIX literal: <http://www.essepuntato.it/2010/06/literalreification/>\nPREFIX biro: <http://purl.org/spar/biro/>\nPREFIX frbr: <http://purl.org/vocab/frbr/core#>\nPREFIX c4o: <http://purl.org/spar/c4o/>\nSELECT ?cited ?cited_ref ?title ?url WHERE {\n\t<https://w3id.org/oc/ccc/br/070444> cito:cites ?cited .\n\tOPTIONAL { \n\t\t<https://w3id.org/oc/ccc/br/070444> frbr:part ?ref .\n\t\t?ref biro:references ?cited ;\n\t\t\tc4o:hasContent ?cited_ref \n\t}\n\tOPTIONAL { ?cited dcterms:title ?title }\n\tOPTIONAL {\n\t\t?cited datacite:hasIdentifier [\n\t\t\tdatacite:usesIdentifierScheme datacite:url ;\n\t\t\tliteral:hasLiteralValue ?url\n\t\t]\n\t}\n}";
-          } else if ("$sp_title" == "OpenCitations Meta"){
+          } else if ("$sp_title" == "Meta"){
             sparql_value = 'PREFIX datacite: <http://purl.org/spar/datacite/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX literal: <http://www.essepuntato.it/2010/06/literalreification/>\nPREFIX prism: <http://prismstandard.org/namespaces/basic/2.0/>\nSELECT ?id ?title ?pub_date {\n  	?identifier literal:hasLiteralValue "10.1162/qss_a_00023".\n    ?br datacite:hasIdentifier ?identifier;\n    	dcterms:title ?title;\n    	prism:publicationDate ?publicationDate.\n  	BIND(STR(?publicationDate) AS ?pub_date)\n    BIND((CONCAT("doi:", "10.1162/qss_a_00023")) AS ?id)\n}';
-          } else if ("$sp_title" == "Corpus"){
-            sparql_value = "PREFIX cito: <http://purl.org/spar/cito/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX datacite: <http://purl.org/spar/datacite/>\nPREFIX literal: <http://www.essepuntato.it/2010/06/literalreification/>\nPREFIX biro: <http://purl.org/spar/biro/>\nPREFIX frbr: <http://purl.org/vocab/frbr/core#>\nPREFIX c4o: <http://purl.org/spar/c4o/>\nSELECT ?cited ?cited_ref ?title ?url WHERE {\n\t<https://w3id.org/oc/corpus/br/1> cito:cites ?cited .\n\tOPTIONAL { \n\t\t<https://w3id.org/oc/corpus/br/1> frbr:part ?ref .\n\t\t?ref biro:references ?cited ;\n\t\t\tc4o:hasContent ?cited_ref \n\t}\n\tOPTIONAL { ?cited dcterms:title ?title }\n\tOPTIONAL {\n\t\t?cited datacite:hasIdentifier [\n\t\t\tdatacite:usesIdentifierScheme datacite:url ;\n\t\t\tliteral:hasLiteralValue ?url\n\t\t]\n\t}\n}";
           } else {
-            sparql_value = "PREFIX cito:<http://purl.org/spar/cito/>\n\nSELECT DISTINCT ?citing_entity ?cited_entity ?creation_date ?timespan WHERE {\n\tGRAPH <https://w3id.org/oc/index/coci/> {\n\t\t?citation a cito:Citation ;\n\t\t\tcito:hasCitingEntity ?citing_entity ;\n\t\t\tcito:hasCitationCreationDate ?creation_date ;\n\t\t\tcito:hasCitationTimeSpan ?timespan ;\n\t\t\tcito:hasCitedEntity ?cited_entity\n\t}\n} LIMIT 10";
+            sparql_value = "PREFIX cito: <http://purl.org/spar/cito/>\nPREFIX dcterms: <http://purl.org/dc/terms/>\nPREFIX datacite: <http://purl.org/spar/datacite/>\nPREFIX literal: <http://www.essepuntato.it/2010/06/literalreification/>\nPREFIX biro: <http://purl.org/spar/biro/>\nPREFIX frbr: <http://purl.org/vocab/frbr/core#>\nPREFIX c4o: <http://purl.org/spar/c4o/>\nSELECT ?cited ?cited_ref ?title ?url WHERE {\n\t<https://w3id.org/oc/corpus/br/1> cito:cites ?cited .\n\tOPTIONAL { \n\t\t<https://w3id.org/oc/corpus/br/1> frbr:part ?ref .\n\t\t?ref biro:references ?cited ;\n\t\t\tc4o:hasContent ?cited_ref \n\t}\n\tOPTIONAL { ?cited dcterms:title ?title }\n\tOPTIONAL {\n\t\t?cited datacite:hasIdentifier [\n\t\t\tdatacite:usesIdentifierScheme datacite:url ;\n\t\t\tliteral:hasLiteralValue ?url\n\t\t]\n\t}\n}";
           }
 
           //link both together

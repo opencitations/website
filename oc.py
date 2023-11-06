@@ -96,22 +96,13 @@ urls = (
     "/index/doci", "Doci",
     "/index/poci", "Poci",
     "/index/croci", "Croci",
-    "/index/coci/(.*)", "CociContentNegotiation",
-    "/index/doci/(.*)", "DociContentNegotiation",
-    "/index/poci/(.*)", "PociContentNegotiation",
-    "/index/croci/(ci/.*)?", "CrociContentNegotiation",
+    "/index/(.*)?", "IndexContentNegotiation",
 
     # META related urls
     "/(meta)(/api/.+)", "Api",
     "/meta/sparql", "SparqlMeta",
     "/meta/(../.+)", "MetaContentNegotiation",
     "/meta", "Meta",
-
-    # POCI + DOCI + CROCI temporal urls
-    # to be removed when POCI + DOCI + CROCI are ingested in INDEX
-    "/poci/sparql", "SparqlPoci",
-    "/doci/sparql", "SparqlPoci",
-    "/croci/sparql", "SparqlPoci",
 
     # CCC related urls
     "/(ccc)(/api/.+)", "Api",
@@ -190,10 +181,22 @@ rewrite = RewriteRuleHandler(
         ("^/index/coci/sparql",
          "/index/sparql",
          True),
+        ("^/index/doci/sparql",
+         "/index/sparql",
+         True),
+        ("^/index/poci/sparql",
+         "/index/sparql",
+         True),
         ("^/index/croci/sparql",
          "/index/sparql",
          True),
         ("^/index/coci/search",
+         "/index/search",
+         True),
+        ("^/index/doci/search",
+         "/index/search",
+         True),
+        ("^/index/poci/search",
          "/index/search",
          True),
         ("^/index/croci/search",
@@ -244,8 +247,8 @@ croci_doc_manager = HTMLDocumentationHandler(croci_api_manager)
 index_api_manager = APIManager(c["api_index"])
 index_doc_manager = HTMLDocumentationHandler(index_api_manager)
 
-#index_api_manager_v2 = APIManager(c["api_index_v2"])
-#index_doc_manager_v2 = HTMLDocumentationHandler(index_api_manager_v2)
+index_api_manager_v2 = APIManager(c["api_index_v2"])
+index_doc_manager_v2 = HTMLDocumentationHandler(index_api_manager_v2)
 
 occ_api_manager = APIManager(c["api_occ"])
 occ_doc_manager = HTMLDocumentationHandler(occ_api_manager)
@@ -491,9 +494,9 @@ class Api:
         elif dataset == "index":
             man = index_api_manager
             doc = index_doc_manager
-            #if "v2" in call:
-            #    man = index_api_manager_v2
-            #    doc = index_doc_manager_v2
+            if "v2" in call:
+                man = index_api_manager_v2
+                doc = index_doc_manager_v2
         elif dataset == "wikidata":
             man = wikidata_api_manager
             doc = wikidata_doc_manager
@@ -900,21 +903,13 @@ class SparqlOC(Sparql):
 class SparqlIndex(Sparql):
     def __init__(self):
         Sparql.__init__(self, c["sparql_endpoint_index"],
-                        "COCI", c["oc_base_url"]+"/index/sparql")
+                        "Index", c["oc_base_url"]+"/index/sparql")
 
 
 class SparqlMeta(Sparql):
     def __init__(self):
         Sparql.__init__(self, c["sparql_endpoint_meta"],
-                        "OpenCitations Meta", c["oc_base_url"]+"/meta/sparql")
-
-# this class will be removed when POCI is ingested in Index
-
-
-class SparqlPoci(Sparql):
-    def __init__(self):
-        Sparql.__init__(self, c["sparql_endpoint_poci"],
-                        "POCI-DOCI-CROCI", c["oc_base_url"]+"/poci/sparql")
+                        "Meta", c["oc_base_url"]+"/meta/sparql")
 
 
 class SparqlCCC(Sparql):
@@ -965,6 +960,16 @@ class ContentNegotiation:
             web_logger.mes()
             return cur_page
 
+class IndexContentNegotiation(ContentNegotiation):
+    def __init__(self):
+        ContentNegotiation.__init__(self, c["index_base_url"], c["index_local_url"],
+                                    context_path=c["ocdm_json_context_path"],
+                                    from_triplestore=c["sparql_endpoint_index"],
+                                    label_func=lambda u: "oci:%s" % re.findall(
+                                        "^.+/ci/(.+)$", u)[0]
+                                    if "/ci/" in u else "provenance agent 1" if "/pa/1" in u
+                                    else "INDEX")
+
 
 class CorpusContentNegotiation(ContentNegotiation):
     def __init__(self):
@@ -983,53 +988,11 @@ class CCCContentNegotiation(ContentNegotiation):
 
 class MetaContentNegotiation(ContentNegotiation):
     def __init__(self):
-        ContentNegotiation.__init__(self, c["oc_base_url"], c["meta_local_url"],
+        ContentNegotiation.__init__(self, c["index_base_url"], c["meta_local_url"],
                                     context_path=c["ocdm_json_context_path"],
                                     from_triplestore=c["sparql_endpoint_meta"],
                                     label_func=lambda u: "%s %s" % re.findall("^.+/meta/(..)/(.+)$", u)[0])
 
-
-class CociContentNegotiation(ContentNegotiation):
-    def __init__(self):
-        ContentNegotiation.__init__(self, c["index_base_url"], c["coci_local_url"],
-                                    context_path=c["ocdm_json_context_path"],
-                                    from_triplestore=c["sparql_endpoint_index"],
-                                    label_func=lambda u: "oci:%s" % re.findall(
-                                        "^.+/ci/(.+)$", u)[0]
-                                    if "/ci/" in u else "provenance agent 1" if "/pa/1" in u
-                                    else "COCI")
-
-
-class DociContentNegotiation(ContentNegotiation):
-    def __init__(self):
-        ContentNegotiation.__init__(self, c["index_base_url"], c["doci_local_url"],
-                                    context_path=c["ocdm_json_context_path"],
-                                    from_triplestore=c["sparql_endpoint_poci"],
-                                    label_func=lambda u: "oci:%s" % re.findall(
-                                        "^.+/ci/(.+)$", u)[0]
-                                    if "/ci/" in u else "provenance agent 1" if "/pa/1" in u
-                                    else "DOCI")
-
-
-class PociContentNegotiation(ContentNegotiation):
-    def __init__(self):
-        ContentNegotiation.__init__(self, c["index_base_url"], c["poci_local_url"],
-                                    context_path=c["ocdm_json_context_path"],
-                                    from_triplestore=c["sparql_endpoint_poci"],
-                                    label_func=lambda u: "oci:%s" % re.findall(
-                                        "^.+/ci/(.+)$", u)[0]
-                                    if "/ci/" in u else "provenance agent 1" if "/pa/1" in u
-                                    else "POCI")
-
-
-class CrociContentNegotiation(ContentNegotiation):
-    def __init__(self):
-        ContentNegotiation.__init__(self, c["index_base_url"], c["croci_local_url"],
-                                    context_path=c["ocdm_json_context_path"],
-                                    from_triplestore=c["sparql_endpoint_poci"],
-                                    label_func=lambda u: "oci:%s" % re.findall(
-                                        "^.+/ci/(.+)$", u)[0]
-                                    if "/ci/" in u else "CROCI")
 
 
 class StatisticsIndex:
