@@ -588,10 +588,10 @@ var search = (function () {
 			//search_conf_json = util.update_obj(search_conf_json, config_mod);
 
 			if (query_comp.values.length != 0) {
-				if (query_comp.rules.length == 0) {
+				if (query_comp.rules.length <= 1) {
 					//console.log("It's a freetext search!");
 					//one text box
-					var qtext = query_comp.values[0];
+					var qtext = query_comp.values;
 					var rules = _get_rules(qtext);
 					console.log("This is not a composed/advanced search. It is a freetext search. The matching Rules are: ",rules);
 					if(rules.length != 0){
@@ -600,7 +600,6 @@ var search = (function () {
 						_call_ts(r_cat, rules, 0, sparql_query, qtext, qtext, callbk_fun);
 					}else {}
 				}else{
-
 					//in this case the category of results will follow any of the rules
 					var first_rule = search_conf_json.rules[util.index_in_arrjsons(search_conf_json.rules,["name"],[query_comp.rules[0]])];
 					cat_conf = search_conf_json.categories[util.index_in_arrjsons(search_conf_json.categories,["name"],[first_rule.category])];
