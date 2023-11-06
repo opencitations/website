@@ -18,7 +18,7 @@ var search_conf = {
       "freetext": false,
       "heuristics": [['lower_case']],
       "category": "citation",
-      "regex":"(\S+)",
+      "regex":"(.+)",
       "query": [`
             {
               SERVICE <https://test.opencitations.net/meta/sparql> {
@@ -38,7 +38,7 @@ var search_conf = {
       "freetext": true,
       "heuristics": [['lower_case']],
       "category": "citation",
-      "regex":"(\S+)",
+      "regex":"(.+)",
       "query": [`
             {
               SERVICE <https://test.opencitations.net/meta/sparql> {
