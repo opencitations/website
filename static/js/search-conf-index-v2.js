@@ -420,6 +420,27 @@ var callbackfunctions = (function () {
                             entity_ref += "<p><strong>Author(s): </strong><i>"+str_authors+"</i></p>";
                         }
                       }
+
+                      if ("id" in res) {
+                        if (res["id"] != "") {
+                          var supported_ids = {
+                            "doi": "https://www.doi.org/",
+                            "pmid": "https://pubmed.ncbi.nlm.nih.gov/",
+                          };
+                          var l_ids = res["id"].split(" ");
+                          var html_ids = [];
+                          for (var i = 0; i < l_ids.length; i++) {
+                            for (var s_id in supported_ids) {
+                              if (l_ids[i].startsWith(s_id)) {
+                                id_val = l_ids[i].replace(s_id+":","");
+                                html_ids.push("<a href='"supported_ids[s_id]+id_val+"'>DOI:"+id_val+"</a>");
+                              }
+                            }
+                          }
+                          entity_ref += "<p>"+html_ids.join("<br>")+"</p>";
+                        }
+                      }
+
                     }
                     var res_obj = {"reference": entity_ref};
                     var func_param = [];
