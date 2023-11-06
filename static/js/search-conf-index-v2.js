@@ -18,10 +18,10 @@ var search_conf = {
       "freetext": false,
       "heuristics": [['lower_case']],
       "category": "citation",
-      "regex":"(\S+)",
+      "regex":"(.+)",
       "query": [`
             {
-              SERVICE <https://opencitations.net/meta/sparql> {
+              SERVICE <https://test.opencitations.net/meta/sparql> {
                 ?citing datacite:hasIdentifier ?identifier .
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
               }
@@ -38,15 +38,15 @@ var search_conf = {
       "freetext": true,
       "heuristics": [['lower_case']],
       "category": "citation",
-      "regex":"(\S+)",
+      "regex":"(.+)",
       "query": [`
             {
-              SERVICE <https://opencitations.net/meta/sparql> {
-                ?citing datacite:hasIdentifier ?identifier .
+              SERVICE <https://test.opencitations.net/meta/sparql> {
+                ?cited datacite:hasIdentifier ?identifier .
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
               }
-              ?oci cito:hasCitingEntity ?citing .
               ?oci cito:hasCitedEntity ?cited .
+              ?oci cito:hasCitingEntity ?citing .
             }`
       ]
     },
@@ -348,8 +348,8 @@ var callbackfunctions = (function () {
     }
 
     function meta_call_to_get_ref(conf_params, index, async_bool, callbk_func, key_full_name, data_field, func_name ){
-      //https://opencitations.net/meta/api/v1/metadata/doi:10.1007/978-1-4020-9632-7
-      var call_meta = "https://opencitations.net/meta/api/v1/metadata/";
+
+      var call_meta = "https://test.opencitations.net/meta/api/v1/metadata/";
       // takes an omid url, e.g. "https://w3id.org/oc/meta/br/0610200888"
       var str_id = conf_params[0];
       var link_id = str_id;
