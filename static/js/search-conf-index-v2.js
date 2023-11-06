@@ -437,7 +437,7 @@ var callbackfunctions = (function () {
                               }
                             }
                           }
-                          entity_ref += "<p>"+html_ids.join("<br>")+"</p>";
+                          entity_ref += "<br/><p>"+html_ids.join("<br>")+"</p>";
                         }
                       }
 
