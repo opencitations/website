@@ -591,11 +591,13 @@ var search = (function () {
 				if (query_comp.rules.length <= 1) {
 					//console.log("It's a freetext search!");
 					//one text box
-					var qtext = query_comp.values;
+					var qtext = query_comp.values[0];
+					console.log(qtext);
 					var rules = _get_rules(qtext);
 					console.log("This is not a composed/advanced search. It is a freetext search. The matching Rules are: ",rules);
 					if(rules.length != 0){
 						var sparql_query = _build_sparql_query(rules[0], qtext);
+						console.log(sparql_query);
 						var r_cat = search_conf_json.categories[util.index_in_arrjsons(search_conf_json.categories,["name"],[rules[0].category])];
 						_call_ts(r_cat, rules, 0, sparql_query, qtext, qtext, callbk_fun);
 					}else {}
