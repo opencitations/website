@@ -128,8 +128,9 @@ var search = (function () {
 				if (!util.is_undefined_key(rule_obj,"freetext")){
 					if (rule_obj["freetext"]==true) {
 						var re = new RegExp(rule_obj["regex"]);
+						console.log(query_text, re);
 						if (query_text.match(re)) {
-							//console.log("Match with rule number"+String(i));
+							console.log("Match with rule number"+String(i));
 							//return search_conf_json["rules"][i];
 							arr_rules.push(rule_obj);
 						}
@@ -588,19 +589,20 @@ var search = (function () {
 			//search_conf_json = util.update_obj(search_conf_json, config_mod);
 
 			if (query_comp.values.length != 0) {
-				if (query_comp.rules.length == 0) {
+				if (query_comp.rules.length <= 1) {
 					//console.log("It's a freetext search!");
 					//one text box
 					var qtext = query_comp.values[0];
+					console.log(qtext);
 					var rules = _get_rules(qtext);
 					console.log("This is not a composed/advanced search. It is a freetext search. The matching Rules are: ",rules);
 					if(rules.length != 0){
 						var sparql_query = _build_sparql_query(rules[0], qtext);
+						console.log(sparql_query);
 						var r_cat = search_conf_json.categories[util.index_in_arrjsons(search_conf_json.categories,["name"],[rules[0].category])];
 						_call_ts(r_cat, rules, 0, sparql_query, qtext, qtext, callbk_fun);
 					}else {}
 				}else{
-
 					//in this case the category of results will follow any of the rules
 					var first_rule = search_conf_json.rules[util.index_in_arrjsons(search_conf_json.rules,["name"],[query_comp.rules[0]])];
 					cat_conf = search_conf_json.categories[util.index_in_arrjsons(search_conf_json.categories,["name"],[first_rule.category])];
@@ -1136,6 +1138,8 @@ var search = (function () {
 				arr_options = search_conf_json.page_limit;
 			}
 			htmldom.page_limit(arr_options, table_conf.view.page_limit);
+
+			htmldom.tot_results(table_conf.filters.data.results.bindings.length);
 
 			htmldom.build_export_btn();
 		}
@@ -2457,6 +2461,18 @@ var htmldom = (function () {
 		}
 	}
 
+	function tot_results(tot_r) {
+		if (rowsxpage_container != null) {
+			const newDiv = document.createElement('div');
+			newDiv.innerHTML = '<span id="tot_val">'+String(tot_r)+'</span> resources found';
+			newDiv.className = 'tot-results';
+			rowsxpage_container.appendChild(newDiv);
+			return newDiv;
+		}else {
+			return -1;
+		}
+	}
+
 	/*creates the sort-input-box dom*/
 	function sort_box(arr_options,def_value, def_order, def_type){
 		//var options_html = "<option disabled selected value></option>";
@@ -2726,8 +2742,9 @@ var htmldom = (function () {
 			"</div>"+
 			"<div class='slider-footer'>"+
 			"<div class='left'>&#60; Fewer</div><div class='right'>More &#62;</div>"+
-			"</div>"
-			;
+			"</div>";
+
+			//str_html = "<div class='tot-results'><span id='lbl_range'> "+String(init_val)+"</span> resources found"+"</div>";
 			limitres_container.innerHTML = str_html;
 			return str_html;
 		}else {
@@ -3096,6 +3113,7 @@ var htmldom = (function () {
 
 	return {
 		page_limit: page_limit,
+		tot_results: tot_results,
 		sort_box: sort_box,
 		main_entry: main_entry,
 		build_extra_elems: build_extra_elems,
