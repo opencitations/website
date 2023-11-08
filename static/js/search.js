@@ -2464,7 +2464,7 @@ var htmldom = (function () {
 	function tot_results(tot_r) {
 		if (rowsxpage_container != null) {
 			const newDiv = document.createElement('div');
-			newDiv.textContent = '<span id="tot_val">'+String(tot_r)+'</span> resources found';
+			newDiv.innerHTML = '<span id="tot_val">'+String(tot_r)+'</span> resources found';
 			newDiv.className = 'tot-results';
 			rowsxpage_container.appendChild(newDiv);
 			return newDiv;

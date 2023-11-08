@@ -32,6 +32,14 @@
   float:left;
   /*margin-left:26%;*/
 }
+#rows_per_page div{
+  display: inline-block;
+}
+
+.tot-results #tot_val{
+  color: var(--main-bg-color);
+  font-size: 120%;
+}
 
 #sort_results {
   float:right;
