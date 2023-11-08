@@ -2719,17 +2719,18 @@ var htmldom = (function () {
 	/*creates the results limit filter*/
 	function limit_filter(init_val, tot_res, slider_min, slider_max){
 		if (limitres_container != null) {
-			str_html =
-			"<div class='limit-results'>"+
-			"Limit to <myrange class='limit-results-value' id='lbl_range' for='final_text'> "+String(init_val)+"</myrange>/"+String(tot_res)+" results"+
-			"</div>"+
-			"<div class='slider-container'>"+
-			"<input type='range' min="+String(slider_min)+" max="+String(slider_max)+" value="+String(init_val)+" class='slider' oninput='lbl_range.innerHTML=this.value; search.update_res_limit(this.value);' id='myRange'>"+
-			"</div>"+
-			"<div class='slider-footer'>"+
-			"<div class='left'>&#60; Fewer</div><div class='right'>More &#62;</div>"+
-			"</div>"
-			;
+			// str_html =
+			// "<div class='limit-results'>"+
+			// "Limit to <myrange class='limit-results-value' id='lbl_range' for='final_text'> "+String(init_val)+"</myrange>/"+String(tot_res)+" results"+
+			// "</div>"+
+			// "<div class='slider-container'>"+
+			// "<input type='range' min="+String(slider_min)+" max="+String(slider_max)+" value="+String(init_val)+" class='slider' oninput='lbl_range.innerHTML=this.value; search.update_res_limit(this.value);' id='myRange'>"+
+			// "</div>"+
+			// "<div class='slider-footer'>"+
+			// "<div class='left'>&#60; Fewer</div><div class='right'>More &#62;</div>"+
+			// "</div>";
+
+			str_html = "<div class='tot-results'><span id='lbl_range'> "+String(init_val)+"</span> resources found"+"</div>";
 			limitres_container.innerHTML = str_html;
 			return str_html;
 		}else {

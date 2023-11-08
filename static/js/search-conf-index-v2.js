@@ -42,11 +42,11 @@ var search_conf = {
       "query": [`
             {
               SERVICE <https://test.opencitations.net/meta/sparql> {
-                ?citing datacite:hasIdentifier ?identifier .
+                ?cited datacite:hasIdentifier ?identifier .
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
               }
-              ?oci cito:hasCitingEntity ?citing .
               ?oci cito:hasCitedEntity ?cited .
+              ?oci cito:hasCitingEntity ?citing .
             }`
       ]
     },
@@ -262,7 +262,7 @@ var heuristics = (function () {
         else {
           id_pref = "";
         }
-        var meta_api_url = 'https://test.opencitations.net/meta/api/v1/metadata/';
+        var meta_api_url = 'https://opencitations.net/meta/api/v1/metadata/';
         meta_api_url = meta_api_url + id_pref + str_id;
 
         fetch(meta_api_url)
@@ -348,7 +348,7 @@ var callbackfunctions = (function () {
     }
 
     function meta_call_to_get_ref(conf_params, index, async_bool, callbk_func, key_full_name, data_field, func_name ){
-      //https://opencitations.net/meta/api/v1/metadata/doi:10.1007/978-1-4020-9632-7
+
       var call_meta = "https://test.opencitations.net/meta/api/v1/metadata/";
       // takes an omid url, e.g. "https://w3id.org/oc/meta/br/0610200888"
       var str_id = conf_params[0];
@@ -420,6 +420,27 @@ var callbackfunctions = (function () {
                             entity_ref += "<p><strong>Author(s): </strong><i>"+str_authors+"</i></p>";
                         }
                       }
+
+                      if ("id" in res) {
+                        if (res["id"] != "") {
+                          var supported_ids = {
+                            "doi": "https://www.doi.org/",
+                            "pmid": "https://pubmed.ncbi.nlm.nih.gov/",
+                          };
+                          var l_ids = res["id"].split(" ");
+                          var html_ids = [];
+                          for (var i = 0; i < l_ids.length; i++) {
+                            for (var s_id in supported_ids) {
+                              if (l_ids[i].startsWith(s_id)) {
+                                id_val = l_ids[i].replace(s_id+":","");
+                                html_ids.push(s_id.toUpperCase()+": <a href='"+supported_ids[s_id]+id_val+"'>"+id_val+"</a>");
+                              }
+                            }
+                          }
+                          entity_ref += "<br/><p>"+html_ids.join("<br>")+"</p>";
+                        }
+                      }
+
                     }
                     var res_obj = {"reference": entity_ref};
                     var func_param = [];
