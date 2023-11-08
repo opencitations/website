@@ -1139,6 +1139,8 @@ var search = (function () {
 			}
 			htmldom.page_limit(arr_options, table_conf.view.page_limit);
 
+			htmldom.tot_results(table_conf.filters.data.results.bindings.length);
+
 			htmldom.build_export_btn();
 		}
 		function _build_filter_sec(){
@@ -2459,6 +2461,18 @@ var htmldom = (function () {
 		}
 	}
 
+	function tot_results(tot_r) {
+		if (rowsxpage_container != null) {
+			const newDiv = document.createElement('div');
+			newDiv.textContent = '<span id="tot_val">'+String(tot_r)+'</span> resources found';
+			newDiv.className = 'tot-results';
+			rowsxpage_container.appendChild(newDiv);
+			return newDiv;
+		}else {
+			return -1;
+		}
+	}
+
 	/*creates the sort-input-box dom*/
 	function sort_box(arr_options,def_value, def_order, def_type){
 		//var options_html = "<option disabled selected value></option>";
@@ -2719,18 +2733,18 @@ var htmldom = (function () {
 	/*creates the results limit filter*/
 	function limit_filter(init_val, tot_res, slider_min, slider_max){
 		if (limitres_container != null) {
-			// str_html =
-			// "<div class='limit-results'>"+
-			// "Limit to <myrange class='limit-results-value' id='lbl_range' for='final_text'> "+String(init_val)+"</myrange>/"+String(tot_res)+" results"+
-			// "</div>"+
-			// "<div class='slider-container'>"+
-			// "<input type='range' min="+String(slider_min)+" max="+String(slider_max)+" value="+String(init_val)+" class='slider' oninput='lbl_range.innerHTML=this.value; search.update_res_limit(this.value);' id='myRange'>"+
-			// "</div>"+
-			// "<div class='slider-footer'>"+
-			// "<div class='left'>&#60; Fewer</div><div class='right'>More &#62;</div>"+
-			// "</div>";
+			str_html =
+			"<div class='limit-results'>"+
+			"Limit to <myrange class='limit-results-value' id='lbl_range' for='final_text'> "+String(init_val)+"</myrange>/"+String(tot_res)+" results"+
+			"</div>"+
+			"<div class='slider-container'>"+
+			"<input type='range' min="+String(slider_min)+" max="+String(slider_max)+" value="+String(init_val)+" class='slider' oninput='lbl_range.innerHTML=this.value; search.update_res_limit(this.value);' id='myRange'>"+
+			"</div>"+
+			"<div class='slider-footer'>"+
+			"<div class='left'>&#60; Fewer</div><div class='right'>More &#62;</div>"+
+			"</div>";
 
-			str_html = "<div class='tot-results'><span id='lbl_range'> "+String(init_val)+"</span> resources found"+"</div>";
+			//str_html = "<div class='tot-results'><span id='lbl_range'> "+String(init_val)+"</span> resources found"+"</div>";
 			limitres_container.innerHTML = str_html;
 			return str_html;
 		}else {
@@ -3099,6 +3113,7 @@ var htmldom = (function () {
 
 	return {
 		page_limit: page_limit,
+		tot_results: tot_results,
 		sort_box: sort_box,
 		main_entry: main_entry,
 		build_extra_elems: build_extra_elems,
