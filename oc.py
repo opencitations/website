@@ -151,6 +151,8 @@ urls = (
     # Token
     "/accesstoken", "AuthCode",
     "/accesstoken/(.+)", "AuthCodeConfirm",
+
+    "/wp", "WP",
 )
 
 render = web.template.render(c["html"])
@@ -181,9 +183,6 @@ rewrite = RewriteRuleHandler(
          True),
         ("^/bcite",
          "http://212.47.249.17",
-         True),
-        ("^/wp",
-         "http://localhost:8000",
          True),
         ("^/index/coci/sparql",
          "/index/sparql",
@@ -324,6 +323,9 @@ class AuthCodeConfirm:
             auth_code = token
         return render.accesstokenconfirm(pages, active, auth_code, c_auth["messages"]["accesstokenconfirm"])
 
+class WP:
+    def GET(self):
+        return web.redirect('http://localhost:8000')
 
 class AuthCode:
     def __init__(self):
