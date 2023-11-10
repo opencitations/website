@@ -36,9 +36,13 @@
   display: inline-block;
 }
 
+.tot-results {
+ font-size: medium;
+}
 .tot-results #tot_val{
+  margin-left: 20px;
   color: var(--main-bg-color);
-  font-size: 120%;
+  font-size: 130%;
 }
 
 #sort_results {
