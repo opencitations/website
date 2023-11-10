@@ -151,8 +151,6 @@ urls = (
     # Token
     "/accesstoken", "AuthCode",
     "/accesstoken/(.+)", "AuthCodeConfirm",
-
-    "/wp", "WP",
 )
 
 render = web.template.render(c["html"])
