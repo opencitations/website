@@ -321,10 +321,6 @@ class AuthCodeConfirm:
             auth_code = token
         return render.accesstokenconfirm(pages, active, auth_code, c_auth["messages"]["accesstokenconfirm"])
 
-class WP:
-    def GET(self):
-        return web.redirect('http://localhost:8000')
-
 class AuthCode:
     def __init__(self):
         self.__rgx = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
