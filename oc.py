@@ -124,6 +124,9 @@ urls = (
     "/(download)", "Download",
     "/(policy)", "Policy",
 
+    # Legacy pages
+    "/(download)_legacy", "DownloadLegacy",
+
     # OCC SPARQL-related urls > all redirected to Index
     "/sparql", "SparqlIndex",
     "/search", "SearchIndex",
@@ -752,6 +755,11 @@ class Download:
     def GET(self, active):
         web_logger.mes()
         return render.download(pages, active)
+
+class DownloadLegacy:
+    def GET(self, active):
+        web_logger.mes()
+        return render.download_legacy(pages, active + " (legacy)")
 
 
 class Search:

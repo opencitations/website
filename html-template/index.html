@@ -8,7 +8,7 @@ $def with (pages, active)
 
 
         <link rel="icon" href="/static/favicon.ico" />
-        <title>OpenCitations - OpenCitations Indexes</title>
+        <title>OpenCitations - OpenCitations Index</title>
 
         <!-- Bootstrap core CSS -->
         <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
@@ -77,34 +77,25 @@ $def with (pages, active)
           </div>
 
             <div class="cover left">
-                <h3><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes</h3>
+                <h3><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index</h3>
                 <p>A citation index is a bibliographic index recording citations between publications, allowing the user to establish which later documents cite earlier documents. Several citation indexes are already available, some of which are freely accessible but not downloadable (e.g. Google Scholar), while others can be accessed only by paying significant access fees (e.g. Web of Science and Scopus).</p>
-                <p><span class="oc-purple">Open</span><span class="oc-blue">Citations</span>, as an infrastructure organization for open scholarship, is building several <strong><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes</strong> using the data available in particular bibliographic databases. The current indexes available are:</p>
+                <p><span class="oc-purple">Open</span><span class="oc-blue">Citations</span>, as an infrastructure organization for open scholarship, has built the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index</strong> using the data available in particular bibliographic databases. The current sources used for building the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index are:</p>
                 <ul>
-                    <li><p><strong>COCI</strong>, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of Crossref open DOI-to-DOI citations, available at <a href="index/coci">https://opencitations.net/index/coci</a>;</p></li>
-                    <li><p><strong>DOCI</strong>, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of DataCite open DOI-to-DOI citations, available at <a href="index/doci">https://opencitations.net/index/doci</a>;</p></li>
-                    <li><p><strong>POCI</strong>, the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index of PubMed open PMID-to-PMID citations, available at <a href="index/poci">https://opencitations.net/index/poci</a>;</p></li>
-                    <li><p><strong>CROCI</strong>, the Crowdsourced Open Citations Index, available at <a href="index/croci">https://opencitations.net/index/croci</a>.</p></li>
+                    <li><p><a href="https://www.crossref.org/">Crossref</a>;</p></li>
+                    <li><p><a href="https://www.datacite.org/">DataCite</a>;</p></li>
+                    <li><p><a href="https://icite.od.nih.gov/">NIH Open Citation Collection</a>;</p></li>
+                    <li><p><a href="https://www.openaire.eu/">OpenAIRE</a>.</p></li>
                 </ul>
-                <p>Other similar indexes will be published in the coming months.</p>
-                <p>These <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Indexes have the following characteristics in common:</p>
-                <ol>
-                    <li><p>Citations are treated as first-class data entities, with accompanying properties – for a full explanation, see our <a href="https://opencitations.hypotheses.org/816">introductory blog post</a> and following posts;</p></li>
-                    <li><p>Each citation is identified by an <a href="https://identifiers.org/oci">Open Citation Identifier (OCI</a>), which has a simple structure: the lower-case letters "oci" followed by a colon, followed by two numbers separated by a dash (e.g. <a href="oci/0301-03018">oci:0301-03018</a>). OCIs can be resolved using the <a href="oci">OpenCitations OCI Resolution Service</a>.</p></li>
-                    <li><p>The citation metadata within each <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index are recorded in RDF.</p></li>
-                    <li><p>The RDF statements in each of the indexes are organising according to the <a href="/model"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Data Model</a>.</p></li>
-                    <li>
-                        <p>All the data in each <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index are available for download in the following ways:</p>
-                        <ul>
-                            <li><p>by querying the <a href="index/sparql">SPARQL endpoint of COCI</a>;</p></li>
-                            <li><p>by querying the <a href="poci/sparql">SPARQL endpoint of POCI, DOCI and CROCI</a>;</p></li>
-                            <li><p>by using the <a href="index/api/v1">Index REST API</a>, implemented by means of <a href="https://github.com/opencitations/ramose">RAMOSE</a> (the Restful API Manager Over SPARQL Endpoints), where they can be downloaded in JSON and CSV formats;</p></li>
-                            <li><p>as <a href="download#index">dumps</a> of the full index on <a href="https://figshare.com">Figshare</a> in CSV and N-Triples formats;</p></li>
-                            <li><p>using the HTTP URI of the individual citations, where they can be downloaded in different formats (HTML, RDF/XML, Turtle, and JSON-LD) via content negotiation.</p></li>
-                        </ul>
-                    </li>
-                    <li><p>Additionally, the content of each <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index can be <a href="index/search">searched</a> and browsed using  <a href="https://github.com/opencitations/oscar">OSCAR</a> and <a href="https://github.com/opencitations/lucinda">LUCINDA</a>, the search and browse interfaces developed by <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>.</p></li>
-                </ol>
+                <p>Citations are treated as first-class data entities, with accompanying properties – for a full explanation, see our <a href="https://opencitations.hypotheses.org/816">introductory blog post</a> and following posts. In particular, each citation is identified by an <a href="https://identifiers.org/oci">Open Citation Identifier (OCI)</a>, which has a simple structure: the lower-case letters "oci" followed by a colon, followed by two numbers separated by a dash (e.g. <a href="oci/060401-06103230153">oci:060401-06103230153</a>). OCIs can be resolved using the <a href="oci">OpenCitations OCI Resolution Service</a>.</p>
+                <p>The citation metadata within the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index are recorded in RDF. The RDF statements are organised according to the <a href="/model"><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Data Model</a>.</p></li>
+                <p>All the data in the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index are available for download in the following ways:</p>
+                <ul>
+                    <li><p>by querying the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index <a href="index/sparql">SPARQL endpoint</a>;</p></li>
+                    <li><p>by using the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index <a href="index/api/v2"> REST API</a>, implemented by means of <a href="https://github.com/opencitations/ramose">RAMOSE</a> (the Restful API Manager Over SPARQL Endpoints), where they can be downloaded in JSON and CSV formats;</p></li>
+                    <li><p>as <a href="download#index">dumps</a> of the full index on <a href="https://figshare.com">Figshare</a> in CSV, N-Triples and Scholix formats;</p></li>
+                    <li><p>using the HTTP URI of the individual citations, where they can be downloaded in different formats (HTML, RDF/XML, Turtle, and JSON-LD) via content negotiation.</p></li>
+                </ul>
+                <p>Additionally, the content of the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index can be <a href="index/search">searched</a> using <a href="https://github.com/opencitations/oscar">OSCAR</a> and <a href="https://github.com/opencitations/lucinda">LUCINDA</a>, the search and browse interfaces developed by <span class="oc-purple">Open</span><span class="oc-blue">Citations</span>.</p>
             </div>
         </div>
 
