@@ -41,6 +41,7 @@ class LinkedDataDirector(object):
     __rdfs_comment = "http://www.w3.org/2000/01/rdf-schema#comment"
     __rdf_type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
     __entityiri = "__entityiri"
+    __non_tp_resources = ["/di/"]
 
     def __init__(self, file_basepath, template_path, baseurl, jsonld_context_path,
                  corpus_local_url, label_conf=None, tmp_dir=None,
@@ -178,8 +179,9 @@ class LinkedDataDirector(object):
             rdflib.URIRef("https://creativecommons.org/publicdomain/zero/1.0/legalcode")))
 
     def get_representation(self, url, is_resource=False, cur_graph=None):
+        print(url)
         if cur_graph is None:
-            if self.tp is None:
+            if self.tp is None or any(e in url for e in __non_tp_resources):
                 local_file = ".".join(url.split(".")[:-1])
                 subj_iri = (self.baseurl + local_file).replace("/index", "/")
 
@@ -190,6 +192,8 @@ class LinkedDataDirector(object):
                 else:
                     cur_dir = "."
                     cur_name = local_file
+
+                print(cur_dir,cur_name)
 
                 if is_resource and self.dir_split_number and self.file_split_number:
                     is_prov = "/prov/" in cur_dir
