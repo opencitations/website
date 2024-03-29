@@ -247,6 +247,7 @@ class LinkedDataDirector(object):
                 # cur_file_path = cur_file_path.replace("corpus","index")
                 # return (local_file,subj_iri,cur_dir,cur_name,cur_file_path)
                 if os.path.exists(cur_file_path):
+                    return (cur_file_path,subj_iri,self.tmp_dir)
                     cur_graph = self.load_graph(cur_file_path, subj_iri, self.tmp_dir)
             else:
                 try:
