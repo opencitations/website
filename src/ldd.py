@@ -241,6 +241,8 @@ class LinkedDataDirector(object):
                 #     cur_full_dir = self.basepath + os.sep + cur_dir
                 #     cur_file_path = cur_full_dir + os.sep + "index"
 
+                cur_full_dir = self.basepath + os.sep + cur_dir
+                cur_file_path = cur_full_dir + os.sep + str(cur_name)
                 cur_file_path += ".json"
                 return (local_file,subj_iri,cur_dir,cur_name,cur_file_path)
                 if os.path.exists(cur_file_path):
