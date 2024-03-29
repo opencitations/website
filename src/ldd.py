@@ -241,9 +241,10 @@ class LinkedDataDirector(object):
                 #     cur_full_dir = self.basepath + os.sep + cur_dir
                 #     cur_file_path = cur_full_dir + os.sep + "index"
 
-                cur_full_dir = self.basepath + os.sep + cur_dir
+                cur_full_dir = self.basepath + cur_dir
                 cur_file_path = cur_full_dir + os.sep + str(cur_name)
                 cur_file_path += ".json"
+                cur_file_path.replace("corpus","index")
                 return (local_file,subj_iri,cur_dir,cur_name,cur_file_path)
                 if os.path.exists(cur_file_path):
                     cur_graph = self.load_graph(cur_file_path, subj_iri, self.tmp_dir)
