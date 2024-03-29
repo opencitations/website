@@ -923,7 +923,7 @@ class SparqlCCC(Sparql):
 class Virtual:
     def GET(self, file_path=None):
         ldd = LinkedDataDirector(
-            c["occ_base_path"], c["html"], c["oc_base_url"],
+            c["index_base_path"], c["html"], c["oc_base_url"],
             c["json_context_path"], c["corpus_local_url"],
             label_conf=c["label_conf"], tmp_dir=c["tmp_dir"],
             dir_split_number=int(c["dir_split_number"]),
@@ -948,7 +948,7 @@ class ContentNegotiation:
 
     def GET(self, file_path=None):
         ldd = LinkedDataDirector(
-            c["occ_base_path"], c["html"], self.base_url,
+            c["index_base_path"], c["html"], self.base_url,
             self.context_path, self.local_url,
             label_conf=c["label_conf"], tmp_dir=c["tmp_dir"],
             dir_split_number=int(c["dir_split_number"]),

@@ -1,6 +1,7 @@
 {
   "html": "html-template",
   "occ_base_path": "/srv/data/corpus/",
+  "index_base_path": "/srv/data/index/",
   "oc_base_url": "https://test.opencitations.net",
   "index_base_url": "https://w3id.org/oc",
   "tmp_dir": "/tmp/",
