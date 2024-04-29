@@ -83,6 +83,10 @@ figure {
 }
 .mt-item {
   padding: 10px;
+  display: inline-block;
+  vertical-align: middle;
+  float: none;
+  max-width: 30%;
 }
 
 dd > blockquote {
@@ -332,5 +336,11 @@ a.anchor {
         color: #9931FC;
         padding: 8px 15px 10px 0px;
         border-bottom-color: transparent ;
+      }
+
+      .mt-item {
+        display: block;
+        margin: 20px auto;
+        max-width: 70%;
       }
 }
