@@ -589,7 +589,7 @@ var search = (function () {
 			//search_conf_json = util.update_obj(search_conf_json, config_mod);
 
 			if (query_comp.values.length != 0) {
-				if (query_comp.rules.length <= 1) {
+				if (query_comp.rules.length == 0) {
 					//console.log("It's a freetext search!");
 					//one text box
 					var qtext = query_comp.values[0];
