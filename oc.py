@@ -956,7 +956,6 @@ class ContentNegotiation:
             default_dir=c["default_dir"], from_triplestore=self.from_triplestore,
             label_func=self.label_func)
         cur_page = ldd.redirect(file_path)
-        return cur_page
         if cur_page is None:
             raise web.notfound()
         else:
