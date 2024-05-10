@@ -81,12 +81,15 @@ figure {
     margin-top: 50px;
     margin-bottom: 30px;
 }
+.mt-container .row{
+  margin-top: 15px;
+}
 .mt-item {
   padding: 10px;
   display: inline-block;
   vertical-align: middle;
   float: none;
-  max-width: 30%;
+  max-width: 27%;
 }
 
 dd > blockquote {
