@@ -1,0 +1,42 @@
+{
+
+    "redis": {
+        "host": "Enter your redis host here",
+        "port": 0,
+        "db": 0
+    },
+    "smtp": {
+        "address": "Enter your smtp server address",
+        "port": 0,
+        "email": "Enter the email to be used for sending tokens",
+        "password": "Enter the email password"
+    },
+    "captcha": {
+        "PUBKEY": "Enter your google captcha site key",
+        "PRVKEY": "Enter your google captcha private key"
+    },
+    "messages": {
+        "accesstoken": {
+            "description": "This is the description above the form",
+            "button": "This is the button text",
+            "placeholder": "This is the email placeholder",
+            "invalid_email": "This message warns of an email with an incorrect format",
+            "invalid_captcha": "This message warns of an error with the captcha",
+            "invalid_form": "This message warns that a form cannot be resubmitted"
+        },
+        "accesstokensuccess": "Sucess message displayed after an access token request",
+        "accesstokenconfirm": {
+            "success": "Access token confirmation ",
+            "failure": "Message in case of link expiration"
+        },
+        "email": {
+            "title": "Email title",
+            "description": "Email description",
+            "token" : "Message before the button",
+            "token_button": "Toke button message",
+            "ignore": "Ignore message in the case of wrong mail",
+            "signature": "Signature of the email",
+            "html_message": "Message displayed in the case HTML email is not supported, the link is concatened to this string"
+        }
+    }
+}

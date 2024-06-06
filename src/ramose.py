@@ -37,6 +37,7 @@ from argparse import ArgumentParser
 from os.path import abspath, dirname, basename
 from os import path as pt
 from os import sep, getcwd
+from itertools import product
 
 
 FIELD_TYPE_RE = "([^\(\s]+)\(([^\)]+)\)"
@@ -1330,34 +1331,80 @@ class Operation(object):
                 self.preprocess(par_dict, self.i, self.addon)
 
                 query = self.i["sparql"]
-                for param in par_dict:
-                    query = query.replace("[[%s]]" %
-                                          param, str(par_dict[param]))
 
-                if self.sparql_http_method == "get":
-                    r = get(self.tp + "?query=" + quote(query),
-                            headers={"Accept": "text/csv"})
-                else:
-                    r = post(self.tp, data=query, headers={"Accept": "text/csv",
-                                                           "Content-Type": "application/sparql-query"})
-                r.encoding = "utf-8"
-                sc = r.status_code
-                if sc == 200:
-                    # This line has been added to avoid a strage behaviour of the 'splitlines' method in
-                    # presence of strange characters (non-UTF8).
-                    list_of_lines = [line.decode("utf-8")
-                                     for line in r.text.encode("utf-8").splitlines()]
-                    res = self.type_fields(list(reader(list_of_lines)), self.i)
-                    res = self.postprocess(res, self.i, self.addon)
-                    q_string = parse_qs(
-                        quote(self.url_parsed.query, safe="&="))
-                    res = self.handling_params(q_string, res)
-                    res = self.remove_types(res)
-                    s_res = StringIO()
-                    writer(s_res).writerows(res)
-                    return (sc,) + Operation.conv(s_res.getvalue(), q_string, content_type)
-                else:
-                    return sc, "HTTP status code %s: %s" % (sc, r.reason), "text/plain"
+                # Handle in case the parameters are lists, we need to generate all possible combinations
+                par_dict =  { p_k: [par_dict[p_k]] if not isinstance(par_dict[p_k], list) else par_dict[p_k] for p_k in par_dict }
+                combinations = product(*par_dict.values())
+
+                parameters_comb = []
+                for combination in combinations:
+                    parameters_comb.append( dict(zip(list(par_dict.keys()), list(combination))) )
+
+                # the __parameters_comb__ varaible is a list of dictionaries,
+                # each dictionary stores a possible combination of parameter values
+                #
+                # Example: {"id":"5","area":["A1","A2"]}  ->  [  {"id":"5","area":"A1"}, {"id":"5","area":"A2"} ]
+                # Example: {"id":"5","area":"A1"}  ->  [  {"id":"5","area":"A1"} ]
+
+                # iterate over __parameters_comb__
+
+                list_of_res = []
+                for par_dict in parameters_comb:
+
+                    list_of_lines = []
+                    for param in par_dict:
+                        query = query.replace("[[%s]]" %
+                                              param, str(par_dict[param]))
+
+                    # GET and POST are sync
+                    # TODO: use threads to make it parallel
+
+                    if self.sparql_http_method == "get":
+                        r = get(self.tp + "?query=" + quote(query),
+                                headers={"Accept": "text/csv"})
+                    else:
+                        r = post(self.tp, data=query, headers={"Accept": "text/csv",
+                                                               "Content-Type": "application/sparql-query"})
+                    r.encoding = "utf-8"
+
+                    sc = r.status_code
+                    if sc == 200:
+                        # This line has been added to avoid a strage behaviour of the 'splitlines' method in
+                        # presence of strange characters (non-UTF8).
+                        list_of_lines = [line.decode("utf-8") for line in r.text.encode("utf-8").splitlines()]
+
+                    # each res will have a list of list_of_line
+                    # Example:
+                    # [ ["id,val","01,a","02,b"] , ["id,val","05,u","08,p"]    ]
+                    list_of_res.append(list_of_lines)
+
+                # Merge all results in one line
+                # all lines must have same cols, therefore the first line is used as base
+                marge_res = list_of_res[0]
+
+                # NOTE: currently works only if the query returns 1 column and 1 value and the value is INT
+                # TODO: this part should change to handle cases with more than just one value
+                if len(marge_res) == 2:
+                    if len(list_of_res) > 1:
+                        for res_lines in list_of_res[1:]:
+                            try:
+                                marge_res[1] = str(int(marge_res[1]) + int(res_lines[1]))
+                            except ValueError:
+                                pass
+
+                res = self.type_fields(list(reader(marge_res)), self.i)
+                res = self.postprocess(res, self.i, self.addon)
+                q_string = parse_qs(
+                    quote(self.url_parsed.query, safe="&="))
+                res = self.handling_params(q_string, res)
+                res = self.remove_types(res)
+                s_res = StringIO()
+                writer(s_res).writerows(res)
+                return (sc,) + Operation.conv(s_res.getvalue(), q_string, content_type)
+
+                #else:
+                #    return sc, "HTTP status code %s: %s" % (sc, r.reason), "text/plain"
+
             except TimeoutError:
                 exc_type, exc_obj, exc_tb = exc_info()
                 sc = 408
