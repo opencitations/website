@@ -1,5 +1,6 @@
 __*/
 __local*
+__test_oc_auth.json
 sessions/
 opencitations-log-stats/
 conf_*
