@@ -1330,8 +1330,6 @@ class Operation(object):
 
                 self.preprocess(par_dict, self.i, self.addon)
 
-                query = self.i["sparql"]
-
                 # Handle in case the parameters are lists, we need to generate all possible combinations
                 par_dict =  { p_k: [par_dict[p_k]] if not isinstance(par_dict[p_k], list) else par_dict[p_k] for p_k in par_dict }
                 combinations = product(*par_dict.values())
@@ -1352,6 +1350,7 @@ class Operation(object):
                 for par_dict in parameters_comb:
 
                     list_of_lines = []
+                    query = self.i["sparql"]
                     for param in par_dict:
                         query = query.replace("[[%s]]" %
                                               param, str(par_dict[param]))
