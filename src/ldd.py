@@ -41,7 +41,6 @@ class LinkedDataDirector(object):
     __rdfs_comment = "http://www.w3.org/2000/01/rdf-schema#comment"
     __rdf_type = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
     __entityiri = "__entityiri"
-    __non_tp_resources = ["di/"]
 
     def __init__(self, file_basepath, template_path, baseurl, jsonld_context_path,
                  corpus_local_url, label_conf=None, tmp_dir=None,
@@ -138,15 +137,13 @@ class LinkedDataDirector(object):
 
     def redirect(self, url):
         if url is None:
-            raise web.seeother(self.corpus_local_url + "index")
+            raise web.seeother(self.corpus_local_url)
+
         elif url.endswith(self.__extensions):
             cur_extension = "." + url.split(".")[-1]
             no_extension = url.replace(cur_extension, "")
-            if no_extension == "" or no_extension.endswith("/"):
-                return self.get_representation(no_extension + "index" + cur_extension)
-            else:
-                is_resource = "index" not in url
-                return self.get_representation(url, is_resource)
+            return self.get_representation(url)
+
         elif url.endswith("/prov/"):
             pass  # TODO: it must be handled somehow
         else:
@@ -155,10 +152,14 @@ class LinkedDataDirector(object):
                 for accept_block in content_type.split(";")[::2]:
                     accept_types = accept_block.split(",")
 
-                    if url.endswith("/"):
-                        cur_url = url + "index"
-                    else:
-                        cur_url = url
+                    cur_url = url
+                    if url == "":
+                        cur_url = "dataset"
+
+                    #if url.endswith("/"):
+                    #    cur_url = url + "index"
+                    #else:
+                    #    cur_url = url
 
                     resource_url = self.corpus_local_url + cur_url
 
@@ -178,78 +179,31 @@ class LinkedDataDirector(object):
             rdflib.URIRef("http://purl.org/dc/terms/license"),
             rdflib.URIRef("https://creativecommons.org/publicdomain/zero/1.0/legalcode")))
 
-    def get_representation(self, url, is_resource=False, cur_graph=None):
-
+    def get_representation(self, url, cur_graph=None):
         if cur_graph is None:
-            if self.tp is None or any(e in url for e in self.__non_tp_resources):
-                local_file = ".".join(url.split(".")[:-1])
-                subj_iri = self.baseurl + local_file
 
-                if "/" in local_file:
-                    slash_split = local_file.split("/")
-                    cur_dir = "/".join(slash_split[:-1])
-                    cur_name = slash_split[-1]
-                else:
-                    cur_dir = "."
-                    cur_name = local_file
+            # Check first if the resource is stored locally
+            local_file = ".".join(url.split(".")[:-1])
+            subj_iri = self.baseurl + local_file
+            if local_file == "dataset":
+                subj_iri = self.baseurl
 
-                # if is_resource and self.dir_split_number and self.file_split_number:
-                #     is_prov = "/prov/" in cur_dir
-                #     prov_regex = "(.+/)([0-9]+)(/prov/[^/]+).*$"
-                #     if is_prov:
-                #         cur_number_s = re.sub(prov_regex, "\\2", cur_dir)
-                #     else:
-                #         cur_number_s = cur_name
-                #
-                #     if cur_number_s.startswith("0"):
-                #         cur_number = int(re.sub("^0[1-9]+0(.+)$", "\\1", cur_number_s))
-                #         main_dir = re.sub("^(0[1-9]+0).+$", "\\1", cur_number_s)
-                #     else:
-                #         cur_number = int(cur_number_s)
-                #         main_dir = self.default_dir
-                #
-                #     # Find the correct directory number where to save the file
-                #     cur_split = 0
-                #     while True:
-                #         if cur_number > cur_split:
-                #             cur_split += self.dir_split_number
-                #         else:
-                #             break
-                #
-                #     # Find the correct file number where to save the resources
-                #     cur_file_split = 0
-                #     while True:
-                #         if cur_number > cur_file_split:
-                #             cur_file_split += self.file_split_number
-                #         else:
-                #             break
-                #
-                #     if is_prov:
-                #         cur_file_path = self.basepath + os.sep + \
-                #                        re.sub(prov_regex, "\\1", cur_dir) + \
-                #                        main_dir + os.sep + \
-                #                        str(cur_split) + os.sep + \
-                #                        str(cur_file_split) + os.sep + \
-                #                        re.sub(prov_regex, "\\3", cur_dir)
-                #     elif cur_dir.startswith("prov"):
-                #         cur_full_dir = self.basepath + os.sep + cur_dir
-                #         cur_file_path = cur_full_dir + os.sep + str(cur_name)
-                #     else:
-                #         cur_full_dir = self.basepath + os.sep + cur_dir + os.sep + main_dir + os.sep + str(cur_split)
-                #         cur_file_path = cur_full_dir + os.sep + str(cur_file_split)
-                # else:
-                #     cur_full_dir = self.basepath + os.sep + cur_dir
-                #     cur_file_path = cur_full_dir + os.sep + "index"
+            slash_split = local_file.split("/")
+            cur_dir = "/".join(slash_split[:-1])
+            cur_name = slash_split[-1]
 
-                cur_full_dir = self.basepath + cur_dir
-                cur_file_path = cur_full_dir + os.sep + str(cur_name)
-                cur_file_path += ".json"
-                # cur_file_path = cur_file_path.replace("corpus","index")
-                # return (local_file,subj_iri,cur_dir,cur_name,cur_file_path)
-                if os.path.exists(cur_file_path):
-                    # return (cur_file_path,subj_iri,self.tmp_dir)
-                    cur_graph = self.load_graph(cur_file_path, subj_iri, self.tmp_dir)
-            else:
+            cur_full_dir = self.basepath + cur_dir
+            cur_file_path = cur_full_dir
+            if not cur_file_path.endswith("/"):
+                cur_file_path += os.sep
+            cur_file_path += str(cur_name) + ".json"
+
+            # in case its local
+            if os.path.exists(cur_file_path):
+                cur_graph = self.load_graph(cur_file_path, subj_iri, self.tmp_dir)
+
+            # else get it from tp
+            elif self.tp is not None:
                 try:
                     resource_url = self.baseurl + url.rsplit(".", 1)[0]
                     if resource_url.endswith("/index"):
