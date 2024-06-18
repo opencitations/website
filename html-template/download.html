@@ -93,18 +93,18 @@ $def with (pages, active)
                 <p>The <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta database stores and delivers bibliographic metadata for all publications involved in the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index.</p>
 
                 <h5><strong>Most recent OpenCitations Meta data dump - April 2024 Dump</strong></h5>
-                <p>This dataset's dump, created on 2024-04-06, enhances its previous version by incorporating OpenAlex IDs, leveraging data from the OpenAlex dump available at <a href="https://openalex.s3.amazonaws.com/browse.html" target="_blank">https://openalex.s3.amazonaws.com/browse.html</a>. This dump includes information on:</p>
+                <p>This dataset's dump, released on 2024-06-20, enhances its previous version by incorporating new data from the Crossref dump available at <a href="https://crossref.org/snapshots/monthly/2024/03" target="_blank">Crossref March 2024 Dump</a>. This dump includes information on:</p>
                 <ul>
-                  <li><p>114,703,611 bibliographic entities</p></li>
-                  <li><p>343,715,548 authors and 2,533,136 editors (counted by their roles, without disambiguating individuals)</p></li>
-                  <li><p>711,711 publication venues</p></li>
-                  <li><p>241,783 publishers</p></li>
+                    <li><p>116,705,111 bibliographic entities</p></li>
+                    <li><p>348,815,548 authors and 2,561,336 editors (counted by their roles, without disambiguating individuals)</p></li>
+                    <li><p>715,711 publication venues</p></li>
+                    <li><p>245,783 publishers</p></li>
                 </ul>
                 <div class="table-responsive">
                      <table class="table">
                        <tr><th>Type and format</th><th>Archive</th><th>Size</th></tr>
-                       <tr><td>Metadata (CSV)</td><td><a href="https://doi.org/10.6084/m9.figshare.21747461.v8">ZIP</a></td><td>46 GB (11 GB zipped) on ext4</td></tr>
-                       <tr><td>Metadata and provenance (RDF)</td><td><a href="https://doi.org/10.6084/m9.figshare.21747536.v6">XZ (LZMA2 compression algorithm)</a></td><td>43 GB (29 GB compressed) on ext4</td></tr>
+                       <tr><td>Metadata (CSV)</td><td><a href="https://doi.org/10.6084/m9.figshare.21747461.v9">tar.gz</a></td><td>11G (47G zipped) on ext4</td></tr>
+                       <tr><td>Metadata and provenance (RDF)</td><td><a href="https://doi.org/10.6084/m9.figshare.21747536.v7">tar.gz</a></td><td>44G (145G compressed) on ext4</td></tr>
                      </table>
                 </div>
                 <p>In addition, a CSV dump containing a mapping between all the bibliographic resources identified by an OMID (e.g., br/12345) and their corresponding PID(s) (e.g., DOI, PMID)</p>
@@ -116,6 +116,7 @@ $def with (pages, active)
 
                 <h5>Previous dumps</h5>
                 <ul>
+                    <li><p>Dump created on 2024-04-06. Compared to the previous dump, this one incorporates OpenAlex IDs, leveraging data from the OpenAlex dump. Dump available in <a href="https://doi.org/10.6084/m9.figshare.21747461.v8">CSV (metadata)</a> and <a href="https://doi.org/10.6084/m9.figshare.21747536.v6">RDF (metadata and provenance)</a> formats.</p></li>
                     <li><p>Dump created on 2023-11-29. Compared to the previous dump, this one adds the metadata contained in the <a href="https://api.japanlinkcenter.org/">Japan Link Center (JaLC)</a>. Dump available in <a href="https://doi.org/10.6084/m9.figshare.21747461.v7">CSV (metadata)</a> format.</p></li>
                     <li><p>Dump created on 2023-10-24. Compared to the previous dump, this one adds the metadata contained in <a href="https://doi.org/10.5281/zenodo.7845968">OpenAIRE</a> and in the <a href="https://api.crossref.org/snapshots/monthly/2023/09">Crossref dump dated September 2023</a>.Dump available in <a href="https://doi.org/10.6084/m9.figshare.21747461.v5">CSV (metadata)</a> and <a href="https://doi.org/10.6084/m9.figshare.21747536.v5">JSON-LD (metadata and provenance)</a> formats.</p></li>
                     <li><p>Dump created on 2023-06-28. Compared to the previous dump, this one adds the metadata contained in the <a href="https://nih.figshare.com/collections/iCite_Database_Snapshots_NIH_Open_Citation_Collection_/4586573/36">dump of NIH Open Citation Collection dated November 2022</a>. Dump available in <a href="https://doi.org/10.6084/m9.figshare.21747461.v4">CSV (metadata)</a> and <a href="https://doi.org/10.6084/m9.figshare.21747536.v4">JSON-LD (metadata and provenance)</a> formats.</p></li>
