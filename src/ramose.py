@@ -1347,6 +1347,7 @@ class Operation(object):
                 # iterate over __parameters_comb__
 
                 list_of_res = []
+                include_header_line = True
                 for par_dict in parameters_comb:
 
                     list_of_lines = []
@@ -1372,26 +1373,24 @@ class Operation(object):
                         # presence of strange characters (non-UTF8).
                         list_of_lines = [line.decode("utf-8") for line in r.text.encode("utf-8").splitlines()]
 
+                    else:
+                        return sc, "HTTP status code %s: %s" % (sc, r.reason), "text/plain"
+
                     # each res will have a list of list_of_line
-                    # Example:
-                    # [ ["id,val","01,a","02,b"] , ["id,val","05,u","08,p"]    ]
-                    list_of_res.append(list_of_lines)
+                    # include the header of the first result only
+                    if not include_header_line:
+                        list_of_lines = list_of_lines[1:]
+                    include_header_line = False
 
-                # Merge all results in one line
-                # all lines must have same cols, therefore the first line is used as base
-                marge_res = list_of_res[0]
+                    # list_of_res Example:
+                    # [ ["id,val","01,a","02,b"] , ["id,val","05,u","08,p"] ]
+                    list_of_res += list_of_lines
 
-                # NOTE: currently works only if the query returns 1 column and 1 value and the value is INT
-                # TODO: this part should change to handle cases with more than just one value
-                if len(marge_res) == 2:
-                    if len(list_of_res) > 1:
-                        for res_lines in list_of_res[1:]:
-                            try:
-                                marge_res[1] = str(int(marge_res[1]) + int(res_lines[1]))
-                            except ValueError:
-                                pass
+                #
+                #  ----- DELEGATE to POST PROCESSING operations
+                # return 200, "HTTP print for debug %s: %s" % (200, list_of_res), "text/plain"
 
-                res = self.type_fields(list(reader(marge_res)), self.i)
+                res = self.type_fields(list(reader(list_of_res)), self.i)
                 res = self.postprocess(res, self.i, self.addon)
                 q_string = parse_qs(
                     quote(self.url_parsed.query, safe="&="))
@@ -1400,9 +1399,6 @@ class Operation(object):
                 s_res = StringIO()
                 writer(s_res).writerows(res)
                 return (sc,) + Operation.conv(s_res.getvalue(), q_string, content_type)
-
-                #else:
-                #    return sc, "HTTP status code %s: %s" % (sc, r.reason), "text/plain"
 
             except TimeoutError:
                 exc_type, exc_obj, exc_tb = exc_info()
