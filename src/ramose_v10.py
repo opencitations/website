@@ -16,11 +16,6 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-# RAMOSE v1.1
-# Ivan Heibi <ivan.heibi2@unibo.it>
-# [+] The preprocessing operation can output a list of values, this means Ramose will perform multiple sequential SPARQL queries (using the SPARQL query defined for that operation).
-# The marge of the final result is performed by the post processing operation. (e.g., see /venue-citation-count in indexapi_v2.py)
-
 __author__ = 'essepuntato'
 
 from abc import abstractmethod
