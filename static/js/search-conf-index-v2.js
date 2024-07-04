@@ -1,5 +1,5 @@
 var search_conf = {
-"sparql_endpoint": "https://test.opencitations.net/index/sparql",
+"sparql_endpoint": "https://test.opencitations.net/meta/sparql",
 "prefixes": [
     {"prefix":"cito","iri":"http://purl.org/spar/cito/"},
     {"prefix":"literal","iri":"http://www.essepuntato.it/2010/06/literalreification/"},
@@ -10,6 +10,24 @@ var search_conf = {
   ],
 
 "rules":  [
+    /*{
+      "name":"citedomid",
+      "label": "Citations of a bibliographic resource (OMID)",
+      "placeholder": "e.g. br/0612058700",
+      "advanced": true,
+      "freetext": true,
+      "category": "citation",
+      "regex":"(.+)",
+      "query": [`
+            {
+              SERVICE <https://opencitations.net/index/sparql> {
+                    BIND(<https://w3id.org/oc/meta/[[VAR]]> as ?cited) .
+                    ?oci cito:hasCitedEntity ?cited .
+                    ?oci cito:hasCitingEntity ?citing .
+              }
+            }`
+      ]
+    },*/
     {
       "name":"citingdoi",
       "label": "References of a bibliographic resource (DOI, PMID, OMID)",
@@ -21,12 +39,13 @@ var search_conf = {
       "regex":"(.+)",
       "query": [`
             {
-              SERVICE <https://test.opencitations.net/meta/sparql> {
-                ?citing datacite:hasIdentifier ?identifier .
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
-              }
-              ?oci cito:hasCitingEntity ?citing .
-              ?oci cito:hasCitedEntity ?cited .
+                ?citing datacite:hasIdentifier ?identifier .
+                SERVICE <https://opencitations.net/index/sparql> {
+                      ?oci a cito:Citation .
+                      ?oci cito:hasCitingEntity ?citing .
+                      ?oci cito:hasCitedEntity ?cited .
+                }
             }`
       ]
     },
@@ -41,12 +60,13 @@ var search_conf = {
       "regex":"(.+)",
       "query": [`
             {
-              SERVICE <https://test.opencitations.net/meta/sparql> {
-                ?cited datacite:hasIdentifier ?identifier .
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
-              }
-              ?oci cito:hasCitedEntity ?cited .
-              ?oci cito:hasCitingEntity ?citing .
+                ?cited datacite:hasIdentifier ?identifier .
+                SERVICE <https://opencitations.net/index/sparql> {
+                      ?oci a cito:Citation .
+                      ?oci cito:hasCitedEntity ?cited .
+                      ?oci cito:hasCitingEntity ?citing .
+                }
             }`
       ]
     },
@@ -60,9 +80,11 @@ var search_conf = {
       "regex":"(\\d{1,}-\\d{1,})",
       "query": [`
         {
-          BIND(<https://w3id.org/oc/index/ci/[[VAR]]> as ?oci) .
-          ?oci cito:hasCitingEntity ?citing .
-          ?oci cito:hasCitedEntity ?cited .
+          SERVICE <https://opencitations.net/index/sparql> {
+                BIND(<https://w3id.org/oc/index/ci/[[VAR]]> as ?oci) .
+                ?oci cito:hasCitingEntity ?citing .
+                ?oci cito:hasCitedEntity ?cited .
+          }
         }
         `
       ]
