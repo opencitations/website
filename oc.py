@@ -97,10 +97,6 @@ urls = (
     "/index/poci", "Poci",
     "/index/croci", "Croci",
     "/index/(.*)?", "IndexContentNegotiation",
-    "/index/coci/(.*)?", "IndexContentNegotiation",
-    "/index/poci/(.*)?", "IndexContentNegotiation",
-    "/index/doci/(.*)?", "IndexContentNegotiation",
-    "/index/croci/(.*)?", "IndexContentNegotiation",
 
     # META related urls
     "/(meta)(/api/.+)", "Api",
@@ -128,7 +124,9 @@ urls = (
     "/(download)", "Download",
     "/(policy)", "Policy",
 
-    # OCC SPARQL-related urls
+    # Legacy pages
+    "/(download)_legacy", "DownloadLegacy",
+    # OCC SPARQL-related urls > all redirected to Index
     "/sparql", "SparqlIndex",
     "/search", "SearchIndex",
     "/browser/(.+)", "BrowserIndex",
@@ -242,8 +240,8 @@ poci_doc_manager = HTMLDocumentationHandler(poci_api_manager)
 coci_api_manager = APIManager(c["api_coci"])
 coci_doc_manager = HTMLDocumentationHandler(coci_api_manager)
 
-coci_api_manager_v2 = APIManager(c["api_coci_v2"])
-coci_doc_manager_v2 = HTMLDocumentationHandler(coci_api_manager_v2)
+#coci_api_manager_v2 = APIManager(c["api_coci_v2"])
+#coci_doc_manager_v2 = HTMLDocumentationHandler(coci_api_manager_v2)
 
 croci_api_manager = APIManager(c["api_croci"])
 croci_doc_manager = HTMLDocumentationHandler(croci_api_manager)
@@ -464,6 +462,7 @@ class Api:
             org_ref = org_ref[:-1]
         else:
             org_ref = "*"
+            
         web.header('Access-Control-Allow-Origin', org_ref)
         web.header('Access-Control-Allow-Credentials', 'true')
         web.header('Access-Control-Allow-Methods', '*')
@@ -481,9 +480,9 @@ class Api:
         if dataset == "coci":
             man = coci_api_manager
             doc = coci_doc_manager
-            if "v2" in call:
-                man = coci_api_manager_v2
-                doc = coci_doc_manager_v2
+            #if "v2" in call:
+            #    man = coci_api_manager_v2
+            #    doc = coci_doc_manager_v2
         elif dataset == "doci":
             man = doci_api_manager
             doc = doci_doc_manager
@@ -755,6 +754,10 @@ class Download:
         web_logger.mes()
         return render.download(pages, active)
 
+class DownloadLegacy:
+    def GET(self, active):
+        web_logger.mes()
+        return render.download_legacy(pages, active + " (legacy)")
 
 class Search:
     def __init__(self, render_page):
@@ -994,39 +997,6 @@ class MetaContentNegotiation(ContentNegotiation):
                                     context_path=c["ocdm_json_context_path"],
                                     from_triplestore=c["sparql_endpoint_meta"],
                                     label_func=lambda u: "%s %s" % re.findall("^.+/meta/(..)/(.+)$", u)[0])
-
-
-class CociContentNegotiation(ContentNegotiation):
-    def __init__(self):
-        ContentNegotiation.__init__(self, c["index_base_url"], c["coci_local_url"],
-                                    context_path=c["ocdm_json_context_path"],
-                                    from_triplestore=c["sparql_endpoint_index"],
-                                    label_func=lambda u: "oci:%s" % re.findall(
-                                        "^.+/ci/(.+)$", u)[0]
-                                    if "/ci/" in u else "provenance agent 1" if "/pa/1" in u
-                                    else "COCI")
-
-
-class DociContentNegotiation(ContentNegotiation):
-    def __init__(self):
-        ContentNegotiation.__init__(self, c["index_base_url"], c["doci_local_url"],
-                                    context_path=c["ocdm_json_context_path"],
-                                    from_triplestore=c["sparql_endpoint_index"],
-                                    label_func=lambda u: "oci:%s" % re.findall(
-                                        "^.+/ci/(.+)$", u)[0]
-                                    if "/ci/" in u else "provenance agent 1" if "/pa/1" in u
-                                    else "DOCI")
-
-
-class CrociContentNegotiation(ContentNegotiation):
-    def __init__(self):
-        ContentNegotiation.__init__(self, c["index_base_url"], c["croci_local_url"],
-                                    context_path=c["ocdm_json_context_path"],
-                                    from_triplestore=c["sparql_endpoint_index"],
-                                    label_func=lambda u: "oci:%s" % re.findall(
-                                        "^.+/ci/(.+)$", u)[0]
-                                    if "/ci/" in u else "CROCI")
-
 
 class StatisticsIndex:
     def GET(self, active):
