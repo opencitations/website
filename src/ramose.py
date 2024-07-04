@@ -16,6 +16,11 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
+# RAMOSE v1.1
+# Ivan Heibi <ivan.heibi2@unibo.it>
+# [+] The preprocessing operation can output a list of values, this means Ramose will perform multiple sequential SPARQL queries (using the SPARQL query defined for that operation).
+# The marge of the final result is performed by the post processing operation. (e.g., see /venue-citation-count in indexapi_v2.py)
+
 __author__ = 'essepuntato'
 
 from abc import abstractmethod
@@ -28,7 +33,7 @@ from sys import exc_info, maxsize, path
 from collections import OrderedDict
 from markdown import markdown
 from importlib import import_module
-from urllib.parse import parse_qs, urlsplit, quote , unquote
+from urllib.parse import parse_qs, urlsplit, quote, unquote
 from operator import add, itemgetter, gt, eq, lt
 from dateutil.parser import parse
 from datetime import datetime
@@ -37,10 +42,12 @@ from argparse import ArgumentParser
 from os.path import abspath, dirname, basename
 from os import path as pt
 from os import sep, getcwd
+from itertools import product
 
 
 FIELD_TYPE_RE = "([^\(\s]+)\(([^\)]+)\)"
 PARAM_NAME = "{([^{}\(\)]+)}"
+
 
 class HashFormatHandler(object):
     """This class creates an object capable to read files stored in Hash Format (see
@@ -128,6 +135,7 @@ class DocumentationHandler(object):
         handled by the input APIManager."""
         pass
 
+
 class HTMLDocumentationHandler(DocumentationHandler):
     # HTML documentation: START
     def __title(self, conf):
@@ -151,8 +159,8 @@ class HTMLDocumentationHandler(DocumentationHandler):
             <li><a class="btn active" href="/">HOME</a></li>
         </ul>
         """ % \
-                    (i["title"], "".join(["<li><a class='btn' href='#%s'>%s</a></li>" % (op["url"], op["url"])
-                             for op in conf["conf_json"][1:]]))
+            (i["title"], "".join(["<li><a class='btn' href='#%s'>%s</a></li>" % (op["url"], op["url"])
+                                  for op in conf["conf_json"][1:]]))
         return result
 
     def __header(self, conf):
@@ -179,10 +187,10 @@ class HTMLDocumentationHandler(DocumentationHandler):
                   (i["title"], i["version"], i["base"] + i["url"], i["base"] + i["url"],  i["contacts"], i["license"],
 
                    i["description"], self.__parameters())
-                   # (i["title"], i["version"], i["base"] + i["url"], i["base"] + i["url"], i["contacts"], i["contacts"], i["license"],
-                   #  "".join(["<li>[%s](#%s): %s</li>" % (op["url"], op["url"], op["description"].split("\n")[0])
-                   #           for op in self.conf_json[1:]]),
-                   #  i["description"], self.__parameters())
+        # (i["title"], i["version"], i["base"] + i["url"], i["base"] + i["url"], i["contacts"], i["contacts"], i["license"],
+        #  "".join(["<li>[%s](#%s): %s</li>" % (op["url"], op["url"], op["description"].split("\n")[0])
+        #           for op in self.conf_json[1:]]),
+        #  i["description"], self.__parameters())
         return markdown(result)
 
     def __parameters(self):
@@ -218,10 +226,13 @@ The operations that this API implements are:
                 p_type = "str"
                 p_shape = ".+"
                 if p in op:
-                    p_type, p_shape = findall("^\s*([^\(]+)\((.+)\)\s*$", op[p])[0]
+                    p_type, p_shape = findall(
+                        "^\s*([^\(]+)\((.+)\)\s*$", op[p])[0]
 
-                params.append("<em>%s</em>: type <em>%s</em>, regular expression shape <code>%s</code>" % (p, p_type, p_shape))
-            result += "\n* [%s](#%s): %s" % (op["url"], op["url"], op["description"].split("\n")[0])
+                params.append(
+                    "<em>%s</em>: type <em>%s</em>, regular expression shape <code>%s</code>" % (p, p_type, p_shape))
+            result += "\n* [%s](#%s): %s" % (op["url"],
+                                             op["url"], op["description"].split("\n")[0])
             ops += """<div id="%s">
 <h3>%s <a href="#operations">back to operations</a></h3>
 
@@ -233,7 +244,8 @@ The operations that this API implements are:
 <p class="attr"><strong>Example</strong><span class="attr_val"><a target="_blank" href="%s">%s</a></span></p>
 <p class="ex attr"><strong>Exemplar output (in JSON)</strong></p>
 <pre><code>%s</code></pre></div>""" % (op["url"], op["url"], markdown(op["description"]),
-                                       ", ".join(split("\s+", op["method"].strip())), "</li><li>".join(params),
+                                       ", ".join(
+                                           split("\s+", op["method"].strip())), "</li><li>".join(params),
                                        ", ".join(["%s <em>(%s)</em>" % (f, t) for t, f in
                                                   findall(FIELD_TYPE_RE, op["field_type"])]),
                                        conf["website"] + conf["base_url"] + op["call"], op["call"], op["output_json"])
@@ -646,7 +658,8 @@ The operations that this API implements are:
     def logger_ramose(self):
         """This method adds logging info to a local file"""
         # logging
-        logFormatter = logging.Formatter("[%(asctime)s] [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+        logFormatter = logging.Formatter(
+            "[%(asctime)s] [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
         rootLogger = logging.getLogger()
 
         fileHandler = logging.FileHandler("ramose.log")
@@ -664,7 +677,8 @@ The operations that this API implements are:
             logs = ''.join(l_f.readlines())
         rev_list = set()
         rev_list_add = rev_list.add
-        rev_list = [x for x in list(reversed(logs.splitlines())) if not (x in rev_list or rev_list_add(x))]
+        rev_list = [x for x in list(reversed(logs.splitlines())) if not (
+            x in rev_list or rev_list_add(x))]
 
         html = """
         <p></p>
@@ -673,7 +687,7 @@ The operations that this API implements are:
             <ul id="sidebar_menu" class="sidebar_menu">"""
 
         for api_url, api_dict in self.conf_doc.items():
-            html +="""
+            html += """
                     <li><a class="btn active" href="%s">%s</a></li>
                 """ % (api_url, api_dict["conf_json"][0]["title"])
 
@@ -684,8 +698,10 @@ The operations that this API implements are:
             <h1>API MONITORING</h1>"""
 
         for api_url, api_dict in self.conf_doc.items():
-            clean_list = [l for l in rev_list if api_url in l and "debug" not in l]
-            api_logs_list = ''.join(["<p>"+self.clean_log(l,api_url) +"</p>" for l in clean_list if self.clean_log(l,api_url) !=''])
+            clean_list = [
+                l for l in rev_list if api_url in l and "debug" not in l]
+            api_logs_list = ''.join(["<p>"+self.clean_log(l, api_url)
+                                    + "</p>" for l in clean_list if self.clean_log(l, api_url) != ''])
             api_title = api_dict["conf_json"][0]["title"]
             html += """
                 <div class="info_api">
@@ -700,7 +716,7 @@ The operations that this API implements are:
                     </div>
 
                 </div>
-                """ % ( api_title,api_url, api_dict["tp"], api_logs_list)
+                """ % (api_title, api_url, api_dict["tp"], api_logs_list)
         return html
 
     def get_documentation(self, css_path=None, base_url=None):
@@ -757,13 +773,15 @@ The operations that this API implements are:
 
     def clean_log(self, l, api_url):
         """This method parses logs lines into structured data."""
-        s = l.split("- - ",1)[1]
+        s = l.split("- - ", 1)[1]
         date = s[s.find("[")+1:s.find("]")]
         method = s.split('"')[1::2][0].split()[0]
         cur_call = s.split('"')[1::2][0].split()[1].strip()
-        status = sub(r"\D+", "", s.split('"',2)[2])
+        status = sub(r"\D+", "", s.split('"', 2)[2])
         if cur_call != api_url+'/':
-            full_str = "<span class='group_log'><span class='status_log code_"+status+"'>"+status+"</span>"+"<span class='date_log'>"+date+"</span><span class='method_log'>"+method+"</span></span>"+"<span class='group_log'><span class='call_log'><a href='"+cur_call+"' target='_blank'>"+cur_call+"</a></span></span>"
+            full_str = "<span class='group_log'><span class='status_log code_"+status+"'>"+status+"</span>"+"<span class='date_log'>"+date+"</span><span class='method_log'>" + \
+                method+"</span></span>"+"<span class='group_log'><span class='call_log'><a href='" + \
+                cur_call+"' target='_blank'>"+cur_call+"</a></span></span>"
         else:
             full_str = ''
         return full_str
@@ -849,8 +867,7 @@ class DataType(object):
 class Operation(object):
     def __init__(self, op_complete_url, op_key, i, tp, sparql_http_method, addon):
         """ This class is responsible for materialising a API operation to be run against a SPARQL endpoint.
-        
-        It takes in input a full URL referring to a call to an operation (parameter 'op_complete_url'), 
+         It takes in input a full URL referring to a call to an operation (parameter 'op_complete_url'),
         the particular shape representing an operation (parameter 'op_key'), the definition (in JSON) of such
         operation (parameter 'i'), the URL of the triplestore to contact (parameter 'tp'), the HTTP method
         to use for the SPARQL request (paramenter 'sparql_http_method', set to either 'get' or 'post'), and the path
@@ -1058,10 +1075,12 @@ class Operation(object):
                                 new_fields = entries[1:]
                                 new_fields_max_split = len(new_fields) - 1
                                 if type(v) is str:
-                                    new_values = v.split(separator, new_fields_max_split)
+                                    new_values = v.split(
+                                        separator, new_fields_max_split)
                                     Operation.add_item_in_dict(row, keys,
-                                                                dict(zip(new_fields, new_values)) if v != "" else {},
-                                                                idx)
+                                                               dict(
+                                                                   zip(new_fields, new_values)) if v != "" else {},
+                                                               idx)
                                 elif type(v) is list:
                                     new_list = []
                                     for i in v:
@@ -1305,49 +1324,95 @@ class Operation(object):
 
                 self.preprocess(par_dict, self.i, self.addon)
 
-                query = self.i["sparql"]
-                for param in par_dict:
-                    query = query.replace("[[%s]]" % param, str(par_dict[param]))
+                # Handle in case the parameters are lists, we need to generate all possible combinations
+                par_dict =  { p_k: [par_dict[p_k]] if not isinstance(par_dict[p_k], list) else par_dict[p_k] for p_k in par_dict }
+                combinations = product(*par_dict.values())
 
-                if self.sparql_http_method == "get":
-                    r = get(self.tp + "?query=" + quote(query),
-                            headers={"Accept": "text/csv"})
-                else:
-                    r = post(self.tp, data=query, headers={"Accept": "text/csv",
-                                                           "Content-Type": "application/sparql-query"})
-                r.encoding = "utf-8"
-                sc = r.status_code
-                if sc == 200:
-                    # This line has been added to avoid a strage behaviour of the 'splitlines' method in
-                    # presence of strange characters (non-UTF8).
-                    list_of_lines = [line.decode("utf-8")
-                                     for line in r.text.encode("utf-8").splitlines()]
-                    res = self.type_fields(list(reader(list_of_lines)), self.i)
-                    res = self.postprocess(res, self.i, self.addon)
-                    q_string = parse_qs(quote(self.url_parsed.query, safe="&="))
-                    res = self.handling_params(q_string, res)
-                    res = self.remove_types(res)
-                    s_res = StringIO()
-                    writer(s_res).writerows(res)
-                    return (sc,) + Operation.conv(s_res.getvalue(), q_string, content_type)
-                else:
-                    return sc, "HTTP status code %s: %s" % (sc, r.reason), "text/plain"
+                parameters_comb = []
+                for combination in combinations:
+                    parameters_comb.append( dict(zip(list(par_dict.keys()), list(combination))) )
+
+                # the __parameters_comb__ varaible is a list of dictionaries,
+                # each dictionary stores a possible combination of parameter values
+                #
+                # Example: {"id":"5","area":["A1","A2"]}  ->  [  {"id":"5","area":"A1"}, {"id":"5","area":"A2"} ]
+                # Example: {"id":"5","area":"A1"}  ->  [  {"id":"5","area":"A1"} ]
+
+                # iterate over __parameters_comb__
+
+                list_of_res = []
+                include_header_line = True
+                for par_dict in parameters_comb:
+
+                    list_of_lines = []
+                    query = self.i["sparql"]
+                    for param in par_dict:
+                        query = query.replace("[[%s]]" %
+                                              param, str(par_dict[param]))
+
+                    # GET and POST are sync
+                    # TODO: use threads to make it parallel
+
+                    if self.sparql_http_method == "get":
+                        r = get(self.tp + "?query=" + quote(query),
+                                headers={"Accept": "text/csv"})
+                    else:
+                        r = post(self.tp, data=query, headers={"Accept": "text/csv",
+                                                               "Content-Type": "application/sparql-query"})
+                    r.encoding = "utf-8"
+
+                    sc = r.status_code
+                    if sc == 200:
+                        # This line has been added to avoid a strage behaviour of the 'splitlines' method in
+                        # presence of strange characters (non-UTF8).
+                        list_of_lines = [line.decode("utf-8") for line in r.text.encode("utf-8").splitlines()]
+
+                    else:
+                        return sc, "HTTP status code %s: %s" % (sc, r.reason), "text/plain"
+
+                    # each res will have a list of list_of_line
+                    # include the header of the first result only
+                    if not include_header_line:
+                        list_of_lines = list_of_lines[1:]
+                    include_header_line = False
+
+                    # list_of_res Example:
+                    # [ ["id,val","01,a","02,b"] , ["id,val","05,u","08,p"] ]
+                    list_of_res += list_of_lines
+
+                #
+                #  ----- DELEGATE to POST PROCESSING operations
+                # return 200, "HTTP print for debug %s: %s" % (200, list_of_res), "text/plain"
+
+                res = self.type_fields(list(reader(list_of_res)), self.i)
+                res = self.postprocess(res, self.i, self.addon)
+                q_string = parse_qs(
+                    quote(self.url_parsed.query, safe="&="))
+                res = self.handling_params(q_string, res)
+                res = self.remove_types(res)
+                s_res = StringIO()
+                writer(s_res).writerows(res)
+                return (sc,) + Operation.conv(s_res.getvalue(), q_string, content_type)
+
             except TimeoutError:
                 exc_type, exc_obj, exc_tb = exc_info()
                 sc = 408
                 return sc, "HTTP status code %s: request timeout - %s: %s (line %s)" % \
-                        (sc, exc_type.__name__, exc_obj, exc_tb.tb_lineno), "text/plain"
+                    (sc, exc_type.__name__, exc_obj,
+                     exc_tb.tb_lineno), "text/plain"
             except TypeError:
                 exc_type, exc_obj, exc_tb = exc_info()
                 sc = 400
                 return sc, "HTTP status code %s: " \
-                            "parameter in the request not compliant with the type specified - %s: %s (line %s)" % \
-                            (sc, exc_type.__name__, exc_obj, exc_tb.tb_lineno), "text/plain"
+                    "parameter in the request not compliant with the type specified - %s: %s (line %s)" % \
+                    (sc, exc_type.__name__, exc_obj,
+                     exc_tb.tb_lineno), "text/plain"
             except:
                 exc_type, exc_obj, exc_tb = exc_info()
                 sc = 500
                 return sc, "HTTP status code %s: something unexpected happened - %s: %s (line %s)" % \
-                        (sc, exc_type.__name__, exc_obj, exc_tb.tb_lineno), "text/plain"
+                    (sc, exc_type.__name__, exc_obj,
+                     exc_tb.tb_lineno), "text/plain"
         else:
             sc = 405
             return sc, "HTTP status code %s: '%s' method not allowed" % (sc, str_method), "text/plain"
@@ -1521,7 +1586,7 @@ if __name__ == "__main__":
     if args.webserver:
         try:
             import logging
-            from flask import Flask, request , make_response, send_from_directory
+            from flask import Flask, request, make_response, send_from_directory
             from werkzeug.exceptions import HTTPException
 
             # logs
