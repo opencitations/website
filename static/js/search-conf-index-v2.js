@@ -20,7 +20,7 @@ var search_conf = {
       "regex":"(.+)",
       "query": [`
             {
-              SERVICE <https://opencitations.net/index/sparql> {
+              SERVICE <https://test.opencitations.net/index/sparql> {
                     BIND(<https://w3id.org/oc/meta/[[VAR]]> as ?cited) .
                     ?oci cito:hasCitedEntity ?cited .
                     ?oci cito:hasCitingEntity ?citing .
@@ -41,7 +41,7 @@ var search_conf = {
             {
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
                 ?citing datacite:hasIdentifier ?identifier .
-                SERVICE <https://opencitations.net/index/sparql> {
+                SERVICE <https://test.opencitations.net/index/sparql> {
                       ?oci a cito:Citation .
                       ?oci cito:hasCitingEntity ?citing .
                       ?oci cito:hasCitedEntity ?cited .
@@ -62,7 +62,7 @@ var search_conf = {
             {
                 ?identifier literal:hasLiteralValue "[[VAR]]" .
                 ?cited datacite:hasIdentifier ?identifier .
-                SERVICE <https://opencitations.net/index/sparql> {
+                SERVICE <https://test.opencitations.net/index/sparql> {
                       ?oci a cito:Citation .
                       ?oci cito:hasCitedEntity ?cited .
                       ?oci cito:hasCitingEntity ?citing .
@@ -80,7 +80,7 @@ var search_conf = {
       "regex":"(\\d{1,}-\\d{1,})",
       "query": [`
         {
-          SERVICE <https://opencitations.net/index/sparql> {
+          SERVICE <https://test.opencitations.net/index/sparql> {
                 BIND(<https://w3id.org/oc/index/ci/[[VAR]]> as ?oci) .
                 ?oci cito:hasCitingEntity ?citing .
                 ?oci cito:hasCitedEntity ?cited .
@@ -284,7 +284,7 @@ var heuristics = (function () {
         else {
           id_pref = "";
         }
-        var meta_api_url = 'https://opencitations.net/meta/api/v1/metadata/';
+        var meta_api_url = 'https://test.opencitations.net/meta/api/v1/metadata/';
         meta_api_url = meta_api_url + id_pref + str_id;
 
         fetch(meta_api_url)
