@@ -24,7 +24,7 @@
             "invalid_captcha": "This message warns of an error with the captcha",
             "invalid_form": "This message warns that a form cannot be resubmitted" 
         },
-        "accesstokensuccess": "Sucess message displayed after an access token request",
+        "accesstokensuccess": "Success message displayed after an access token request",
         "accesstokenconfirm": {
             "success": "Access token confirmation ",
             "failure": "Message in case of link expiration"
@@ -33,10 +33,10 @@
             "title": "Email title",
             "description": "Email description",
             "token" : "Message before the button",
-            "token_button": "Toke button message",
+            "token_button": "Token button message",
             "ignore": "Ignore message in the case of wrong mail",
             "signature": "Signature of the email",
-            "html_message": "Message displayed in the case HTML email is not supported, the link is concatened to this string"
+            "html_message": "Message displayed in the case HTML email is not supported, the link is concatenated to this string"
         }
     }
 }

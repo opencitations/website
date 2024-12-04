@@ -19,7 +19,7 @@
 # RAMOSE v1.1
 # Ivan Heibi <ivan.heibi2@unibo.it>
 # [+] The preprocessing operation can output a list of values, this means Ramose will perform multiple sequential SPARQL queries (using the SPARQL query defined for that operation).
-# The marge of the final result is performed by the post processing operation. (e.g., see /venue-citation-count in indexapi_v2.py)
+# The merge of the final result is performed by the post processing operation. (e.g., see /venue-citation-count in indexapi_v2.py)
 
 __author__ = 'essepuntato'
 
@@ -206,7 +206,7 @@ Parameters can be used to filter and control the results returned by the API. Th
 
 4. `format=<format_type>`: the final table is returned in the format specified in `<format_type>` that can be either "csv" or "json" - e.g. `format=csv` returns the final table in CSV format. This parameter has higher priority of the type specified through the "Accept" header of the request. Thus, if the header of a request to the API specifies `Accept: text/csv` and the URL of such request includes `format=json`, the final table is returned in JSON.
 
-5. `json=<operation_type>("<separator>",<field>,<new_field_1>,<new_field_2>,...)`: in case a JSON format is requested in return, tranform each row of the final JSON table according to the rule specified. If `<operation_type>` is set to "array", the string value associated to the field name `<field>` is converted into an array by splitting the various textual parts by means of `<separator>`. For instance, considering the JSON table `[ { "names": "Doe, John; Doe, Jane" }, ... ]`, the execution of `array("; ",names)` returns `[ { "names": [ "Doe, John", "Doe, Jane" ], ... ]`. Instead, if `<operation_type>` is set to "dict", the string value associated to the field name `<field>` is converted into a dictionary by splitting the various textual parts by means of `<separator>` and by associating the new fields `<new_field_1>`, `<new_field_2>`, etc., to these new parts. For instance, considering the JSON table `[ { "name": "Doe, John" }, ... ]`, the execution of `dict(", ",name,fname,gname)` returns `[ { "name": { "fname": "Doe", "gname": "John" }, ... ]`.
+5. `json=<operation_type>("<separator>",<field>,<new_field_1>,<new_field_2>,...)`: in case a JSON format is requested in return, transform each row of the final JSON table according to the rule specified. If `<operation_type>` is set to "array", the string value associated to the field name `<field>` is converted into an array by splitting the various textual parts by means of `<separator>`. For instance, considering the JSON table `[ { "names": "Doe, John; Doe, Jane" }, ... ]`, the execution of `array("; ",names)` returns `[ { "names": [ "Doe, John", "Doe, Jane" ], ... ]`. Instead, if `<operation_type>` is set to "dict", the string value associated to the field name `<field>` is converted into a dictionary by splitting the various textual parts by means of `<separator>` and by associating the new fields `<new_field_1>`, `<new_field_2>`, etc., to these new parts. For instance, considering the JSON table `[ { "name": "Doe, John" }, ... ]`, the execution of `dict(", ",name,fname,gname)` returns `[ { "name": { "fname": "Doe", "gname": "John" }, ... ]`.
 
 It is possible to specify one or more filtering operation of the same kind (e.g. `require=given_name&require=family_name`). In addition, these filtering operations are applied in the order presented above - first all the `require` operation, then all the `filter` operations followed by all the `sort` operation, and finally the `format` and the `json` operation (if applicable). It is worth mentioning that each of the aforementioned rules is applied in order, and it works on the structure returned after the execution of the previous rule.
 
@@ -870,7 +870,7 @@ class Operation(object):
          It takes in input a full URL referring to a call to an operation (parameter 'op_complete_url'),
         the particular shape representing an operation (parameter 'op_key'), the definition (in JSON) of such
         operation (parameter 'i'), the URL of the triplestore to contact (parameter 'tp'), the HTTP method
-        to use for the SPARQL request (paramenter 'sparql_http_method', set to either 'get' or 'post'), and the path
+        to use for the SPARQL request (parameter 'sparql_http_method', set to either 'get' or 'post'), and the path
         of the Python file which defines additional functions for use in the operation (parameter 'addon')."""
         self.url_parsed = urlsplit(op_complete_url)
         self.op_url = self.url_parsed.path
@@ -909,7 +909,7 @@ class Operation(object):
 
         content_type = Operation.get_content_type(c_type)
 
-        # Overrite if requesting a particular format via the URL
+        # Override if requesting a particular format via the URL
         if "format" in query_string:
             req_formats = query_string["format"]
 
@@ -1332,7 +1332,7 @@ class Operation(object):
                 for combination in combinations:
                     parameters_comb.append( dict(zip(list(par_dict.keys()), list(combination))) )
 
-                # the __parameters_comb__ varaible is a list of dictionaries,
+                # the __parameters_comb__ variable is a list of dictionaries,
                 # each dictionary stores a possible combination of parameter values
                 #
                 # Example: {"id":"5","area":["A1","A2"]}  ->  [  {"id":"5","area":"A1"}, {"id":"5","area":"A2"} ]
@@ -1363,7 +1363,7 @@ class Operation(object):
 
                     sc = r.status_code
                     if sc == 200:
-                        # This line has been added to avoid a strage behaviour of the 'splitlines' method in
+                        # This line has been added to avoid a strange behaviour of the 'splitlines' method in
                         # presence of strange characters (non-UTF8).
                         list_of_lines = [line.decode("utf-8") for line in r.text.encode("utf-8").splitlines()]
 

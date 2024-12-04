@@ -100,13 +100,13 @@ $def with (pages, active)
                     <li><p><strong>Sequence number</strong>:
                       along with XPath identifiers, discourse elements are identified with a more human-readable sequence number
                       (e.g. Section n. <code>1</code>, Paragraph n. <code>3</code>, Table n. <code>2</code>),
-                      indentifying their relative position in the document. CCC stores sequence numbers of discourse elements that include at least one in-text reference.</p> </li>
+                      identifying their relative position in the document. CCC stores sequence numbers of discourse elements that include at least one in-text reference.</p> </li>
                     <li><p><strong>OCI</strong>: an OCI is a global persistent identifier of citations. It usually appears in the form <code>oci:&lt;citing&gt;-&lt;cited&gt;</code> where <code>citing</code> and <code>cited</code> are locally assigned numerical identifiers of respectively a citing document and a cited document.
                       In CCC an OCI is assigned to both the general citation - in the same form <code>&lt;citing&gt;-&lt;cited&gt;</code> - and to every occurrence of an in-text reference in the citing document relevant to that citation.
                        For instance: the article identified as <code>0701</code> in CCC cites the article identified as <code>07090</code>, and two in-text references appear in the citing article referencing the cited article.
-                       The general OCI for the citation will be <code>0701-07090</code>, while the two specific citations instatiated by in-text references will be addressed as <code>0701-07090/1</code> and <code>0701-07090/2</code> respectively.</p> </li>
+                       The general OCI for the citation will be <code>0701-07090</code>, while the two specific citations instantiated by in-text references will be addressed as <code>0701-07090/1</code> and <code>0701-07090/2</code> respectively.</p> </li>
                     <li><p><strong>InTRePID</strong>: the In-Text Reference Pointer Identifier (InTRePID) is a global unique persistent identifier (PID) of in-text reference pointers.
-                      InTRePID is an extention of OCI that appears in the following form: <code>intrepid:&lt;oci&gt;/&lt;ordinal&gt;-&lt;total&gt;</code>
+                      InTRePID is an extension of OCI that appears in the following form: <code>intrepid:&lt;oci&gt;/&lt;ordinal&gt;-&lt;total&gt;</code>
                       where <code>&lt;oci&gt;</code> is is the numerical part of the OCI identiying a citation between a citing and cited entity,
                       <code>&lt;ordinal&gt;</code> is the n<sup>th</sup> occurrence of an in-text reference pointer within the text of the citing entity
                       relevant to the cited entity addressed in the OCI, and <code>&lt;total&gt;</code> is the total number of in-text reference pointers
@@ -201,7 +201,7 @@ ccc:id/0703 a datacite:Identifier ;
   datacite:usesIdentifierScheme datacite:oci ;
   literal:hasLiteralValue "oci:0701-0702/2".
 </code></pre>
-                    <p><em>The first in-text reference <code>rp/0701</code> appears as <code>"Doe et al. 2020"</code>. It appears in the firt section <code>de/0701</code>, called "Introduction",
+                    <p><em>The first in-text reference <code>rp/0701</code> appears as <code>"Doe et al. 2020"</code>. It appears in the first section <code>de/0701</code>, called "Introduction",
                       second paragraph <code>de/0702</code>, third sentence <code>de/0703</code> (being section, paragraph and sentence numbers relative to the entire document and not to the parent element).
                       Both in-text references and the discourse elements are also identified by a XPath.</em></p>
 <pre><code># the sentence
