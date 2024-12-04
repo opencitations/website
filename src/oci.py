@@ -711,7 +711,7 @@ class OCIManager(object):
             if not self.oci.startswith("oci:"):
                 self.oci = "oci:" + self.oci
                 self.add_message("validate", W, "The OCI specified as input doesn't start with the 'oci:' "
-                                                "prefix. This has beed automatically added, resulting in "
+                                                "prefix. This has been automatically added, resulting in "
                                                 "the OCI '%s'." % self.oci)
 
             self.is_valid = False

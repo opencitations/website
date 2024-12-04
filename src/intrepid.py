@@ -246,7 +246,7 @@ class InTRePIDManager(object):
             if not self.intrepid.startswith("intrepid:"):
                 self.intrepid = "intrepid:" + self.intrepid
                 self.add_message("validate", W, "The InTRePID specified as input doesn't start with the 'intrepid:' "
-                                                "prefix. This has beed automatically added, resulting in "
+                                                "prefix. This has been automatically added, resulting in "
                                                 "the InTRePID '%s'." % self.intrepid)
 
             self.is_valid = False

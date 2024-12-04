@@ -909,7 +909,7 @@ class Operation(object):
 
         content_type = Operation.get_content_type(c_type)
 
-        # Overrite if requesting a particular format via the URL
+        # Override if requesting a particular format via the URL
         if "format" in query_string:
             req_formats = query_string["format"]
 
@@ -1363,7 +1363,7 @@ class Operation(object):
 
                     sc = r.status_code
                     if sc == 200:
-                        # This line has been added to avoid a strage behaviour of the 'splitlines' method in
+                        # This line has been added to avoid a strange behaviour of the 'splitlines' method in
                         # presence of strange characters (non-UTF8).
                         list_of_lines = [line.decode("utf-8") for line in r.text.encode("utf-8").splitlines()]
 

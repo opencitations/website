@@ -33,7 +33,7 @@
             "title": "Email title",
             "description": "Email description",
             "token" : "Message before the button",
-            "token_button": "Toke button message",
+            "token_button": "Token button message",
             "ignore": "Ignore message in the case of wrong mail",
             "signature": "Signature of the email",
             "html_message": "Message displayed in the case HTML email is not supported, the link is concatenated to this string"
