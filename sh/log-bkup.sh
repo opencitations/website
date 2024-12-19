@@ -1,33 +1,18 @@
 #!/bin/bash
 
-# Source directory where the file is located
-SOURCE_DIR="/srv/web/log/"
+# Define source and destination directories
+SOURCE_DIR="/srv/web/log"
+DEST_DIR="/srv/index/bkup/log-bkup/raw"
 
-# Get current month and year
-CURRENT_MONTH=$(date +"%m")
-CURRENT_YEAR=$(date +"%Y")
+# Get the newest file based on modification time
+NEWEST_FILE=$(ls -t "$SOURCE_DIR"/oc-*.txt | head -n 1)
 
-# Calculate previous month
-PREVIOUS_MONTH=$((CURRENT_MONTH - 1))
+# Loop through all files in the directory matching the pattern
+for FILE in "$SOURCE_DIR"/oc-*.txt; do
+    # If the file is not the newest, move it to the destination directory
+    if [[ "$FILE" != "$NEWEST_FILE" ]]; then
+        mv "$FILE" "$DEST_DIR"
+    fi
+done
 
-# Adjust if previous month is January
-if [ $PREVIOUS_MONTH -eq 0 ]; then
-    PREVIOUS_MONTH=12
-    CURRENT_YEAR=$((CURRENT_YEAR - 1))
-fi
-
-# Convert to two-digit format
-if [ $PREVIOUS_MONTH -lt 10 ]; then
-    PREVIOUS_MONTH="0$PREVIOUS_MONTH"
-fi
-
-#e.g. oc-2022-03.txt
-PREFNAME="oc-"
-SOURCE_FILE="$SOURCE_DIR$PREFNAME$CURRENT_YEAR-$PREVIOUS_MONTH.txt"
-
-# destination directory
-DESTINATION_DIR="/srv/index/bkup/log-bkup/raw"
-
-#echo "MOVING: $SOURCE_FILE" "$DESTINATION_DIR"
-# Move the file to the destination directory
-mv "$SOURCE_FILE" "$DESTINATION_DIR"
+echo "Older log files have been moved to $DEST_DIR."
