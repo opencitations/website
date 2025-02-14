@@ -37,7 +37,9 @@ a:hover {
 }
 
 #logo {
-    max-width: 200px;
+    max-width: 270px;
+    padding-bottom: 30px;
+    padding-top: 30px;
 }
 
 footer .container img {
