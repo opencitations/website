@@ -94,30 +94,31 @@ $def with (pages, active)
                 <h4><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta</h4>
                 <p>The <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Meta database stores and delivers bibliographic metadata for all publications involved in the <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index.</p>
 
-                <h5><strong>Most recent OpenCitations Meta data dump - June 2024 Dump</strong></h5>
-                <p>This dataset's dump, released on 2024-06-20, enhances its previous version by incorporating new data from the Crossref dump available at <a href="https://crossref.org/snapshots/monthly/2024/03" target="_blank">Crossref March 2024 Dump</a>. This dump includes information on:</p>
+                <h5><strong>Most recent OpenCitations Meta data dump - February 2025 Dump</strong></h5>
+                <p>This dataset's dump, released on 2025-02-13, enhances its previous version by incorporating new data from the Crossref dump available at <a href="https://crossref.org/snapshots/monthly/2024/11" target="_blank">Crossref November 2024 Dump</a>, as well as the November 2024 dump of <a href="https://japanlinkcenter.org/top/">JaLC (Japan Link Center)</a>. This dump includes information on:</p>
                 <ul>
-                    <li><p>116,705,111 bibliographic entities</p></li>
-                    <li><p>348,815,548 authors and 2,561,336 editors (counted by their roles, without disambiguating individuals)</p></li>
-                    <li><p>715,711 publication venues</p></li>
-                    <li><p>245,783 publishers</p></li>
+                    <li><p>121,302,680 bibliographic entities</p></li>
+                    <li><p>368,061,399 authors, 2,718,222 editors, and 101,612,475 publishers (counted by their roles, without disambiguating individual</p></li>
+                    <li><p>698,995 publication venues</p></li>
                 </ul>
                 <div class="table-responsive">
                      <table class="table">
                        <tr><th>Type and format</th><th>Archive</th><th>Size</th></tr>
-                       <tr><td>Metadata (CSV)</td><td><a href="https://doi.org/10.6084/m9.figshare.21747461.v9">tar.gz</a></td><td>11G (47G zipped) on ext4</td></tr>
-                       <tr><td>Metadata and provenance (RDF)</td><td><a href="https://doi.org/10.6084/m9.figshare.21747536.v7">tar.gz</a></td><td>44G (145G compressed) on ext4</td></tr>
+                       <tr><td>Metadata (CSV)</td><td><a href="https://doi.org/10.6084/m9.figshare.21747461.v11">tar</a></td><td>12G (48G zipped) on ext4</td></tr>
+                       <tr><td>Metadata and provenance (RDF)</td><td><a href="https://doi.org/10.6084/m9.figshare.21747536.v8">tar.gz</a></td><td>47G (145G compressed) on ext4</td></tr>
                      </table>
                 </div>
-                <p>In addition, a CSV dump containing a mapping between all the bibliographic resources identified by an OMID (e.g., br/12345) and their corresponding PID(s) (e.g., DOI, PMID)</p>
+                <p>In addition:</p>
                 <div class="table-responsive">
                      <table class="table">
-                         <tr><td>BR OMID map (CSV)</td><td><a href="https://doi.org/10.6084/m9.figshare.24427156.v2">ZIP</a></td><td>4.4 GB (1.7 GB zipped)</td></tr>
+                       <tr><th style="width: 65%">Type and format</th><th>Archive</th><th>Size</th></tr>
+                       <tr><td>A CSV dump storing a mapping between all OMIDs and their corresponding PID(s) (e.g., DOI, ORCID, PMID, etc)</td><td><a href="https://doi.org/10.6084/m9.figshare.24427156.v3">ZIP</a></td><td>6.5 GB (1.5 GB zipped)</td></tr>
                      </table>
                 </div>
 
                 <h5>Previous dumps</h5>
                 <ul>
+                    <li><p>Dump created on 2024-06-20. Compared to the previous dump, this one adds the metadata contained in the <a href="https://api.crossref.org/snapshots/monthly/2023/03">Crossref dump dated March 2024</a>.Dump available in <a href="https://doi.org/10.6084/m9.figshare.21747461.v9">CSV (metadata)</a> and <a href="https://doi.org/10.6084/m9.figshare.21747536.v7">JSON-LD (metadata and provenance)</a>
                     <li><p>Dump created on 2024-04-06. Compared to the previous dump, this one incorporates OpenAlex IDs, leveraging data from the OpenAlex dump. Dump available in <a href="https://doi.org/10.6084/m9.figshare.21747461.v8">CSV (metadata)</a> and <a href="https://doi.org/10.6084/m9.figshare.21747536.v6">RDF (metadata and provenance)</a> formats.</p></li>
                     <li><p>Dump created on 2023-11-29. Compared to the previous dump, this one adds the metadata contained in the <a href="https://api.japanlinkcenter.org/">Japan Link Center (JaLC)</a>. Dump available in <a href="https://doi.org/10.6084/m9.figshare.21747461.v7">CSV (metadata)</a> format.</p></li>
                     <li><p>Dump created on 2023-10-24. Compared to the previous dump, this one adds the metadata contained in <a href="https://doi.org/10.5281/zenodo.7845968">OpenAIRE</a> and in the <a href="https://api.crossref.org/snapshots/monthly/2023/09">Crossref dump dated September 2023</a>.Dump available in <a href="https://doi.org/10.6084/m9.figshare.21747461.v5">CSV (metadata)</a> and <a href="https://doi.org/10.6084/m9.figshare.21747536.v5">JSON-LD (metadata and provenance)</a> formats.</p></li>
@@ -130,20 +131,20 @@ $def with (pages, active)
                 <h4><span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index</h4>
                 <p>The <span class="oc-purple">Open</span><span class="oc-blue">Citations</span> Index stores OMID-to-OMID references representing all the references gathered from several sources.</p>
 
-                <h5><strong>Most recent OpenCitations Index data dump - July 2024 Dump</strong></h5>
-                <p>Dump created on 2024-07-01. Compared to the previous dump, this one adds the citation data contained in the <a href="https://api.crossref.org/snapshots/monthly/2024/03">Crossref dump dated March 2024</a>. This dump includes information on:</p>
+                <h5><strong>Most recent OpenCitations Index data dump - March 2025 Dump</strong></h5>
+                <p>Dump created on 2025-03-24. Compared to the previous dump, this one adds the citation data contained in the <a href="https://api.crossref.org/snapshots/monthly/2024/11">Crossref dump dated November 2024</a>. This dump includes information on:</p>
                 <ul>
                     <!--<li><p>__ bibliographic resources;</p></li>-->
-                    <li><p>2,012,939,079 citations</p></li>
+                    <li><p>2,155,497,918 citations</p></li>
                 </ul>
                 <div class="table-responsive">
                      <table class="table">
                          <tr><th>Type and format</th><th>Archive</th><th>Size</th></tr>
-                         <tr><td>Citation data (CSV)</td><td><a href="https://doi.org/10.6084/m9.figshare.24356626.v3">ZIP</a></td><td>179 GB (28.1 GB zipped)</td></tr>
-                         <tr><td>Citation data (N-Triple)</td><td><a href="https://doi.org/10.6084/m9.figshare.24369136.v3">ZIP</a></td><td>1.5 TB (65.6 GB zipped)</td></tr>
-                         <tr><td>Citation data (Scholix)</td><td><a href="https://doi.org/10.6084/m9.figshare.24416749.v3">ZIP</a></td><td>1.8 TB (39 GB zipped)</td></tr>
-                         <tr><td>Provenance data (CSV)</td><td><a href="https://doi.org/10.6084/m9.figshare.24417733.v3">ZIP</a></td><td>329 GB (15 GB zipped)</td></tr>
-                         <tr><td>Provenance data (N-Triple)</td><td><a href="https://doi.org/10.6084/m9.figshare.24417736.v3">ZIP</a></td><td>2.6 TB (83 GB zipped)</td></tr>
+                         <tr><td>Citation data (CSV)</td><td><a href="https://doi.org/10.6084/m9.figshare.24356626.v4">ZIP</a></td><td>220 GB (34.4 GB zipped)</td></tr>
+                         <tr><td>Citation data (N-Triple)</td><td><a href="https://doi.org/10.6084/m9.figshare.24369136.v4">ZIP</a></td><td>1.9 TB (80.6 GB zipped)</td></tr>
+                         <tr><td>Citation data (Scholix)</td><td><a href="https://doi.org/10.6084/m9.figshare.24416749.v4">ZIP</a></td><td>1.9 TB (40 GB zipped)</td></tr>
+                         <tr><td>Provenance data (CSV)</td><td><a href="https://doi.org/10.6084/m9.figshare.24417733.v4">ZIP</a></td><td>410 GB (18 GB zipped)</td></tr>
+                         <tr><td>Provenance data (N-Triple)</td><td><a href="https://doi.org/10.6084/m9.figshare.24417736.v4">ZIP</a></td><td>3.1 TB (95 GB zipped)</td></tr>
                      </table>
                 </div>
 
@@ -151,14 +152,16 @@ $def with (pages, active)
                 <div class="table-responsive">
                      <table class="table">
                        <tr><th style="width: 65%">Type and format</th><th>Archive</th><th>Size</th></tr>
-                       <tr><td>Citation data sources' info (N-Triple): information regarding the data source collection (e.g., COCI, DOCI, POCI, etc) of all the citation data</td><td><a href="https://doi.org/10.6084/m9.figshare.24427051.v3">ZIP</a></td><td>364 GB (20.4 GB zipped)</td></tr>
-                       <tr><td>Citation count data (CSV): the number of incoming citations to each bibliographic entity (identified by an OMID) in OpenCitations Index</td><td><a href="https://doi.org/10.6084/m9.figshare.24747375.v3">ZIP</a></td><td>1.1 GB (0.4 GB zipped)</td></tr>
+                       <tr><td>Citation data sources' info (N-Triple): information regarding the data source collection (e.g., COCI, DOCI, POCI, etc) of all the citation data</td><td><a href="https://doi.org/10.6084/m9.figshare.24427051.v4">ZIP</a></td><td>388 GB (23.7 GB zipped)</td></tr>
+                       <tr><td>Citation data sources' info (CSV): information regarding the data source collection (e.g., COCI, DOCI, POCI, etc) of all the citation data</td><td><a href="https://doi.org/10.6084/m9.figshare.28677293.v1">ZIP</a></td><td>97 GB (21 GB zipped)</td></tr>
+                       <tr><td>Citation count data (CSV): the number of incoming citations to each bibliographic entity (identified by an OMID) in OpenCitations Index</td><td>TBA</td><td></td></tr>
                        <!--<tr><td>Reference count data (CSV): the number of references of each bibliographic entity (identified by an OMID) in OpenCitations Index</td><td><a href="https://doi.org/10.6084/m9.figshare.24747498.v1">ZIP</a></td><td>1.7 GB (0.35 GB zipped)</td></tr>-->
                      </table>
                 </div>
 
                 <h5>Previous dumps</h5>
                 <ul>
+                    <li><p>Dump created on 2024-07-01. Dump available in <a href="https://doi.org/10.6084/m9.figshare.24356626.v3">CSV (citation data)</a>, <a href="https://doi.org/10.6084/m9.figshare.24369136.v3">N-Triple (citation data)</a>, <a href="https://doi.org/10.6084/m9.figshare.24416749.v3">SCHOLIX (citation data)</a>, <a href="https://doi.org/10.6084/m9.figshare.24417733.v3">CSV (provenance data)</a>, and <a href="https://doi.org/10.6084/m9.figshare.24417736.v3">N-Triple (provenance data)</a>. In addition, a <a href="https://doi.org/10.6084/m9.figshare.24427051.v3">N-Triple dump</a> containing information regarding the data source collection, and a <a href="https://doi.org/10.6084/m9.figshare.24747375.v3"> citation count dump </a> with the number of incoming citations to each bibliographic entity (identified by an OMID) </p></li>
                     <li><p>Dump created on 2023-11-29. Dump available in <a href="https://doi.org/10.6084/m9.figshare.24356626.v2">CSV (citation data)</a>, <a href="https://doi.org/10.6084/m9.figshare.24369136.v2">N-Triple (citation data)</a>, <a href="https://doi.org/10.6084/m9.figshare.24416749.v2">SCHOLIX (citation data)</a>, <a href="https://doi.org/10.6084/m9.figshare.24417733.v2">CSV (provenance data)</a>, and <a href="https://doi.org/10.6084/m9.figshare.24417736.v2">N-Triple (provenance data)</a>. In addition, a <a href="https://doi.org/10.6084/m9.figshare.24427051.v2">N-Triple dump</a> containing information regarding the data source collection, and a <a href="https://doi.org/10.6084/m9.figshare.24747375.v1"> citation count dump </a> with the number of incoming citations to each bibliographic entity (identified by an OMID) </p></li>
                     <li><p>Dump created on 2023-10-25. Dump available in <a href="https://doi.org/10.6084/m9.figshare.24356626.v1">CSV (citation data)</a>, <a href="https://doi.org/10.6084/m9.figshare.24369136.v1">N-Triple (citation data)</a>, <a href="https://doi.org/10.6084/m9.figshare.24416749.v1">SCHOLIX (citation data)</a>, <a href="https://doi.org/10.6084/m9.figshare.24417733.v1">CSV (provenance data)</a>, and <a href="https://doi.org/10.6084/m9.figshare.24417736.v1">N-Triple (provenance data)</a>. In addition, a <a href="https://doi.org/10.6084/m9.figshare.24427051.v1">N-Triple dump</a> containing information regarding the data source collection.</p></li>
                 </ul>
