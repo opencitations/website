@@ -877,7 +877,10 @@ class Sparql:
         if req.status_code == 200:
             web.header('Access-Control-Allow-Origin', '*')
             web.header('Access-Control-Allow-Credentials', 'true')
-            web.header('Content-Type', req.headers["content-type"])
+            if req.headers["content-type"] == "application/json":
+                web.header('Content-Type', 'application/sparql-results+json')
+            else:
+                web.header('Content-Type', req.headers["content-type"])
             web_logger.mes()
             req.encoding = "utf-8"
 
